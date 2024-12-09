@@ -416,3 +416,35 @@ data_ok <- filter(data_ok, Rspe != 0 )
 write.csv2(data_ok,file="output/data_modif/Table_FLORTOT_Surf_0722_COM_period_Stselect_hydro_phyto_chloro_phylum_period15_chlafilter_div_final.csv", row.names = FALSE,dec = ".")
 
 
+#####################################################################################
+#                                                                                   #
+#                 NEED TO RUN Script_clustering_station.R                           #
+#                                                                                   #
+#####################################################################################
+
+# Load data
+data <- read_delim("output/data_modif/Table_FLORTOT_Surf_0722_COM_period_Stselect_hydro_phyto_chloro_phylum_period15_chlafilter_div_final.csv", 
+                   delim = ";", escape_double = FALSE, locale = locale(decimal_mark = ",", 
+                                                                       grouping_mark = ""), trim_ws = TRUE)
+
+# Load clustering data information
+data_clust <- read_delim("output/tableaux/clusters_EM_01_k5_final.csv", 
+                         delim = ";", escape_double = FALSE, locale = locale(decimal_mark = ",", 
+                                                                             grouping_mark = ""), trim_ws = TRUE)
+# Change the clusters' name
+data_clust$cluster <- ifelse(data_clust$cluster == 1, "1-Mediterranean sea",
+                        ifelse(data_clust$cluster == 2, "2-Eastern Channel - North Sea",
+                            ifelse(data_clust$cluster == 3, "3-Atlantic - Western Channel",
+                                   ifelse(data_clust$cluster == 4, "4-Pertuis Sea",
+                                          ifelse(data_clust$cluster == 5, "5-Rhone Estuary",data_clust$cluster)))))
+
+# Binding the two datasets
+data_clusterised <- left_join(data,data_clust)
+# Arrange columns as I want
+data_ok <- dplyr::select(data_clusterised,Code.Region:Code_point_Libelle,cluster,lon:Rspe)
+
+colnames(data_ok)[3] <- "region"
+
+write.csv2(data_ok,file="output/data_modif/Table_FLORTOT_Surf_0722_COM_period_Stselect_hydro_phyto_chloro_phylum_period15_chlafilter_cluster5_final.csv", row.names = FALSE,dec = ".")
+
+
