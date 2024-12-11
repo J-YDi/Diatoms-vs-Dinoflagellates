@@ -53,6 +53,17 @@ edgelist_1 <- filter(net_cluster1$edgelist1[,c("v1","v2","asso")],asso > 0)
 
 write.csv2(edgelist_1,file="output/tableaux/Networks/edgelist_med.csv", row.names = FALSE,dec = ".")
 
+# Store the association matrix
+assoMat_1 <- as.data.frame(net_cluster1$assoMat1)
+# Keep only the positive associations
+assoMat_1[assoMat_1 < 0] <- 0
+assoMat_1 <- assoMat_1[, colSums(assoMat_1) != 0]
+assoMat_1 <- assoMat_1[rowSums(assoMat_1) != 0, ]
+write.csv2(assoMat_1,file="output/tableaux/Networks/assoMat_med.csv", row.names = FALSE,dec = ".")
+taxon_list_1 <- as.data.frame(rownames(assoMat_1))
+colnames(taxon_list_1) <- "Taxon"
+write.csv2(taxon_list_1,file="output/tableaux/Networks/taxon_list_med.csv", row.names = FALSE,dec = ".")
+
 
 ### Cluster 2-Eastern Channel - North Sea ####
 # Select region 2
@@ -85,6 +96,17 @@ edgelist_2 <- filter(net_cluster2$edgelist1[,c("v1","v2","asso")],asso > 0)
 
 write.csv2(edgelist_2,file="output/tableaux/Networks/edgelist_manche.csv", row.names = FALSE,dec = ".")
 
+# Store the association matrix
+assoMat_2 <- as.data.frame(net_cluster2$assoMat1)
+# Keep only the positive associations
+assoMat_2[assoMat_2 < 0] <- 0
+assoMat_2 <- assoMat_2[, colSums(assoMat_2) != 0]
+assoMat_2 <- assoMat_2[rowSums(assoMat_2) != 0, ]
+write.csv2(assoMat_2,file="output/tableaux/Networks/assoMat_manche.csv", row.names = FALSE,dec = ".")
+taxon_list_2 <- as.data.frame(rownames(assoMat_2))
+colnames(taxon_list_2) <- "Taxon"
+write.csv2(taxon_list_2,file="output/tableaux/Networks/taxon_list_manche.csv", row.names = FALSE,dec = ".")
+
 ### Cluster 3-Atlantic - Western Channel ####
 # Select cluster 
 CL3 <- filter(data, region == "3-Atlantic - Western Channel" )
@@ -115,3 +137,14 @@ net_props_cluster3 <- netAnalyze(net_cluster3,
 edgelist_3 <- filter(net_cluster3$edgelist1[,c("v1","v2","asso")],asso > 0)
 
 write.csv2(edgelist_3,file="output/tableaux/Networks/edgelist_atlantic.csv", row.names = FALSE,dec = ".")
+
+# Store the association matrix
+assoMat_3 <- as.data.frame(net_cluster3$assoMat1)
+# Keep only the positive associations
+assoMat_3[assoMat_3 < 0] <- 0
+assoMat_3 <- assoMat_3[, colSums(assoMat_3) != 0]
+assoMat_3 <- assoMat_3[rowSums(assoMat_3) != 0, ]
+write.csv2(assoMat_3,file="output/tableaux/Networks/assoMat_atlantic.csv", row.names = FALSE,dec = ".")
+taxon_list_3 <- as.data.frame(rownames(assoMat_3))
+colnames(taxon_list_3) <- "Taxon"
+write.csv2(taxon_list_3,file="output/tableaux/Networks/taxon_list_atlantic.csv", row.names = FALSE,dec = ".")
