@@ -448,3 +448,55 @@ colnames(data_ok)[3] <- "region"
 write.csv2(data_ok,file="output/data_modif/Table_FLORTOT_Surf_0722_COM_period_Stselect_hydro_phyto_chloro_phylum_period15_chlafilter_cluster5_final.csv", row.names = FALSE,dec = ".")
 
 
+#####################################################################################
+#                                                                                   #
+#                 NEED TO RUN script_build_networks.R                               #
+#                                                                                   #
+#####################################################################################
+data_med <- read_delim("output/tableaux/Networks/subnetworks/results_metrics_reseaux_cluster1.csv", 
+                         delim = ";", escape_double = FALSE, locale = locale(decimal_mark = ",", 
+                                                                             grouping_mark = ""), trim_ws = TRUE)
+data_manche <- read_delim("output/tableaux/Networks/subnetworks/results_metrics_reseaux_cluster2.csv", 
+                       delim = ";", escape_double = FALSE, locale = locale(decimal_mark = ",", 
+                                                                           grouping_mark = ""), trim_ws = TRUE)
+data_atlantic <- read_delim("output/tableaux/Networks/subnetworks/results_metrics_reseaux_cluster3.csv", 
+                       delim = ";", escape_double = FALSE, locale = locale(decimal_mark = ",", 
+                                                                           grouping_mark = ""), trim_ws = TRUE)
+data_metrics <- rbind(data_med,data_manche,data_atlantic)
+
+data <- read_delim("output/data_modif/Table_FLORTOT_Surf_0722_COM_period_Stselect_hydro_phyto_chloro_phylum_period15_chlafilter_cluster5_blooms_caracterised_final.csv", 
+                   delim = ";", escape_double = FALSE, locale = locale(decimal_mark = ",", 
+                                                                       grouping_mark = ""), trim_ws = TRUE)
+datawithmetrics <- left_join(data,data_metrics)
+
+# Still some duplicates
+doublons_final <- datawithmetrics[duplicated(datawithmetrics$ID.interne.passage) |
+                              duplicated(datawithmetrics$ID.interne.passage, fromLast = TRUE), ]
+
+resultat_filtre_final <- doublons_final %>%
+  filter(Prelevement.niveau %in% c("Surface (0-1m)", "2 mètres", "de 3 à 5 mètres","Mi-profondeur")) %>%
+  group_by(ID.interne.passage) %>%
+  mutate(Ordre = match(Prelevement.niveau, c("Surface (0-1m)", "2 mètres", "de 3 à 5 mètres","Mi-profondeur"))) %>%
+  arrange(desc(Ordre)) %>%
+  filter(duplicated(ID.interne.passage) | n()==1)
+
+datawithmetrics_unique <- subset(datawithmetrics, !(ID.interne.passage %in% unique(doublons_final$ID.interne.passage)))
+datawithmetrics <- bind_rows(datawithmetrics_unique,resultat_filtre_final)
+
+# Still some duplicates
+doublons_final <- datawithmetrics[duplicated(datawithmetrics$ID.interne.passage) |
+                                    duplicated(datawithmetrics$ID.interne.passage, fromLast = TRUE), ]
+
+resultat_filtre_final <- doublons_final %>%
+  filter(Prelevement.niveau %in% c("Surface (0-1m)", "2 mètres", "de 3 à 5 mètres","Mi-profondeur")) %>%
+  group_by(ID.interne.passage) %>%
+  mutate(Ordre = match(Prelevement.niveau, c("Surface (0-1m)", "2 mètres", "de 3 à 5 mètres","Mi-profondeur"))) %>%
+  arrange(desc(Ordre)) %>%
+  filter(duplicated(ID.interne.passage) | n()==1)
+
+datawithmetrics_unique <- subset(datawithmetrics, !(ID.interne.passage %in% unique(doublons_final$ID.interne.passage)))
+datawithmetrics <- bind_rows(datawithmetrics_unique,resultat_filtre_final)
+datawithmetrics <- select(datawithmetrics,-Ordre)
+
+# that's ok 
+write.csv2(datawithmetrics,file="output/data_modif/Table_FLORTOT_Surf_0722_COM_period_Stselect_hydro_phyto_chloro_phylum_period15_chlafilter_cluster5_withmetricsfinal.csv", row.names = FALSE,dec = ".")

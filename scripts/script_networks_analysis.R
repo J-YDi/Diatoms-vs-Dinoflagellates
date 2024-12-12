@@ -1,4 +1,4 @@
-# Script Suite Stage JY Dias # 10/12/2024
+# Script Suite Stage JY Dias # 12/12/2024
 
 library(ggalluvial)
 
@@ -173,6 +173,181 @@ med_global <- ggraph(cluster1, layout = "auto") +
   ))
 
 ggsave('Med_global_network.png', path = "output/graphs/networks/global_networks/", dpi = 600, width = 400, height = 300, units = 'mm')
+
+
+##### Type of association through time ######
+data <- read_delim("output/tableaux/Networks/subnetworks/results_metrics_reseaux_cluster1.csv", 
+                   delim = ";", escape_double = FALSE, locale = locale(decimal_mark = ",", 
+                                                                       grouping_mark = ""), trim_ws = TRUE)
+
+data_association <- pivot_longer(data,cols = c(P_BacBac,P_BacDino,P_DinoDino,P_AAutres),names_to = "Asso_type" )
+data_association <- select(data_association,Code_point_Libelle,Date,Asso_type,value)
+
+data_association$MonthYear <- format(data_association$Date, "%Y-%m")
+data_association$Month <- format(data_association$Date, "%m")
+
+data_association_graph <- summarise(group_by(data_association,Code_point_Libelle,MonthYear,Asso_type,Month),value=mean(value,na.rm=T))
+
+ggplot(data_association_graph) +
+  geom_col(aes(y = value, x = MonthYear, fill = Asso_type), position = "stack", na.rm = FALSE)+
+  guides(fill = guide_legend(ncol = 7, byrow = F)) +
+  theme(legend.position = "bottom")+
+  geom_vline(data = subset(data_association_graph,Month == "01"), 
+             aes(xintercept = MonthYear),
+             color = "grey3", size = 0.5,linetype = "dashed")+
+  scale_x_discrete(labels = rep(c("M","A","M","J","J","A","S","O","N","D","J","F"),16))+
+  scale_fill_manual(values = c("P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
+                               ,"P_AAutres"      = "grey" ,"P_DinoDino" = "#009E73"))+
+  geom_text(data = subset(data_association_graph, Month == "01"), 
+            aes(x = MonthYear, y = 0.95, label = sub("-.*", "", MonthYear)),
+            color = "black", size = 2.5,angle=90, vjust = 0)+
+  facet_wrap(~Code_point_Libelle,nrow = 4)+
+  theme(axis.text.x = element_text(vjust = 0.5, hjust = 0.5, size = 5))
+ggsave('med_typeassociation_station.png', path = "output/graphs/networks/subnetworks/", dpi = 600, width = 400, height = 300, units = 'mm')
+
+data_compo <- pivot_longer(data,cols = c(P_bac,P_dino,P_autres),names_to = "Taxon" )
+data_compo <- select(data_compo,Code_point_Libelle,Date,Taxon,value)
+
+data_compo$MonthYear <- format(data_compo$Date, "%Y-%m")
+data_compo$Month <- format(data_compo$Date, "%m")
+
+data_compo_graph <- summarise(group_by(data_compo,Code_point_Libelle,MonthYear,Taxon,Month),value=mean(value,na.rm=T))
+
+ggplot(data_compo_graph) +
+  geom_col(aes(y = value, x = MonthYear, fill = Taxon), position = "stack", na.rm = FALSE)+
+  guides(fill = guide_legend(ncol = 7, byrow = F)) +
+  theme(legend.position = "bottom")+
+  geom_vline(data = subset(data_compo_graph,Month == "01"), 
+             aes(xintercept = MonthYear),
+             color = "grey3", size = 0.5,linetype = "dashed")+
+  scale_x_discrete(labels = rep(c("M","A","M","J","J","A","S","O","N","D","J","F"),16))+
+  scale_fill_manual(values = c("P_bac" = "#56B4E9","P_autres"      = "grey" ,"P_dino" = "#009E73"))+
+  geom_text(data = subset(data_compo_graph, Month == "01"), 
+            aes(x = MonthYear, y = 0.95, label = sub("-.*", "", MonthYear)),
+            color = "black", size = 2.5,angle=90, vjust = 0)+
+  facet_wrap(~Code_point_Libelle,nrow = 4)+
+  theme(axis.text.x = element_text(vjust = 0.5, hjust = 0.5, size = 5))
+ggsave('med_compo_station.png', path = "output/graphs/networks/subnetworks/", dpi = 600, width = 400, height = 300, units = 'mm')
+
+
+data_association_graph <- summarise(group_by(data_association,MonthYear,Asso_type,Month),value=mean(value,na.rm=T))
+
+ggplot(data_association_graph) +
+  geom_col(aes(y = value, x = MonthYear, fill = Asso_type), position = "stack", na.rm = FALSE)+
+  guides(fill = guide_legend(ncol = 7, byrow = F)) +
+  theme(legend.position = "bottom")+
+  geom_vline(data = subset(data_association_graph,Month == "01"), 
+             aes(xintercept = MonthYear),
+             color = "grey3", size = 0.5,linetype = "dashed")+
+  scale_x_discrete(labels = rep(c("M","A","M","J","J","A","S","O","N","D","J","F"),16))+
+  scale_fill_manual(values = c("P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
+                               ,"P_AAutres"      = "grey" ,"P_DinoDino" = "#009E73"))+
+  geom_text(data = subset(data_association_graph, Month == "01"), 
+            aes(x = MonthYear, y = 0.95, label = sub("-.*", "", MonthYear)),
+            color = "black", size = 2.5,angle=90, vjust = 0)+
+  theme(axis.text.x = element_text(vjust = 0.5, hjust = 0.5, size = 5))
+ggsave('med_typeassociation.png', path = "output/graphs/networks/subnetworks/", dpi = 600, width = 260, height = 170, units = 'mm')
+
+data_compo_graph <- summarise(group_by(data_compo,MonthYear,Taxon,Month),value=mean(value,na.rm=T))
+
+ggplot(data_compo_graph) +
+  geom_col(aes(y = value, x = MonthYear, fill = Taxon), position = "stack", na.rm = FALSE)+
+  guides(fill = guide_legend(ncol = 7, byrow = F)) +
+  theme(legend.position = "bottom")+
+  geom_vline(data = subset(data_compo_graph,Month == "01"), 
+             aes(xintercept = MonthYear),
+             color = "grey3", size = 0.5,linetype = "dashed")+
+  scale_x_discrete(labels = rep(c("M","A","M","J","J","A","S","O","N","D","J","F"),16))+
+  scale_fill_manual(values = c("P_bac" = "#56B4E9","P_autres"      = "grey" ,"P_dino" = "#009E73"))+
+  geom_text(data = subset(data_compo_graph, Month == "01"), 
+            aes(x = MonthYear, y = 0.95, label = sub("-.*", "", MonthYear)),
+            color = "black", size = 2.5,angle=90, vjust = 0)+
+  theme(axis.text.x = element_text(vjust = 0.5, hjust = 0.5, size = 5))
+ggsave('med_compo.png', path = "output/graphs/networks/subnetworks/", dpi = 600, width = 260, height = 170, units = 'mm')
+
+
+data_pca1 <- select(data,N_bac,N_dino,N_autres,N_BacBac,N_BacDino,N_DinoDino,N_AAutres)
+PCA(data_pca1)
+
+data_pca2 <- select(data,N_noeuds:N_clust,P_BacBac,P_BacDino,P_DinoDino,P_AAutres)
+PCA(data_pca2)
+
+data_pca3 <- select(data,N_noeuds:N_clust)
+PCA(data_pca3)
+
+data_pca4 <- select(data,N_noeuds:N_clust,N_BacBac,N_BacDino,N_DinoDino,N_AAutres)
+PCA(data_pca4)
+
+Table.corr_all.comp <- data_pca2[complete.cases(data_pca2),]
+correlations <- cor(Table.corr_all.comp,method = "spearman")
+
+# ... : Arguments supplémentaire à passer à la fonction cor.test
+cor.mtest <- function(Table.corr_all.comp, ...) {
+  mat <- as.matrix(Table.corr_all.comp)
+  n <- ncol(Table.corr_all.comp)
+  p.mat<- matrix(NA, n, n)
+  diag(p.mat) <- 0
+  for (i in 1:(n - 1)) {
+    for (j in (i + 1):n) {
+      tmp <- cor.test(mat[, i], mat[, j], ...)
+      p.mat[i, j] <- p.mat[j, i] <- tmp$p.value
+    }
+  }
+  colnames(p.mat) <- rownames(p.mat) <- colnames(mat)
+  p.mat
+}
+
+# Matrice de p-value de la corrélation
+p.mat <- cor.mtest(Table.corr_all.comp)
+
+col <- colorRampPalette(c("#BB4444", "#EE9988", "#FFFFFF", "#77AADD", "#4477AA"))
+corrplot(correlations, method="color", col=col(200),  
+         type="upper", order="alphabet",tl.cex = 0.7,
+         addCoef.col = "black", # Ajout du coefficient de corrélation
+         tl.col="black", tl.srt=45, #Rotation des etiquettes de textes
+         # Combiner avec le niveau de significativité
+         p.mat = p.mat, sig.level = 0.05, insig = "blank", 
+         # Cacher les coefficients de corrélation sur la diagonale
+         diag=F, 
+         title = ""
+)
+
+Table.corr_all.comp <- data_pca4[complete.cases(data_pca4),]
+correlations <- cor(Table.corr_all.comp,method = "spearman")
+
+# ... : Arguments supplémentaire à passer à la fonction cor.test
+cor.mtest <- function(Table.corr_all.comp, ...) {
+  mat <- as.matrix(Table.corr_all.comp)
+  n <- ncol(Table.corr_all.comp)
+  p.mat<- matrix(NA, n, n)
+  diag(p.mat) <- 0
+  for (i in 1:(n - 1)) {
+    for (j in (i + 1):n) {
+      tmp <- cor.test(mat[, i], mat[, j], ...)
+      p.mat[i, j] <- p.mat[j, i] <- tmp$p.value
+    }
+  }
+  colnames(p.mat) <- rownames(p.mat) <- colnames(mat)
+  p.mat
+}
+
+# Matrice de p-value de la corrélation
+p.mat <- cor.mtest(Table.corr_all.comp)
+
+col <- colorRampPalette(c("#BB4444", "#EE9988", "#FFFFFF", "#77AADD", "#4477AA"))
+corrplot(correlations, method="color", col=col(200),  
+         type="upper", order="alphabet",tl.cex = 0.7,
+         addCoef.col = "black", # Ajout du coefficient de corrélation
+         tl.col="black", tl.srt=45, #Rotation des etiquettes de textes
+         # Combiner avec le niveau de significativité
+         p.mat = p.mat, sig.level = 0.05, insig = "blank", 
+         # Cacher les coefficients de corrélation sur la diagonale
+         diag=F, 
+         title = ""
+)
+
+# Correlation between diversity index and associations, compositions of subnetworks
+
 
 
 
@@ -351,6 +526,179 @@ manche_global <- ggraph(cluster2, layout = "auto") +
 ggsave('Manche_global_network.png', path = "output/graphs/networks/global_networks/", dpi = 600, width = 400, height = 300, units = 'mm')
 
 
+##### Type of association through time ######
+data <- read_delim("output/tableaux/Networks/subnetworks/results_metrics_reseaux_cluster2.csv", 
+                   delim = ";", escape_double = FALSE, locale = locale(decimal_mark = ",", 
+                                                                       grouping_mark = ""), trim_ws = TRUE)
+
+data_association <- pivot_longer(data,cols = c(P_BacBac,P_BacDino,P_DinoDino,P_AAutres),names_to = "Asso_type" )
+data_association <- select(data_association,Code_point_Libelle,Date,Asso_type,value)
+
+data_association$MonthYear <- format(data_association$Date, "%Y-%m")
+data_association$Month <- format(data_association$Date, "%m")
+
+data_association_graph <- summarise(group_by(data_association,Code_point_Libelle,MonthYear,Asso_type,Month),value=mean(value,na.rm=T))
+
+ggplot(data_association_graph) +
+  geom_col(aes(y = value, x = MonthYear, fill = Asso_type), position = "stack", na.rm = FALSE)+
+  guides(fill = guide_legend(ncol = 7, byrow = F)) +
+  theme(legend.position = "bottom")+
+  geom_vline(data = subset(data_association_graph,Month == "01"), 
+             aes(xintercept = MonthYear),
+             color = "grey3", size = 0.5,linetype = "dashed")+
+  scale_x_discrete(labels = rep(c("M","A","M","J","J","A","S","O","N","D","J","F"),16))+
+  scale_fill_manual(values = c("P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
+                               ,"P_AAutres"      = "grey" ,"P_DinoDino" = "#009E73"))+
+  geom_text(data = subset(data_association_graph, Month == "01"), 
+            aes(x = MonthYear, y = 0.95, label = sub("-.*", "", MonthYear)),
+            color = "black", size = 2.5,angle=90, vjust = 0)+
+  facet_wrap(~Code_point_Libelle,nrow = 4)+
+  theme(axis.text.x = element_text(vjust = 0.5, hjust = 0.5, size = 5))
+ggsave('manche_typeassociation_station.png', path = "output/graphs/networks/subnetworks/", dpi = 600, width = 400, height = 300, units = 'mm')
+
+data_compo <- pivot_longer(data,cols = c(P_bac,P_dino,P_autres),names_to = "Taxon" )
+data_compo <- select(data_compo,Code_point_Libelle,Date,Taxon,value)
+
+data_compo$MonthYear <- format(data_compo$Date, "%Y-%m")
+data_compo$Month <- format(data_compo$Date, "%m")
+
+data_compo_graph <- summarise(group_by(data_compo,Code_point_Libelle,MonthYear,Taxon,Month),value=mean(value,na.rm=T))
+
+ggplot(data_compo_graph) +
+  geom_col(aes(y = value, x = MonthYear, fill = Taxon), position = "stack", na.rm = FALSE)+
+  guides(fill = guide_legend(ncol = 7, byrow = F)) +
+  theme(legend.position = "bottom")+
+  geom_vline(data = subset(data_compo_graph,Month == "01"), 
+             aes(xintercept = MonthYear),
+             color = "grey3", size = 0.5,linetype = "dashed")+
+  scale_x_discrete(labels = rep(c("M","A","M","J","J","A","S","O","N","D","J","F"),16))+
+  scale_fill_manual(values = c("P_bac" = "#56B4E9","P_autres"      = "grey" ,"P_dino" = "#009E73"))+
+  geom_text(data = subset(data_compo_graph, Month == "01"), 
+            aes(x = MonthYear, y = 0.95, label = sub("-.*", "", MonthYear)),
+            color = "black", size = 2.5,angle=90, vjust = 0)+
+  facet_wrap(~Code_point_Libelle,nrow = 4)+
+  theme(axis.text.x = element_text(vjust = 0.5, hjust = 0.5, size = 5))
+ggsave('manche_compo_station.png', path = "output/graphs/networks/subnetworks/", dpi = 600, width = 400, height = 300, units = 'mm')
+
+
+data_association_graph <- summarise(group_by(data_association,MonthYear,Asso_type,Month),value=mean(value,na.rm=T))
+
+ggplot(data_association_graph) +
+  geom_col(aes(y = value, x = MonthYear, fill = Asso_type), position = "stack", na.rm = FALSE)+
+  guides(fill = guide_legend(ncol = 7, byrow = F)) +
+  theme(legend.position = "bottom")+
+  geom_vline(data = subset(data_association_graph,Month == "01"), 
+             aes(xintercept = MonthYear),
+             color = "grey3", size = 0.5,linetype = "dashed")+
+  scale_x_discrete(labels = rep(c("M","A","M","J","J","A","S","O","N","D","J","F"),16))+
+  scale_fill_manual(values = c("P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
+                               ,"P_AAutres"      = "grey" ,"P_DinoDino" = "#009E73"))+
+  geom_text(data = subset(data_association_graph, Month == "01"), 
+            aes(x = MonthYear, y = 0.95, label = sub("-.*", "", MonthYear)),
+            color = "black", size = 2.5,angle=90, vjust = 0)+
+  theme(axis.text.x = element_text(vjust = 0.5, hjust = 0.5, size = 5))
+ggsave('manche_typeassociation.png', path = "output/graphs/networks/subnetworks/", dpi = 600, width = 260, height = 170, units = 'mm')
+
+data_compo_graph <- summarise(group_by(data_compo,MonthYear,Taxon,Month),value=mean(value,na.rm=T))
+
+ggplot(data_compo_graph) +
+  geom_col(aes(y = value, x = MonthYear, fill = Taxon), position = "stack", na.rm = FALSE)+
+  guides(fill = guide_legend(ncol = 7, byrow = F)) +
+  theme(legend.position = "bottom")+
+  geom_vline(data = subset(data_compo_graph,Month == "01"), 
+             aes(xintercept = MonthYear),
+             color = "grey3", size = 0.5,linetype = "dashed")+
+  scale_x_discrete(labels = rep(c("M","A","M","J","J","A","S","O","N","D","J","F"),16))+
+  scale_fill_manual(values = c("P_bac" = "#56B4E9","P_autres"      = "grey" ,"P_dino" = "#009E73"))+
+  geom_text(data = subset(data_compo_graph, Month == "01"), 
+            aes(x = MonthYear, y = 0.95, label = sub("-.*", "", MonthYear)),
+            color = "black", size = 2.5,angle=90, vjust = 0)+
+  theme(axis.text.x = element_text(vjust = 0.5, hjust = 0.5, size = 5))
+ggsave('manche_compo.png', path = "output/graphs/networks/subnetworks/", dpi = 600, width = 260, height = 170, units = 'mm')
+
+
+data_pca1 <- select(data,N_bac,N_dino,N_autres,N_BacBac,N_BacDino,N_DinoDino,N_AAutres)
+PCA(data_pca1)
+
+data_pca2 <- select(data,N_noeuds:N_clust,P_BacBac,P_BacDino,P_DinoDino,P_AAutres)
+PCA(data_pca2)
+
+data_pca3 <- select(data,N_noeuds:N_clust)
+PCA(data_pca3)
+
+data_pca4 <- select(data,N_noeuds:N_clust,N_BacBac,N_BacDino,N_DinoDino,N_AAutres)
+PCA(data_pca4)
+
+Table.corr_all.comp <- data_pca2[complete.cases(data_pca2),]
+correlations <- cor(Table.corr_all.comp,method = "spearman")
+
+# ... : Arguments supplémentaire à passer à la fonction cor.test
+cor.mtest <- function(Table.corr_all.comp, ...) {
+  mat <- as.matrix(Table.corr_all.comp)
+  n <- ncol(Table.corr_all.comp)
+  p.mat<- matrix(NA, n, n)
+  diag(p.mat) <- 0
+  for (i in 1:(n - 1)) {
+    for (j in (i + 1):n) {
+      tmp <- cor.test(mat[, i], mat[, j], ...)
+      p.mat[i, j] <- p.mat[j, i] <- tmp$p.value
+    }
+  }
+  colnames(p.mat) <- rownames(p.mat) <- colnames(mat)
+  p.mat
+}
+
+# Matrice de p-value de la corrélation
+p.mat <- cor.mtest(Table.corr_all.comp)
+
+col <- colorRampPalette(c("#BB4444", "#EE9988", "#FFFFFF", "#77AADD", "#4477AA"))
+corrplot(correlations, method="color", col=col(200),  
+         type="upper", order="alphabet",tl.cex = 0.7,
+         addCoef.col = "black", # Ajout du coefficient de corrélation
+         tl.col="black", tl.srt=45, #Rotation des etiquettes de textes
+         # Combiner avec le niveau de significativité
+         p.mat = p.mat, sig.level = 0.05, insig = "blank", 
+         # Cacher les coefficients de corrélation sur la diagonale
+         diag=F, 
+         title = ""
+)
+
+Table.corr_all.comp <- data_pca4[complete.cases(data_pca4),]
+correlations <- cor(Table.corr_all.comp,method = "spearman")
+
+# ... : Arguments supplémentaire à passer à la fonction cor.test
+cor.mtest <- function(Table.corr_all.comp, ...) {
+  mat <- as.matrix(Table.corr_all.comp)
+  n <- ncol(Table.corr_all.comp)
+  p.mat<- matrix(NA, n, n)
+  diag(p.mat) <- 0
+  for (i in 1:(n - 1)) {
+    for (j in (i + 1):n) {
+      tmp <- cor.test(mat[, i], mat[, j], ...)
+      p.mat[i, j] <- p.mat[j, i] <- tmp$p.value
+    }
+  }
+  colnames(p.mat) <- rownames(p.mat) <- colnames(mat)
+  p.mat
+}
+
+# Matrice de p-value de la corrélation
+p.mat <- cor.mtest(Table.corr_all.comp)
+
+col <- colorRampPalette(c("#BB4444", "#EE9988", "#FFFFFF", "#77AADD", "#4477AA"))
+corrplot(correlations, method="color", col=col(200),  
+         type="upper", order="alphabet",tl.cex = 0.7,
+         addCoef.col = "black", # Ajout du coefficient de corrélation
+         tl.col="black", tl.srt=45, #Rotation des etiquettes de textes
+         # Combiner avec le niveau de significativité
+         p.mat = p.mat, sig.level = 0.05, insig = "blank", 
+         # Cacher les coefficients de corrélation sur la diagonale
+         diag=F, 
+         title = ""
+)
+
+
+
 ### Working on the Atlantic #####
 # Import data
 data <- read_delim("output/tableaux/Networks/edgelist_Atlantic.csv", 
@@ -525,6 +873,177 @@ atlantic_global <-ggraph(cluster3, layout = "auto") +
 
 ggsave('Atlantic_global_network.png', path = "output/graphs/networks/global_networks/", dpi = 600, width = 400, height = 300, units = 'mm')
 
+##### Type of association through time ######
+data <- read_delim("output/tableaux/Networks/subnetworks/results_metrics_reseaux_cluster3.csv", 
+                   delim = ";", escape_double = FALSE, locale = locale(decimal_mark = ",", 
+                                                                       grouping_mark = ""), trim_ws = TRUE)
+
+data_association <- pivot_longer(data,cols = c(P_BacBac,P_BacDino,P_DinoDino,P_AAutres),names_to = "Asso_type" )
+data_association <- select(data_association,Code_point_Libelle,Date,Asso_type,value)
+
+data_association$MonthYear <- format(data_association$Date, "%Y-%m")
+data_association$Month <- format(data_association$Date, "%m")
+
+data_association_graph <- summarise(group_by(data_association,Code_point_Libelle,MonthYear,Asso_type,Month),value=mean(value,na.rm=T))
+
+ggplot(data_association_graph) +
+  geom_col(aes(y = value, x = MonthYear, fill = Asso_type), position = "stack", na.rm = FALSE)+
+  guides(fill = guide_legend(ncol = 7, byrow = F)) +
+  theme(legend.position = "bottom")+
+  geom_vline(data = subset(data_association_graph,Month == "01"), 
+             aes(xintercept = MonthYear),
+             color = "grey3", size = 0.5,linetype = "dashed")+
+  scale_x_discrete(labels = rep(c("M","A","M","J","J","A","S","O","N","D","J","F"),16))+
+  scale_fill_manual(values = c("P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
+                               ,"P_AAutres"      = "grey" ,"P_DinoDino" = "#009E73"))+
+  geom_text(data = subset(data_association_graph, Month == "01"), 
+            aes(x = MonthYear, y = 0.95, label = sub("-.*", "", MonthYear)),
+            color = "black", size = 2.5,angle=90, vjust = 0)+
+  facet_wrap(~Code_point_Libelle,nrow = 4)+
+  theme(axis.text.x = element_text(vjust = 0.5, hjust = 0.5, size = 5))
+ggsave('atlantic_typeassociation_station.png', path = "output/graphs/networks/subnetworks/", dpi = 600, width = 400, height = 300, units = 'mm')
+
+data_compo <- pivot_longer(data,cols = c(P_bac,P_dino,P_autres),names_to = "Taxon" )
+data_compo <- select(data_compo,Code_point_Libelle,Date,Taxon,value)
+
+data_compo$MonthYear <- format(data_compo$Date, "%Y-%m")
+data_compo$Month <- format(data_compo$Date, "%m")
+
+data_compo_graph <- summarise(group_by(data_compo,Code_point_Libelle,MonthYear,Taxon,Month),value=mean(value,na.rm=T))
+
+ggplot(data_compo_graph) +
+  geom_col(aes(y = value, x = MonthYear, fill = Taxon), position = "stack", na.rm = FALSE)+
+  guides(fill = guide_legend(ncol = 7, byrow = F)) +
+  theme(legend.position = "bottom")+
+  geom_vline(data = subset(data_compo_graph,Month == "01"), 
+             aes(xintercept = MonthYear),
+             color = "grey3", size = 0.5,linetype = "dashed")+
+  scale_x_discrete(labels = rep(c("M","A","M","J","J","A","S","O","N","D","J","F"),16))+
+  scale_fill_manual(values = c("P_bac" = "#56B4E9","P_autres"      = "grey" ,"P_dino" = "#009E73"))+
+  geom_text(data = subset(data_compo_graph, Month == "01"), 
+            aes(x = MonthYear, y = 0.95, label = sub("-.*", "", MonthYear)),
+            color = "black", size = 2.5,angle=90, vjust = 0)+
+  facet_wrap(~Code_point_Libelle,nrow = 4)+
+  theme(axis.text.x = element_text(vjust = 0.5, hjust = 0.5, size = 5))
+ggsave('atlantic_compo_station.png', path = "output/graphs/networks/subnetworks/", dpi = 600, width = 400, height = 300, units = 'mm')
+
+
+data_association_graph <- summarise(group_by(data_association,MonthYear,Asso_type,Month),value=mean(value,na.rm=T))
+
+ggplot(data_association_graph) +
+  geom_col(aes(y = value, x = MonthYear, fill = Asso_type), position = "stack", na.rm = FALSE)+
+  guides(fill = guide_legend(ncol = 7, byrow = F)) +
+  theme(legend.position = "bottom")+
+  geom_vline(data = subset(data_association_graph,Month == "01"), 
+             aes(xintercept = MonthYear),
+             color = "grey3", size = 0.5,linetype = "dashed")+
+  scale_x_discrete(labels = rep(c("M","A","M","J","J","A","S","O","N","D","J","F"),16))+
+  scale_fill_manual(values = c("P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
+                               ,"P_AAutres"      = "grey" ,"P_DinoDino" = "#009E73"))+
+  geom_text(data = subset(data_association_graph, Month == "01"), 
+            aes(x = MonthYear, y = 0.95, label = sub("-.*", "", MonthYear)),
+            color = "black", size = 2.5,angle=90, vjust = 0)+
+  theme(axis.text.x = element_text(vjust = 0.5, hjust = 0.5, size = 5))
+ggsave('atlantic_typeassociation.png', path = "output/graphs/networks/subnetworks/", dpi = 600, width = 260, height = 170, units = 'mm')
+
+data_compo_graph <- summarise(group_by(data_compo,MonthYear,Taxon,Month),value=mean(value,na.rm=T))
+
+ggplot(data_compo_graph) +
+  geom_col(aes(y = value, x = MonthYear, fill = Taxon), position = "stack", na.rm = FALSE)+
+  guides(fill = guide_legend(ncol = 7, byrow = F)) +
+  theme(legend.position = "bottom")+
+  geom_vline(data = subset(data_compo_graph,Month == "01"), 
+             aes(xintercept = MonthYear),
+             color = "grey3", size = 0.5,linetype = "dashed")+
+  scale_x_discrete(labels = rep(c("M","A","M","J","J","A","S","O","N","D","J","F"),16))+
+  scale_fill_manual(values = c("P_bac" = "#56B4E9","P_autres"      = "grey" ,"P_dino" = "#009E73"))+
+  geom_text(data = subset(data_compo_graph, Month == "01"), 
+            aes(x = MonthYear, y = 0.95, label = sub("-.*", "", MonthYear)),
+            color = "black", size = 2.5,angle=90, vjust = 0)+
+  theme(axis.text.x = element_text(vjust = 0.5, hjust = 0.5, size = 5))
+ggsave('atlantic_compo.png', path = "output/graphs/networks/subnetworks/", dpi = 600, width = 260, height = 170, units = 'mm')
+
+
+data_pca1 <- select(data,N_bac,N_dino,N_autres,N_BacBac,N_BacDino,N_DinoDino,N_AAutres)
+PCA(data_pca1)
+
+data_pca2 <- select(data,N_noeuds:N_clust,P_BacBac,P_BacDino,P_DinoDino,P_AAutres)
+PCA(data_pca2)
+
+data_pca3 <- select(data,N_noeuds:N_clust)
+PCA(data_pca3)
+
+data_pca4 <- select(data,N_noeuds:N_clust,N_BacBac,N_BacDino,N_DinoDino,N_AAutres)
+PCA(data_pca4)
+
+Table.corr_all.comp <- data_pca2[complete.cases(data_pca2),]
+correlations <- cor(Table.corr_all.comp,method = "spearman")
+
+# ... : Arguments supplémentaire à passer à la fonction cor.test
+cor.mtest <- function(Table.corr_all.comp, ...) {
+  mat <- as.matrix(Table.corr_all.comp)
+  n <- ncol(Table.corr_all.comp)
+  p.mat<- matrix(NA, n, n)
+  diag(p.mat) <- 0
+  for (i in 1:(n - 1)) {
+    for (j in (i + 1):n) {
+      tmp <- cor.test(mat[, i], mat[, j], ...)
+      p.mat[i, j] <- p.mat[j, i] <- tmp$p.value
+    }
+  }
+  colnames(p.mat) <- rownames(p.mat) <- colnames(mat)
+  p.mat
+}
+
+# Matrice de p-value de la corrélation
+p.mat <- cor.mtest(Table.corr_all.comp)
+
+col <- colorRampPalette(c("#BB4444", "#EE9988", "#FFFFFF", "#77AADD", "#4477AA"))
+corrplot(correlations, method="color", col=col(200),  
+         type="upper", order="alphabet",tl.cex = 0.7,
+         addCoef.col = "black", # Ajout du coefficient de corrélation
+         tl.col="black", tl.srt=45, #Rotation des etiquettes de textes
+         # Combiner avec le niveau de significativité
+         p.mat = p.mat, sig.level = 0.05, insig = "blank", 
+         # Cacher les coefficients de corrélation sur la diagonale
+         diag=F, 
+         title = ""
+)
+
+Table.corr_all.comp <- data_pca4[complete.cases(data_pca4),]
+correlations <- cor(Table.corr_all.comp,method = "spearman")
+
+# ... : Arguments supplémentaire à passer à la fonction cor.test
+cor.mtest <- function(Table.corr_all.comp, ...) {
+  mat <- as.matrix(Table.corr_all.comp)
+  n <- ncol(Table.corr_all.comp)
+  p.mat<- matrix(NA, n, n)
+  diag(p.mat) <- 0
+  for (i in 1:(n - 1)) {
+    for (j in (i + 1):n) {
+      tmp <- cor.test(mat[, i], mat[, j], ...)
+      p.mat[i, j] <- p.mat[j, i] <- tmp$p.value
+    }
+  }
+  colnames(p.mat) <- rownames(p.mat) <- colnames(mat)
+  p.mat
+}
+
+# Matrice de p-value de la corrélation
+p.mat <- cor.mtest(Table.corr_all.comp)
+
+col <- colorRampPalette(c("#BB4444", "#EE9988", "#FFFFFF", "#77AADD", "#4477AA"))
+corrplot(correlations, method="color", col=col(200),  
+         type="upper", order="alphabet",tl.cex = 0.7,
+         addCoef.col = "black", # Ajout du coefficient de corrélation
+         tl.col="black", tl.srt=45, #Rotation des etiquettes de textes
+         # Combiner avec le niveau de significativité
+         p.mat = p.mat, sig.level = 0.05, insig = "blank", 
+         # Cacher les coefficients de corrélation sur la diagonale
+         diag=F, 
+         title = ""
+)
+
 
 
 
@@ -623,7 +1142,7 @@ freq_table_big$link_genus <- ifelse(freq_table_big$link_genus ==  "Bacillariophy
 
 ggplot(freq_table_big) +
   geom_col(aes(y = region, x = Frequence, fill = link_genus), position = "stack", na.rm = FALSE, width = 0.7)+
-  labs(x="Number of taxa",y="Global network",fill="Associations")+
+  labs(x="Frequence",y="Global network",fill="Associations")+
   scale_fill_manual(values = c(
     "Bacillariophyceae-Bacillariophyceae" = "#56B4E9","Bacillariophyceae-Dinophyceae"   = "chocolate1"
     ,"Autres"      = "grey" ,"Dinophyceae-Dinophyceae" = "#009E73"
@@ -644,3 +1163,5 @@ ggplot(freq_table_big) +
   guides(fill = guide_legend(ncol = 7, byrow = F)) +
   theme(legend.position = "bottom")
 ggsave("global_networks_associations_number.png", path = "output/graphs/networks/global_networks", dpi = 600, width = 400, height = 300, units = 'mm')
+
+
