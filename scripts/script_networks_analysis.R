@@ -1,6 +1,11 @@
 # Script Suite Stage JY Dias # 12/12/2024
 
 library(ggalluvial)
+library(ggplot2)
+library(readr)
+library(dplyr)
+library(tidyr)
+library(cowplot)
 
 ### Working on the Mediterranean sea #####
 # Import data
@@ -205,6 +210,17 @@ ggplot(data_association_graph) +
   theme(axis.text.x = element_text(vjust = 0.5, hjust = 0.5, size = 5))
 ggsave('med_typeassociation_station.png', path = "output/graphs/networks/subnetworks/", dpi = 600, width = 400, height = 300, units = 'mm')
 
+data_association_graph <- summarise(group_by(data_association,Code_point_Libelle,Asso_type,Month),value=mean(value,na.rm=T))
+
+ggplot(data_association_graph) +
+  geom_col(aes(y = value, x = Month, fill = Asso_type), position = "stack", na.rm = FALSE)+
+  guides(fill = guide_legend(ncol = 7, byrow = F)) +
+  theme(legend.position = "bottom")+
+  facet_wrap(~Code_point_Libelle,nrow = 4)
+ggsave('med_typeassociation_station_mois.png', path = "output/graphs/networks/subnetworks/", dpi = 600, width = 400, height = 300, units = 'mm')
+
+
+
 data_compo <- pivot_longer(data,cols = c(P_bac,P_dino,P_autres),names_to = "Taxon" )
 data_compo <- select(data_compo,Code_point_Libelle,Date,Taxon,value)
 
@@ -229,6 +245,15 @@ ggplot(data_compo_graph) +
   theme(axis.text.x = element_text(vjust = 0.5, hjust = 0.5, size = 5))
 ggsave('med_compo_station.png', path = "output/graphs/networks/subnetworks/", dpi = 600, width = 400, height = 300, units = 'mm')
 
+data_compo_graph <- summarise(group_by(data_compo,Code_point_Libelle,Taxon,Month),value=mean(value,na.rm=T))
+
+ggplot(data_compo_graph) +
+  geom_col(aes(y = value, x = Month, fill = Taxon), position = "stack", na.rm = FALSE)+
+  guides(fill = guide_legend(ncol = 7, byrow = F)) +
+  theme(legend.position = "bottom")+
+  facet_wrap(~Code_point_Libelle,nrow = 4)
+ggsave('med_compo_station_mois.png', path = "output/graphs/networks/subnetworks/", dpi = 600, width = 400, height = 300, units = 'mm')
+
 
 data_association_graph <- summarise(group_by(data_association,MonthYear,Asso_type,Month),value=mean(value,na.rm=T))
 
@@ -248,6 +273,16 @@ ggplot(data_association_graph) +
   theme(axis.text.x = element_text(vjust = 0.5, hjust = 0.5, size = 5))
 ggsave('med_typeassociation.png', path = "output/graphs/networks/subnetworks/", dpi = 600, width = 260, height = 170, units = 'mm')
 
+data_association_graph <- summarise(group_by(data_association,Asso_type,Month),value=mean(value,na.rm=T))
+
+ggplot(data_association_graph) +
+  geom_col(aes(y = value, x = Month, fill = Asso_type), position = "stack", na.rm = FALSE)+
+  guides(fill = guide_legend(ncol = 7, byrow = F)) +
+  theme(legend.position = "bottom")
+ggsave('med_typeassociation_mois.png', path = "output/graphs/networks/subnetworks/", dpi = 600, width = 400, height = 300, units = 'mm')
+
+
+
 data_compo_graph <- summarise(group_by(data_compo,MonthYear,Taxon,Month),value=mean(value,na.rm=T))
 
 ggplot(data_compo_graph) +
@@ -265,6 +300,13 @@ ggplot(data_compo_graph) +
   theme(axis.text.x = element_text(vjust = 0.5, hjust = 0.5, size = 5))
 ggsave('med_compo.png', path = "output/graphs/networks/subnetworks/", dpi = 600, width = 260, height = 170, units = 'mm')
 
+data_compo_graph <- summarise(group_by(data_compo,Taxon,Month),value=mean(value,na.rm=T))
+
+ggplot(data_compo_graph) +
+  geom_col(aes(y = value, x = Month, fill = Taxon), position = "stack", na.rm = FALSE)+
+  guides(fill = guide_legend(ncol = 7, byrow = F)) +
+  theme(legend.position = "bottom")
+ggsave('med_compo_mois.png', path = "output/graphs/networks/subnetworks/", dpi = 600, width = 400, height = 300, units = 'mm')
 
 data_pca1 <- select(data,N_bac,N_dino,N_autres,N_BacBac,N_BacDino,N_DinoDino,N_AAutres)
 PCA(data_pca1)
@@ -345,10 +387,6 @@ corrplot(correlations, method="color", col=col(200),
          diag=F, 
          title = ""
 )
-
-# Correlation between diversity index and associations, compositions of subnetworks
-
-
 
 
 ### Working on the English channel #####
@@ -556,6 +594,15 @@ ggplot(data_association_graph) +
   theme(axis.text.x = element_text(vjust = 0.5, hjust = 0.5, size = 5))
 ggsave('manche_typeassociation_station.png', path = "output/graphs/networks/subnetworks/", dpi = 600, width = 400, height = 300, units = 'mm')
 
+data_association_graph <- summarise(group_by(data_association,Code_point_Libelle,Asso_type,Month),value=mean(value,na.rm=T))
+
+ggplot(data_association_graph) +
+  geom_col(aes(y = value, x = Month, fill = Asso_type), position = "stack", na.rm = FALSE)+
+  guides(fill = guide_legend(ncol = 7, byrow = F)) +
+  theme(legend.position = "bottom")+
+  facet_wrap(~Code_point_Libelle,nrow = 4)
+ggsave('manche_typeassociation_station_mois.png', path = "output/graphs/networks/subnetworks/", dpi = 600, width = 400, height = 300, units = 'mm')
+
 data_compo <- pivot_longer(data,cols = c(P_bac,P_dino,P_autres),names_to = "Taxon" )
 data_compo <- select(data_compo,Code_point_Libelle,Date,Taxon,value)
 
@@ -580,6 +627,14 @@ ggplot(data_compo_graph) +
   theme(axis.text.x = element_text(vjust = 0.5, hjust = 0.5, size = 5))
 ggsave('manche_compo_station.png', path = "output/graphs/networks/subnetworks/", dpi = 600, width = 400, height = 300, units = 'mm')
 
+data_compo_graph <- summarise(group_by(data_compo,Code_point_Libelle,Taxon,Month),value=mean(value,na.rm=T))
+
+ggplot(data_compo_graph) +
+  geom_col(aes(y = value, x = Month, fill = Taxon), position = "stack", na.rm = FALSE)+
+  guides(fill = guide_legend(ncol = 7, byrow = F)) +
+  theme(legend.position = "bottom")+
+  facet_wrap(~Code_point_Libelle,nrow = 4)
+ggsave('manche_compo_station_mois.png', path = "output/graphs/networks/subnetworks/", dpi = 600, width = 400, height = 300, units = 'mm')
 
 data_association_graph <- summarise(group_by(data_association,MonthYear,Asso_type,Month),value=mean(value,na.rm=T))
 
@@ -599,6 +654,15 @@ ggplot(data_association_graph) +
   theme(axis.text.x = element_text(vjust = 0.5, hjust = 0.5, size = 5))
 ggsave('manche_typeassociation.png', path = "output/graphs/networks/subnetworks/", dpi = 600, width = 260, height = 170, units = 'mm')
 
+data_association_graph <- summarise(group_by(data_association,Asso_type,Month),value=mean(value,na.rm=T))
+
+ggplot(data_association_graph) +
+  geom_col(aes(y = value, x = Month, fill = Asso_type), position = "stack", na.rm = FALSE)+
+  guides(fill = guide_legend(ncol = 7, byrow = F)) +
+  theme(legend.position = "bottom")
+ggsave('manche_typeassociation_mois.png', path = "output/graphs/networks/subnetworks/", dpi = 600, width = 400, height = 300, units = 'mm')
+
+
 data_compo_graph <- summarise(group_by(data_compo,MonthYear,Taxon,Month),value=mean(value,na.rm=T))
 
 ggplot(data_compo_graph) +
@@ -615,6 +679,14 @@ ggplot(data_compo_graph) +
             color = "black", size = 2.5,angle=90, vjust = 0)+
   theme(axis.text.x = element_text(vjust = 0.5, hjust = 0.5, size = 5))
 ggsave('manche_compo.png', path = "output/graphs/networks/subnetworks/", dpi = 600, width = 260, height = 170, units = 'mm')
+
+data_compo_graph <- summarise(group_by(data_compo,Taxon,Month),value=mean(value,na.rm=T))
+
+ggplot(data_compo_graph) +
+  geom_col(aes(y = value, x = Month, fill = Taxon), position = "stack", na.rm = FALSE)+
+  guides(fill = guide_legend(ncol = 7, byrow = F)) +
+  theme(legend.position = "bottom")
+ggsave('manche_compo_mois.png', path = "output/graphs/networks/subnetworks/", dpi = 600, width = 400, height = 300, units = 'mm')
 
 
 data_pca1 <- select(data,N_bac,N_dino,N_autres,N_BacBac,N_BacDino,N_DinoDino,N_AAutres)
@@ -903,6 +975,15 @@ ggplot(data_association_graph) +
   theme(axis.text.x = element_text(vjust = 0.5, hjust = 0.5, size = 5))
 ggsave('atlantic_typeassociation_station.png', path = "output/graphs/networks/subnetworks/", dpi = 600, width = 400, height = 300, units = 'mm')
 
+data_association_graph <- summarise(group_by(data_association,Code_point_Libelle,Asso_type,Month),value=mean(value,na.rm=T))
+
+ggplot(data_association_graph) +
+  geom_col(aes(y = value, x = Month, fill = Asso_type), position = "stack", na.rm = FALSE)+
+  guides(fill = guide_legend(ncol = 7, byrow = F)) +
+  theme(legend.position = "bottom")+
+  facet_wrap(~Code_point_Libelle,nrow = 4)
+ggsave('atlantic_typeassociation_station_mois.png', path = "output/graphs/networks/subnetworks/", dpi = 600, width = 400, height = 300, units = 'mm')
+
 data_compo <- pivot_longer(data,cols = c(P_bac,P_dino,P_autres),names_to = "Taxon" )
 data_compo <- select(data_compo,Code_point_Libelle,Date,Taxon,value)
 
@@ -927,6 +1008,14 @@ ggplot(data_compo_graph) +
   theme(axis.text.x = element_text(vjust = 0.5, hjust = 0.5, size = 5))
 ggsave('atlantic_compo_station.png', path = "output/graphs/networks/subnetworks/", dpi = 600, width = 400, height = 300, units = 'mm')
 
+data_compo_graph <- summarise(group_by(data_compo,Code_point_Libelle,Taxon,Month),value=mean(value,na.rm=T))
+
+ggplot(data_compo_graph) +
+  geom_col(aes(y = value, x = Month, fill = Taxon), position = "stack", na.rm = FALSE)+
+  guides(fill = guide_legend(ncol = 7, byrow = F)) +
+  theme(legend.position = "bottom")+
+  facet_wrap(~Code_point_Libelle,nrow = 4)
+ggsave('atlantic_compo_station_mois.png', path = "output/graphs/networks/subnetworks/", dpi = 600, width = 400, height = 300, units = 'mm')
 
 data_association_graph <- summarise(group_by(data_association,MonthYear,Asso_type,Month),value=mean(value,na.rm=T))
 
@@ -946,6 +1035,14 @@ ggplot(data_association_graph) +
   theme(axis.text.x = element_text(vjust = 0.5, hjust = 0.5, size = 5))
 ggsave('atlantic_typeassociation.png', path = "output/graphs/networks/subnetworks/", dpi = 600, width = 260, height = 170, units = 'mm')
 
+data_association_graph <- summarise(group_by(data_association,Asso_type,Month),value=mean(value,na.rm=T))
+
+ggplot(data_association_graph) +
+  geom_col(aes(y = value, x = Month, fill = Asso_type), position = "stack", na.rm = FALSE)+
+  guides(fill = guide_legend(ncol = 7, byrow = F)) +
+  theme(legend.position = "bottom")
+ggsave('atlantic_typeassociation_mois.png', path = "output/graphs/networks/subnetworks/", dpi = 600, width = 400, height = 300, units = 'mm')
+
 data_compo_graph <- summarise(group_by(data_compo,MonthYear,Taxon,Month),value=mean(value,na.rm=T))
 
 ggplot(data_compo_graph) +
@@ -962,6 +1059,14 @@ ggplot(data_compo_graph) +
             color = "black", size = 2.5,angle=90, vjust = 0)+
   theme(axis.text.x = element_text(vjust = 0.5, hjust = 0.5, size = 5))
 ggsave('atlantic_compo.png', path = "output/graphs/networks/subnetworks/", dpi = 600, width = 260, height = 170, units = 'mm')
+
+data_compo_graph <- summarise(group_by(data_compo,Taxon,Month),value=mean(value,na.rm=T))
+
+ggplot(data_compo_graph) +
+  geom_col(aes(y = value, x = Month, fill = Taxon), position = "stack", na.rm = FALSE)+
+  guides(fill = guide_legend(ncol = 7, byrow = F)) +
+  theme(legend.position = "bottom")
+ggsave('atlantic_compo_mois.png', path = "output/graphs/networks/subnetworks/", dpi = 600, width = 400, height = 300, units = 'mm')
 
 
 data_pca1 <- select(data,N_bac,N_dino,N_autres,N_BacBac,N_BacDino,N_DinoDino,N_AAutres)
@@ -1075,12 +1180,10 @@ phylum_classe <- read.table("data/Liste_phylum.classe_REPHY_modif.txt",header = 
 
 data <- left_join(data,phylum_classe)
 
-data$Phylum.Classe <- factor(data$Phylum.Classe, levels = c("Bacillariophyceae", "Dinophyceae","Haptophyta","Ciliophora", 
-                                                                                  "Chlorophyta", "Chrysophyceae", 
-                                                                                  "Cryptophyceae", "Cyanophyceae", 
-                                                                                  "Dictyochophyceae", "Ebriophyceae", 
-                                                                                  "Euglenozoa","Raphidophyceae","Autres protistes","Chromista",
-                                                                                  "Khakista"))
+data$Phylum.Classe <- factor(data$Phylum.Classe, levels = c("Autres protistes","Chromista","Khakista","Chrysophyceae","Cyanophyceae","Dictyochophyceae",
+                                                            "Raphidophyceae","Cryptophyceae", "Ebriophyceae","Haptophyta","Ciliophora",
+                                                            "Chlorophyta","Euglenozoa","Dinophyceae","Bacillariophyceae"
+                                                                                  ))
 
 tableau_compo <- summarise(group_by(data,region,Phylum.Classe), Number = sum(Number)) |>
   mutate(Freq = Number / sum(Number))
@@ -1115,8 +1218,8 @@ ggplot(tableau_compo) +
 ggsave('composition_freq_global.png', path = "output/graphs/networks/global_networks", dpi = 600, width = 300, height = 200, units = 'mm')
 
 
-plot_grid(med_global,manche_global,atlantic_global,nrow = 3)
-ggsave("global_networks.png", path = "output/graphs/networks/global_networks", dpi = 600, width = 300, height = 900, units = 'mm')
+#plot_grid(med_global,manche_global,atlantic_global,nrow = 3)
+#ggsave("global_networks.png", path = "output/graphs/networks/global_networks", dpi = 600, width = 300, height = 900, units = 'mm')
 
 
 # Same but for the associations types 
@@ -1137,6 +1240,8 @@ freq_table_big$link_genus <- ifelse(freq_table_big$link_genus ==  "Bacillariophy
           ifelse(freq_table_big$link_genus ==  "Dinophyceae-Dinophyceae","Dinophyceae-Dinophyceae" ,"Autres"
        )))
 
+freq_table_big$link_genus <- factor(freq_table_big$link_genus, levels = c("Autres","Dinophyceae-Dinophyceae","Bacillariophyceae-Dinophyceae","Bacillariophyceae-Bacillariophyceae"))
+
 # Modifier dans les freq_table pour avoir que certaines et ensuite passer le reste en autre
 # Faire le graphe en dessous 
 
@@ -1154,7 +1259,7 @@ ggsave("global_networks_associations.png", path = "output/graphs/networks/global
 
 ggplot(freq_table_big) +
   geom_col(aes(y = region, x = Number, fill = link_genus), position = "stack", na.rm = FALSE, width = 0.7)+
-  labs(x="Number of taxa",y="Global network",fill="Associations")+
+  labs(x="Number of association",y="Global network",fill="Associations")+
   scale_fill_manual(values = c(
     "Bacillariophyceae-Bacillariophyceae" = "#56B4E9","Bacillariophyceae-Dinophyceae"   = "chocolate1"
     ,"Autres"      = "grey" ,"Dinophyceae-Dinophyceae" = "#009E73"
@@ -1165,3 +1270,210 @@ ggplot(freq_table_big) +
 ggsave("global_networks_associations_number.png", path = "output/graphs/networks/global_networks", dpi = 600, width = 400, height = 300, units = 'mm')
 
 
+## Correlation between diversity index and associations, compositions of subnetworks ######
+data <- read_delim("output/data_modif/Table_FLORTOT_Surf_0722_COM_period_Stselect_hydro_phyto_chloro_phylum_period15_chlafilter_cluster5_withmetricsfinal.csv", 
+                       delim = ";", escape_double = FALSE, locale = locale(decimal_mark = ",", 
+                                                                           grouping_mark = ""), trim_ws = TRUE)
+
+data_med <- filter(data, region == "1-Mediterranean sea")
+
+data_med_1 <- select(data_med,Shannon:Rspe,P_BacBac,P_DinoDino,P_BacDino,P_AAutres)
+
+Table.corr_all.comp <- data_med_1[complete.cases(data_med_1),]
+correlations <- cor(Table.corr_all.comp,method = "spearman")
+
+# ... : Arguments supplémentaire à passer à la fonction cor.test
+cor.mtest <- function(Table.corr_all.comp, ...) {
+  mat <- as.matrix(Table.corr_all.comp)
+  n <- ncol(Table.corr_all.comp)
+  p.mat<- matrix(NA, n, n)
+  diag(p.mat) <- 0
+  for (i in 1:(n - 1)) {
+    for (j in (i + 1):n) {
+      tmp <- cor.test(mat[, i], mat[, j], ...)
+      p.mat[i, j] <- p.mat[j, i] <- tmp$p.value
+    }
+  }
+  colnames(p.mat) <- rownames(p.mat) <- colnames(mat)
+  p.mat
+}
+
+# Matrice de p-value de la corrélation
+p.mat <- cor.mtest(Table.corr_all.comp)
+
+col <- colorRampPalette(c("#BB4444", "#EE9988", "#FFFFFF", "#77AADD", "#4477AA"))
+corrplot(correlations, method="color", col=col(200),  
+         type="upper", order="alphabet",tl.cex = 0.7,
+         addCoef.col = "black", # Ajout du coefficient de corrélation
+         tl.col="black", tl.srt=45, #Rotation des etiquettes de textes
+         # Combiner avec le niveau de significativité
+         p.mat = p.mat, sig.level = 0.05, insig = "blank", 
+         # Cacher les coefficients de corrélation sur la diagonale
+         diag=F, 
+         title = ""
+)
+
+data_med_2 <- select(data_med,Shannon:Rspe,N_BacBac,N_DinoDino,N_BacDino,N_AAutres)
+
+Table.corr_all.comp <- data_med_2[complete.cases(data_med_2),]
+correlations <- cor(Table.corr_all.comp,method = "spearman")
+
+# ... : Arguments supplémentaire à passer à la fonction cor.test
+cor.mtest <- function(Table.corr_all.comp, ...) {
+  mat <- as.matrix(Table.corr_all.comp)
+  n <- ncol(Table.corr_all.comp)
+  p.mat<- matrix(NA, n, n)
+  diag(p.mat) <- 0
+  for (i in 1:(n - 1)) {
+    for (j in (i + 1):n) {
+      tmp <- cor.test(mat[, i], mat[, j], ...)
+      p.mat[i, j] <- p.mat[j, i] <- tmp$p.value
+    }
+  }
+  colnames(p.mat) <- rownames(p.mat) <- colnames(mat)
+  p.mat
+}
+
+# Matrice de p-value de la corrélation
+p.mat <- cor.mtest(Table.corr_all.comp)
+
+col <- colorRampPalette(c("#BB4444", "#EE9988", "#FFFFFF", "#77AADD", "#4477AA"))
+corrplot(correlations, method="color", col=col(200),  
+         type="upper", order="alphabet",tl.cex = 0.7,
+         addCoef.col = "black", # Ajout du coefficient de corrélation
+         tl.col="black", tl.srt=45, #Rotation des etiquettes de textes
+         # Combiner avec le niveau de significativité
+         p.mat = p.mat, sig.level = 0.05, insig = "blank", 
+         # Cacher les coefficients de corrélation sur la diagonale
+         diag=F, 
+         title = ""
+)
+
+data_med_3 <- select(data_med,Shannon:Rspe,N_bac,N_dino,N_autres)
+
+Table.corr_all.comp <- data_med_3[complete.cases(data_med_3),]
+correlations <- cor(Table.corr_all.comp,method = "spearman")
+
+# ... : Arguments supplémentaire à passer à la fonction cor.test
+cor.mtest <- function(Table.corr_all.comp, ...) {
+  mat <- as.matrix(Table.corr_all.comp)
+  n <- ncol(Table.corr_all.comp)
+  p.mat<- matrix(NA, n, n)
+  diag(p.mat) <- 0
+  for (i in 1:(n - 1)) {
+    for (j in (i + 1):n) {
+      tmp <- cor.test(mat[, i], mat[, j], ...)
+      p.mat[i, j] <- p.mat[j, i] <- tmp$p.value
+    }
+  }
+  colnames(p.mat) <- rownames(p.mat) <- colnames(mat)
+  p.mat
+}
+
+# Matrice de p-value de la corrélation
+p.mat <- cor.mtest(Table.corr_all.comp)
+
+col <- colorRampPalette(c("#BB4444", "#EE9988", "#FFFFFF", "#77AADD", "#4477AA"))
+corrplot(correlations, method="color", col=col(200),  
+         type="upper", order="alphabet",tl.cex = 0.7,
+         addCoef.col = "black", # Ajout du coefficient de corrélation
+         tl.col="black", tl.srt=45, #Rotation des etiquettes de textes
+         # Combiner avec le niveau de significativité
+         p.mat = p.mat, sig.level = 0.05, insig = "blank", 
+         # Cacher les coefficients de corrélation sur la diagonale
+         diag=F, 
+         title = ""
+)
+
+data_med_4 <- select(data_med,Shannon:Rspe,P_bac,P_dino,P_autres)
+
+Table.corr_all.comp <- data_med_4[complete.cases(data_med_4),]
+correlations <- cor(Table.corr_all.comp,method = "spearman")
+
+# ... : Arguments supplémentaire à passer à la fonction cor.test
+cor.mtest <- function(Table.corr_all.comp, ...) {
+  mat <- as.matrix(Table.corr_all.comp)
+  n <- ncol(Table.corr_all.comp)
+  p.mat<- matrix(NA, n, n)
+  diag(p.mat) <- 0
+  for (i in 1:(n - 1)) {
+    for (j in (i + 1):n) {
+      tmp <- cor.test(mat[, i], mat[, j], ...)
+      p.mat[i, j] <- p.mat[j, i] <- tmp$p.value
+    }
+  }
+  colnames(p.mat) <- rownames(p.mat) <- colnames(mat)
+  p.mat
+}
+
+# Matrice de p-value de la corrélation
+p.mat <- cor.mtest(Table.corr_all.comp)
+
+col <- colorRampPalette(c("#BB4444", "#EE9988", "#FFFFFF", "#77AADD", "#4477AA"))
+corrplot(correlations, method="color", col=col(200),  
+         type="upper", order="alphabet",tl.cex = 0.7,
+         addCoef.col = "black", # Ajout du coefficient de corrélation
+         tl.col="black", tl.srt=45, #Rotation des etiquettes de textes
+         # Combiner avec le niveau de significativité
+         p.mat = p.mat, sig.level = 0.05, insig = "blank", 
+         # Cacher les coefficients de corrélation sur la diagonale
+         diag=F, 
+         title = ""
+)
+
+### PCA on the metrics
+data <- read_delim("output/data_modif/Table_FLORTOT_Surf_0722_COM_period_Stselect_hydro_phyto_chloro_phylum_period15_chlafilter_cluster5_withmetrics&networksdiv_final.csv", 
+                       delim = ";", escape_double = FALSE, locale = locale(decimal_mark = ",", 
+                                                                           grouping_mark = ""), trim_ws = TRUE)
+data_pca <- select(data,N_noeuds:N_clust)
+PCA_results <- PCA(data_pca)
+fviz_screeplot(PCA_results)
+fviz_pca_ind(PCA_results,col.ind = data$region,addEllipses = T,alpha.ind = 1,geom = c("point"))
+fviz_pca_var(PCA_results,axes = c(3,2))
+PCA_coord <- PCA_results$ind$coord
+
+PCA_coord <- as.data.frame(PCA_coord)
+PCA_coord <- select(PCA_coord, Dim.1,Dim.2,Dim.3)
+write.csv2(PCA_coord,file="output/tableaux/Networks/PCA_coords.csv", row.names = FALSE,dec = ".")
+
+
+#### correlation with the axis to summarise the different metrics
+
+data <- read_delim("output/data_modif/Table_FLORTOT_Surf_0722_COM_period_Stselect_hydro_phyto_chloro_phylum_period15_chlafilter_cluster5_withmetrics&networksdiv_PCA_coord.final.csv", 
+                   delim = ";", escape_double = FALSE, locale = locale(decimal_mark = ",", 
+                                                                       grouping_mark = ""), trim_ws = TRUE)
+data_cor <- select(data,N_noeuds:N_clust,Dim.1:Dim.3)
+
+Table.corr_all.comp <- data_cor[complete.cases(data_cor),]
+correlations <- cor(Table.corr_all.comp,method = "spearman")
+
+# ... : Arguments supplémentaire à passer à la fonction cor.test
+cor.mtest <- function(Table.corr_all.comp, ...) {
+  mat <- as.matrix(Table.corr_all.comp)
+  n <- ncol(Table.corr_all.comp)
+  p.mat<- matrix(NA, n, n)
+  diag(p.mat) <- 0
+  for (i in 1:(n - 1)) {
+    for (j in (i + 1):n) {
+      tmp <- cor.test(mat[, i], mat[, j], ...)
+      p.mat[i, j] <- p.mat[j, i] <- tmp$p.value
+    }
+  }
+  colnames(p.mat) <- rownames(p.mat) <- colnames(mat)
+  p.mat
+}
+
+# Matrice de p-value de la corrélation
+p.mat <- cor.mtest(Table.corr_all.comp)
+
+col <- colorRampPalette(c("#BB4444", "#EE9988", "#FFFFFF", "#77AADD", "#4477AA"))
+corrplot(correlations, method="color", col=col(200),  
+         type="upper", order="original",tl.cex = 0.7,
+         addCoef.col = "black", # Ajout du coefficient de corrélation
+         tl.col="black", tl.srt=45, #Rotation des etiquettes de textes
+         # Combiner avec le niveau de significativité
+         p.mat = p.mat, sig.level = 0.05, insig = "blank", 
+         # Cacher les coefficients de corrélation sur la diagonale
+         diag=F, 
+         title = ""
+)

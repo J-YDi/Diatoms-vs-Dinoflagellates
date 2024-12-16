@@ -500,3 +500,257 @@ datawithmetrics <- select(datawithmetrics,-Ordre)
 
 # that's ok 
 write.csv2(datawithmetrics,file="output/data_modif/Table_FLORTOT_Surf_0722_COM_period_Stselect_hydro_phyto_chloro_phylum_period15_chlafilter_cluster5_withmetricsfinal.csv", row.names = FALSE,dec = ".")
+
+
+### Calculate the new diversity index based on the taxa that are on the networks
+
+data <- read_delim("output/data_modif/Table_FLORTOT_Surf_0722_COM_period_Stselect_hydro_phyto_chloro_phylum_period15_chlafilter_cluster5_withmetricsfinal.csv", 
+                   delim = ";", escape_double = FALSE, locale = locale(decimal_mark = ",", 
+                                                                       grouping_mark = ""), trim_ws = TRUE)
+
+med <- read_delim("output/tableaux/Networks/taxon_list_med.csv", 
+                   delim = ";", escape_double = FALSE, locale = locale(decimal_mark = ",", 
+                                                                       grouping_mark = ""), trim_ws = TRUE)
+
+manche <- read_delim("output/tableaux/Networks/taxon_list_manche.csv", 
+                  delim = ";", escape_double = FALSE, locale = locale(decimal_mark = ",", 
+                                                                      grouping_mark = ""), trim_ws = TRUE)
+
+atlantic <- read_delim("output/tableaux/Networks/taxon_list_atlantic.csv", 
+                  delim = ";", escape_double = FALSE, locale = locale(decimal_mark = ",", 
+                                                                      grouping_mark = ""), trim_ws = TRUE)
+
+# Calculate Shannon, Simpson, Berger-Parker and Pielou indexes
+data_med <- filter(data,region =="1-Mediterranean sea")
+data_med_r <- select(data_med,med$Taxon)
+
+# Create a dataframe to store the diversity indexes by date and station
+Data_results <- as.data.frame(c("",""))
+Data_results[1,1] <- 0
+Data_results[1,2] <- 0
+
+# Calculate Shannon, Simpson, Berger-Parker and Pielou indexes
+for (i in 1:3206){
+  data_med2 <- data_med_r[i,]
+  abondance_sums <- apply(data_med2,2,sum,na.rm=T)
+  print(i/3206 * 100)
+  Data_results[i,1] <- diversity(abondance_sums,index = "shannon")
+  Data_results[i,2] <- diversity(abondance_sums,index = "simpson")
+  Data_results[i,3] <- max(abondance_sums) / sum(abondance_sums)
+  Data_results[i,4] <- pielou(sample = abondance_sums)
+}
+colnames(Data_results) <- c("RShannon","RSimpson","RBergerParker","RPielou")
+
+Data_results$RShannon <- as.numeric(Data_results$RShannon)
+
+data_med$RRspe <- rowSums(data_med_r[,] != 0,na.rm = T)
+
+data_med_with <- cbind(data_med,Data_results)
+
+mean(data_med_with$RShannon)
+mean(data_med_with$Shannon)
+mean(data_med_with$RSimpson)
+mean(data_med_with$Simpson)
+mean(data_med_with$RBergerParker)
+mean(data_med_with$BergerParker)
+mean(data_med_with$RPielou,na.rm=T)
+mean(data_med_with$Pielou,na.rm=T)
+mean(data_med_with$RRspe,na.rm=T)
+mean(data_med_with$Rspe,na.rm=T)
+t.test(data_med_with$Rspe,data_med_with$RRspe)
+t.test(data_med_with$Shannon,data_med_with$RShannon)
+t.test(data_med_with$Pielou,data_med_with$RPielou)
+t.test(data_med_with$Simpson,data_med_with$RSimpson)
+t.test(data_med_with$BergerParker,data_med_with$RBergerParker)
+
+
+
+data_manche <- filter(data,region =="2-Eastern Channel - North Sea")
+data_manche_r <- select(data_manche,manche$Taxon)
+
+# Create a dataframe to store the diversity indexes by date and station
+Data_results <- as.data.frame(c("",""))
+Data_results[1,1] <- 0
+Data_results[1,2] <- 0
+
+# Calculate Shannon, Simpson, Berger-Parker and Pielou indexes
+for (i in 1:1171){
+  data_manche2 <- data_manche_r[i,]
+  abondance_sums <- apply(data_manche2,2,sum,na.rm=T)
+  print(i/1171 * 100)
+  Data_results[i,1] <- diversity(abondance_sums,index = "shannon")
+  Data_results[i,2] <- diversity(abondance_sums,index = "simpson")
+  Data_results[i,3] <- max(abondance_sums) / sum(abondance_sums)
+  Data_results[i,4] <- pielou(sample = abondance_sums)
+}
+colnames(Data_results) <- c("RShannon","RSimpson","RBergerParker","RPielou")
+
+Data_results$RShannon <- as.numeric(Data_results$RShannon)
+
+
+data_manche$RRspe <- rowSums(data_manche_r[,] != 0,na.rm = T)
+
+data_manche_with <- cbind(data_manche,Data_results)
+
+mean(data_manche_with$RShannon)
+mean(data_manche_with$Shannon)
+mean(data_manche_with$RSimpson)
+mean(data_manche_with$Simpson)
+mean(data_manche_with$RBergerParker)
+mean(data_manche_with$BergerParker)
+mean(data_manche_with$RPielou,na.rm=T)
+mean(data_manche_with$Pielou,na.rm=T)
+mean(data_manche_with$RRspe,na.rm=T)
+mean(data_manche_with$Rspe,na.rm=T)
+t.test(data_manche_with$Rspe,data_manche_with$RRspe)
+t.test(data_manche_with$Shannon,data_manche_with$RShannon)
+t.test(data_manche_with$Pielou,data_manche_with$RPielou)
+t.test(data_manche_with$Simpson,data_manche_with$RSimpson)
+t.test(data_manche_with$BergerParker,data_manche_with$RBergerParker)
+
+
+
+data_atlantic <- filter(data,region =="3-Atlantic - Western Channel")
+data_atlantic_r <- select(data_atlantic,atlantic$Taxon)
+
+# Create a dataframe to store the diversity indexes by date and station
+Data_results <- as.data.frame(c("",""))
+Data_results[1,1] <- 0
+Data_results[1,2] <- 0
+
+# Calculate Shannon, Simpson, Berger-Parker and Pielou indexes
+for (i in 1:2423){
+  data_atlantic2 <- data_atlantic_r[i,]
+  abondance_sums <- apply(data_atlantic2,2,sum,na.rm=T)
+  print(i/2423 * 100)
+  Data_results[i,1] <- diversity(abondance_sums,index = "shannon")
+  Data_results[i,2] <- diversity(abondance_sums,index = "simpson")
+  Data_results[i,3] <- max(abondance_sums) / sum(abondance_sums)
+  Data_results[i,4] <- pielou(sample = abondance_sums)
+}
+colnames(Data_results) <- c("RShannon","RSimpson","RBergerParker","RPielou")
+
+Data_results$RShannon <- as.numeric(Data_results$RShannon)
+
+
+data_atlantic$RRspe <- rowSums(data_atlantic_r[,] != 0,na.rm = T)
+
+
+data_atlantic_with <- cbind(data_atlantic,Data_results)
+
+mean(data_atlantic_with$RShannon)
+mean(data_atlantic_with$Shannon)
+mean(data_atlantic_with$RSimpson)
+mean(data_atlantic_with$Simpson)
+mean(data_atlantic_with$RBergerParker)
+mean(data_atlantic_with$BergerParker)
+mean(data_atlantic_with$RPielou,na.rm=T)
+mean(data_atlantic_with$Pielou,na.rm=T)
+mean(data_atlantic_with$RRspe,na.rm=T)
+mean(data_atlantic_with$Rspe,na.rm=T)
+t.test(data_atlantic_with$Rspe,data_atlantic_with$RRspe)
+t.test(data_atlantic_with$Shannon,data_atlantic_with$RShannon)
+t.test(data_atlantic_with$Pielou,data_atlantic_with$RPielou)
+t.test(data_atlantic_with$Simpson,data_atlantic_with$RSimpson)
+t.test(data_atlantic_with$BergerParker,data_atlantic_with$RBergerParker)
+
+
+### Combine all the regions
+data <- rbind(data_med_with,data_manche_with,data_atlantic_with)
+
+# save it
+write.csv2(data,file="output/data_modif/Table_FLORTOT_Surf_0722_COM_period_Stselect_hydro_phyto_chloro_phylum_period15_chlafilter_cluster5_withmetrics&networksdiv_final.csv", row.names = FALSE,dec = ".")
+
+### Add the observations coordinates on the PCA to the data
+data <- read_delim("output/data_modif/Table_FLORTOT_Surf_0722_COM_period_Stselect_hydro_phyto_chloro_phylum_period15_chlafilter_cluster5_withmetrics&networksdiv_final.csv", 
+                   delim = ";", escape_double = FALSE, locale = locale(decimal_mark = ",", 
+                                                                       grouping_mark = ""), trim_ws = TRUE)
+
+PCA_coord <- read_delim("output/tableaux/Networks/PCA_coords.csv", 
+                   delim = ";", escape_double = FALSE, locale = locale(decimal_mark = ",", 
+                                                                       grouping_mark = ""), trim_ws = TRUE)
+data <- cbind(data,PCA_coord)
+
+write.csv2(data,file="output/data_modif/Table_FLORTOT_Surf_0722_COM_period_Stselect_hydro_phyto_chloro_phylum_period15_chlafilter_cluster5_withmetrics&networksdiv_PCA_coord.final.csv", row.names = FALSE,dec = ".")
+
+#### Define the different moments : before, during and after the bloom ####
+data <- read_delim("output/data_modif/Table_FLORTOT_Surf_0722_COM_period_Stselect_hydro_phyto_chloro_phylum_period15_chlafilter_cluster5_withmetrics&networksdiv_PCA_coord.final.csv", 
+                   delim = ";", escape_double = FALSE, locale = locale(decimal_mark = ",", 
+                                                                       grouping_mark = ""), trim_ws = TRUE)
+
+data <- data %>%
+  arrange(Code_point_Libelle, Date)
+
+data$Moment <- "Nothing"
+data[!is.na(data$Bloom),]$Moment <- "During" 
+for (i in 1:nrow(data)){
+  if (is.na(data[i,]$Bloom) & !is.na(data[i+1,]$Bloom) & (data[i,]$Code_point_Libelle == data[i+1,]$Code_point_Libelle )){
+    data[i,"Moment"]$Moment <- "Before"
+  }
+  if (!is.na(data[i,]$Bloom) & !is.na(data[i+1,]$Bloom) & (data[i,]$Code_point_Libelle == data[i+1,]$Code_point_Libelle )){
+    data[i,"Moment"]$Moment <- "During"
+  }
+  if (!is.na(data[i,]$Bloom) & !is.na(data[i+1,]$Bloom) & (data[i,]$Code_point_Libelle == data[i+1,]$Code_point_Libelle )){
+    data[i,"Moment"]$Moment <- "During"
+  }
+}
+
+for (i in 2:(nrow(data)-1)){
+  if (data[i,]$Moment == "Nothing" & data[i-1,]$Moment == "During"  & (data[i,]$Code_point_Libelle == data[i-1,]$Code_point_Libelle )){
+    data[i,"Moment"]$Moment <- "After"
+  }
+}
+
+
+for (i in 2:(nrow(data)-1)){
+  if (data[i-1,]$Moment == "During" & data[i+1,]$Moment == "During"  & (data[i,]$Code_point_Libelle == data[i-1,]$Code_point_Libelle )){
+    data[i,"Moment"]$Moment <- "During"
+  }
+}
+
+data <- data %>%
+  mutate(
+    Bloom = if_else(Moment == "Before", 
+                    lead(Bloom),  
+                    Bloom),
+    Bloom_Phylum = if_else(Moment == "Before", 
+                    lead(Bloom_Phylum),  
+                    Bloom_Phylum),
+    Bloom_Genre = if_else(Moment == "Before", 
+                           lead(Bloom_Genre),  
+                         Bloom_Genre)
+    
+  )
+
+data <- data %>%
+  mutate(
+    Bloom = if_else(Moment == "After", 
+                    lag(Bloom),  
+                    Bloom) ,
+    Bloom_Phylum = if_else(Moment == "After", 
+                    lag(Bloom_Phylum),  
+                    Bloom_Phylum) ,
+    Bloom_Genre = if_else(Moment == "After", 
+                    lag(Bloom_Genre),  
+                    Bloom_Genre) 
+  )
+
+write.csv2(data,file="output/data_modif/Table_FLORTOT_Surf_0722_COM_period_Stselect_hydro_phyto_chloro_phylum_period15_chlafilter_cluster5_withmetrics&networksdiv_PCA_coord_moments.final.csv", row.names = FALSE,dec = ".")
+
+
+# With interpolation if we have a bloom before and after a date
+data <- data %>%
+  mutate(
+    Bloom_Phylum = if_else(
+      Moment == "During" & lag(Moment) == "During" & lead(Moment) == "During", 
+      case_when(
+        lag(Bloom_Phylum) == lead(Bloom_Phylum) & (!is.na(lag(Bloom_Phylum)) & !is.na(lead(Bloom_Phylum))) ~ lag(Bloom_Phylum),  
+        lag(Bloom_Phylum) != lead(Bloom_Phylum) & (!is.na(lag(Bloom_Phylum))  & is.na(Bloom_Phylum) & !is.na(lead(Bloom_Phylum))) ~ "Mix", 
+        TRUE ~ Bloom_Phylum 
+      ),
+      Bloom_Phylum 
+    )
+  )
+
+write.csv2(data,file="output/data_modif/Table_FLORTOT_Surf_0722_COM_period_Stselect_hydro_phyto_chloro_phylum_period15_chlafilter_cluster5_withmetrics&networksdiv_PCA_coord_moments_interpolated.final.csv", row.names = FALSE,dec = ".")
+
