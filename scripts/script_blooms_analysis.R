@@ -190,10 +190,62 @@ ggplot(datag) +
   scale_colour_manual(values = region_col, guide = "none") +
   
   # Facet_grid pour aligner les échelles par ligne
-  facet_grid(rows = vars(Indice), cols = vars(region), scales = "free_y") +
-  scale_y_continuous(limits = c(-9,9))+
+  facet_grid(rows = vars(Indice), cols = vars(region), scales = "free_y")
   theme_bw()
 ggsave('ACPdim_moments_combine.png', path = "output/graphs/bloom", dpi = 600, width = 200, height = 200, units = 'mm')
+
+datag <- pivot_longer(blooms, cols = c(P_BacBac,P_BacDino,P_DinoDino,P_AAutres),names_to = "Indice")
+
+ggplot(datag) +
+  
+  # Violin plot avec la médiane
+  geom_violin(aes(x = Moment, y = value, group = Moment, colour = as.character(region)), 
+              size = 0.8, draw_quantiles = c(0.5), show.legend = FALSE, fill = "gray96") +
+  
+  # Ajout des lignes représentant les moyennes par Bloom_Phylum
+  stat_summary(aes(x = Moment, y = value, colour = Bloom_Phylum),
+               fun = mean, geom = "pointrange", alpha = 0.4, 
+               size = 1, show.legend = FALSE) +
+  
+  # Ajout des points individuels avec geom_sina
+  geom_sina(aes(x = Moment, y = value, group = Moment, colour = Bloom_Phylum), 
+            alpha = 0.20, show.legend = TRUE) +
+  
+  # Labels et configuration des axes
+  labs(x = "Moment", y = "Value") +
+  scale_colour_manual(values = region_col, guide = "none") +
+  
+  # Facet_grid pour aligner les échelles par ligne
+  facet_grid(rows = vars(Indice), cols = vars(region), scales = "free_y") +
+  theme_bw()
+ggsave('Associations_moments_combine.png', path = "output/graphs/bloom", dpi = 600, width = 200, height = 200, units = 'mm')
+
+datag <- pivot_longer(blooms, cols = c(P_bac,P_dino,P_autres),names_to = "Indice")
+
+ggplot(datag) +
+  
+  # Violin plot avec la médiane
+  geom_violin(aes(x = Moment, y = value, group = Moment, colour = as.character(region)), 
+              size = 0.8, draw_quantiles = c(0.5), show.legend = FALSE, fill = "gray96") +
+  
+  # Ajout des lignes représentant les moyennes par Bloom_Phylum
+  stat_summary(aes(x = Moment, y = value, colour = Bloom_Phylum),
+               fun = mean, geom = "pointrange", alpha = 0.4, 
+               size = 1, show.legend = FALSE) +
+  
+  # Ajout des points individuels avec geom_sina
+  geom_sina(aes(x = Moment, y = value, group = Moment, colour = Bloom_Phylum), 
+            alpha = 0.20, show.legend = TRUE) +
+  
+  # Labels et configuration des axes
+  labs(x = "Moment", y = "Value") +
+  scale_colour_manual(values = region_col, guide = "none") +
+  
+  # Facet_grid pour aligner les échelles par ligne
+  facet_grid(rows = vars(Indice), cols = vars(region), scales = "free_y") +
+  theme_bw()
+ggsave('Composition_moments_combine.png', path = "output/graphs/bloom", dpi = 600, width = 200, height = 200, units = 'mm')
+
 
 ### Statistical tests on the dino and diatoms blooms
 blooms_med <- filter(blooms, region == "1-Mediterranean sea")
