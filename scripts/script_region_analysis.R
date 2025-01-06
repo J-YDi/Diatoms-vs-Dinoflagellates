@@ -154,9 +154,9 @@ selection_phylum <- c("Skeletonema","Pseudo-nitzschia","Chaetoceros","Chaetocero
 datataxon <- data |>
   select(Month,Year,region,selection_phylum)
 # Agglomerate Chaetoceros with Chaetocerotaceae and Cryptophyceae with Cryptomonadales
-datataxon$Chaetoceros <- rowSums(datataxon[,c("Chaetoceros","Chaetocerotaceae")],na.rm=T)
+datataxon$Chaetocerotaceae <- rowSums(datataxon[,c("Chaetoceros","Chaetocerotaceae")],na.rm=T)
 datataxon$Cryptophyceae <- rowSums(datataxon[,c("Cryptophyceae","Cryptomonadales")],na.rm=T)
-datataxon <- select(datataxon,-c(Chaetocerotaceae,Cryptomonadales))
+datataxon <- select(datataxon,-c(Chaetoceros,Cryptomonadales))
 
 # Select the others
 dataothers <- data |>
@@ -209,9 +209,9 @@ selection_phylum <- c("Skeletonema","Pseudo-nitzschia","Chaetoceros","Chaetocero
 datataxon <- data |>
   select(Month,Year,region,selection_phylum)
 # Agglomerate Chaetoceros with Chaetocerotaceae and Cryptophyceae with Cryptomonadales
-datataxon$Chaetoceros <- rowSums(datataxon[,c("Chaetoceros","Chaetocerotaceae")],na.rm=T)
+datataxon$Chaetocerotaceae <- rowSums(datataxon[,c("Chaetoceros","Chaetocerotaceae")],na.rm=T)
 datataxon$Cryptophyceae <- rowSums(datataxon[,c("Cryptophyceae","Cryptomonadales")],na.rm=T)
-datataxon <- select(datataxon,-c(Chaetocerotaceae,Cryptomonadales))
+datataxon <- select(datataxon,-c(Chaetoceros,Cryptomonadales))
 
 dataothers <- data |>
   select(-selection_phylum) |>
@@ -240,9 +240,9 @@ data_graph$MonthYear <- format(data_graph$Date, "%Y-%m")
 
 datag <- pivot_longer(data = data_graph,cols = Skeletonema:Others,names_to = "Phylum")
 
-datag$Phylum <- factor(datag$Phylum, levels = c("Others", "Skeletonema","Pseudo-nitzschia","Chaetoceros","Nitzschia","Cryptophyceae",
-                                                "Cylindrotheca","Leptocylindrus","Akashiwo",
-                                                "Phaeocystis","Asterionellopsis","Chrysochromulina","Azadinium"))
+datag$Phylum <- factor(datag$Phylum, levels = c("Asterionellopsis","Chaetocerotaceae","Cylindrotheca","Leptocylindrus"
+                                                ,"Nitzschia","Pseudo-nitzschia", "Skeletonema","Akashiwo","Azadinium",
+                                                "Chrysochromulina","Phaeocystis","Cryptophyceae","Others"))
 
 ggplot(datag) +
   geom_col(aes(x = MonthYear, y = value*100, fill = Phylum), position = "stack", na.rm = FALSE, width = 1) +
@@ -256,8 +256,103 @@ ggplot(datag) +
             color = "black", size = 2,angle=90, vjust = 0)+
   theme(axis.text.x = element_text(vjust = 0.5, hjust = 0.5, size = 5))+
   labs(x="Date",y="Relative Abundance (%)",fill="Taxon")+
-  scale_fill_manual(values = c("grey","#A6CEE3", "#1F78B4", "#B2DF8A", "#33A02C",
-                               "#FDBF6F", "#FF7F00", "#6A3D9A", "#FFFF99", "#FB9A99"
-                               , "#FFBCFF" , "#BC00BC", "#510051","#B15928"))
+  scale_fill_manual(values = c("#FFBCFF", "#B2DF8A","#FF7F00", "#6A3D9A", "#33A02C", "#1F78B4","#A6CEE3",
+                               "#FFFF99","#510051", "#BC00BC", "#FB9A99","#FDBF6F","grey"))
 ggsave('Relativeabundance_genus.png', path = "output/graphs/description_region",dpi = 500, width = 360, height =200, units = 'mm')
 
+
+### Test difference between regions for the networks properties ######
+
+data <- read_delim("output/data_modif/Table_FLORTOT_Surf_0722_COM_period_Stselect_hydro_phyto_chloro_phylum_period15_chlafilter_cluster5_withmetrics&networksdiv_PCA_coord_moments.final.csv", 
+                   delim = ";", escape_double = FALSE, locale = locale(decimal_mark = ",", 
+                                                                       grouping_mark = ""), trim_ws = TRUE)
+
+data <- select(data, Date, Code_point_Libelle, region, Dim.1, Dim.2, Dim.3, Shannon, Pielou, BergerParker)
+
+kruskal.test(data$P_bac~data$region)
+DunnTest(data$P_bac~data$region,method = "BH")
+kruskal.test(data$P_dino~data$region)
+DunnTest(data$P_dino~data$region,method = "BH")
+kruskal.test(data$P_autres~data$region)
+DunnTest(data$P_bac~data$region,method = "BH")
+
+kruskal.test(data$P_BacBac~data$region)
+DunnTest(data$P_BacBac~data$region,method = "BH")
+kruskal.test(data$P_BacDino~data$region)
+DunnTest(data$P_BacDino~data$region,method = "BH")
+kruskal.test(data$P_DinoDino~data$region)
+DunnTest(data$P_DinoDino~data$region,method = "BH")
+kruskal.test(data$P_AAutres~data$region)
+DunnTest(data$P_AAutres~data$region,method = "BH")
+
+
+kruskal.test(data$Dim.1~data$region)
+DunnTest(data$Dim.1~data$region,method = "BH")
+kruskal.test(data$Dim.2~data$region)
+DunnTest(data$Dim.2~data$region,method = "BH")
+kruskal.test(data$Dim.3~data$region)
+DunnTest(data$Dim.3~data$region,method = "BH")
+
+
+kruskal.test(data$Pielou~data$region)
+DunnTest(data$Pielou~data$region,method = "BH")
+kruskal.test(data$BergerParker~data$region)
+DunnTest(data$BergerParker~data$region,method = "BH")
+kruskal.test(data$Shannon~data$region)
+DunnTest(data$Shannon~data$region,method = "BH")
+
+
+# graph
+
+datal <- pivot_longer(data,names_to = "Var",cols = Dim.1:BergerParker)
+BK <- ggplot(filter(datal,Var == "BergerParker"))+
+  geom_boxplot(aes(y=value,group=region,fill=region),size = 1)+
+  scale_fill_manual(values=region_col,guide = "none")+
+  labs(x=NULL,y="")+
+  facet_grid(Var~region,scales = "free_y")+
+  theme(axis.text.x = element_blank(),
+        axis.ticks.x = element_blank())
+
+Pielou <- ggplot(filter(datal,Var == "Pielou"))+
+  geom_boxplot(aes(y=value,group=region,fill=region),size = 1)+
+  scale_fill_manual(values=region_col,guide = "none")+
+  labs(x=NULL,y="")+
+  facet_grid(Var~region,scales = "free_y")+
+  theme(axis.text.x = element_blank(),
+        axis.ticks.x = element_blank())
+
+Shannon <- ggplot(filter(datal,Var == "Shannon"))+
+  geom_boxplot(aes(y=value,group=region,fill=region),size = 1)+
+  scale_fill_manual(values=region_col,guide = "none")+
+  labs(x=NULL,y="")+
+  facet_grid(Var~region,scales = "free_y")+
+  theme(axis.text.x = element_blank(),
+        axis.ticks.x = element_blank())
+
+Dim.1 <- ggplot(filter(datal,Var == "Dim.1"))+
+  geom_boxplot(aes(y=value,group=region,fill=region),size = 1)+
+  scale_fill_manual(values=region_col,guide = "none")+
+  labs(x=NULL,y="")+
+  facet_grid(Var~region,scales = "free_y")+
+  theme(axis.text.x = element_blank(),
+        axis.ticks.x = element_blank())
+
+Dim.2 <- ggplot(filter(datal,Var == "Dim.2"))+
+  geom_boxplot(aes(y=value,group=region,fill=region),size = 1)+
+  scale_fill_manual(values=region_col,guide = "none")+
+  labs(x=NULL,y="")+
+  facet_grid(Var~region,scales = "free_y")+
+  theme(axis.text.x = element_blank(),
+        axis.ticks.x = element_blank())
+
+Dim.3 <- ggplot(filter(datal,Var == "Dim.3"))+
+  geom_boxplot(aes(y=value,group=region,fill=region),size = 1)+
+  scale_fill_manual(values=region_col,guide = "none")+
+  labs(x=NULL,y="")+
+  facet_grid(Var~region,scales = "free_y")+
+  scale_y_continuous(limits = c(-5,7.5))+
+  theme(axis.text.x = element_blank(),
+        axis.ticks.x = element_blank())
+
+plot_grid(Shannon,Pielou,BK,Dim.1,Dim.2,Dim.3, ncol = 3)
+ggsave('difference_region_metrics.png', path = "output/graphs/description_region",dpi = 500, width = 460, height =200, units = 'mm')

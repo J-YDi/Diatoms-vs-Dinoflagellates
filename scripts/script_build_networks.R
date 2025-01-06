@@ -278,6 +278,11 @@ for (i in 1:nrow(CL1)){
     data_results_reseaux[i,29] <- nrow(filter(sub_edges, link_genus != "Dinophyceae-Dinophyceae" & link_genus != "Bacillariophyceae-Dinophyceae" & link_genus != "Bacillariophyceae-Bacillariophyceae" )) # Nombre d'autres associations
     data_results_reseaux[i,30] <- nrow(filter(sub_edges,link_genus != "Dinophyceae-Dinophyceae" & link_genus != "Bacillariophyceae-Dinophyceae" & link_genus != "Bacillariophyceae-Bacillariophyceae" ))/nrow(sub_edges) # Pourcentage d'autres relations
     
+    data_results_reseaux[i,31] <- sum(filter(sub_edges, link_genus == "Bacillariophyceae-Bacillariophyceae")$`data$asso`)/sum(sub_edges$`data$asso`) # Pourcentage de relation Bac-Bac pondérées par leur force
+    data_results_reseaux[i,32] <- sum(filter(sub_edges, link_genus == "Bacillariophyceae-Dinophyceae")$`data$asso`)/sum(sub_edges$`data$asso`) # Pourcentage de relation Bac-Dino pondérées par leur force
+    data_results_reseaux[i,33] <- sum(filter(sub_edges, link_genus == "Dinophyceae-Dinophyceae")$`data$asso`)/sum(sub_edges$`data$asso`) # Pourcentage de relation Bac-Dino pondérées par leur force
+    data_results_reseaux[i,34] <- sum(filter(sub_edges,link_genus != "Dinophyceae-Dinophyceae" & link_genus != "Bacillariophyceae-Dinophyceae" & link_genus != "Bacillariophyceae-Bacillariophyceae" )$`data$asso`)/sum(sub_edges$`data$asso`) # Pourcentage de relation Bac-Dino pondérées par leur force
+    
   } 
   else { 
     data_results_reseaux[i,1] <- station
@@ -316,14 +321,19 @@ for (i in 1:nrow(CL1)){
     data_results_reseaux[i,28] <- NA # % Dino_Dino
     data_results_reseaux[i,29] <- NA # N Autres
     data_results_reseaux[i,30] <- NA # % Autres
+    data_results_reseaux[i,31] <- NA
+    data_results_reseaux[i,32] <- NA
+    data_results_reseaux[i,33] <- NA
+    data_results_reseaux[i,34] <- NA
     
   }
+  
   
   colnames(data_results_reseaux) <- c("Code_point_Libelle","Date","N_noeuds","N_liens","D_liens","C_tance",
                                       "Avg_p_length","Adhes","Mod","meanN_liens","Assort","Diss","Trans","meanN_voisins",
                                       "Nat_connect","N_clust","N_bac","P_bac","N_dino","P_dino","N_autres","P_autres",
                                       "N_BacBac","P_BacBac","N_BacDino","P_BacDino","N_DinoDino","P_DinoDino","N_AAutres",
-                                      "P_AAutres")
+                                      "P_AAutres","PP_BacBac","PP_BacDino","PP_DinoDino","PP_AAutres")
   
   #plot(sub,main = paste0(station,date),layout = layout_with_fr)
   #png(paste0("output/graphs/Reseaux/TS_CLUST1/",station,date,".png"))
@@ -464,6 +474,11 @@ for (i in 1:nrow(CL2)){
     data_results_reseaux[i,29] <- nrow(filter(sub_edges, link_genus != "Dinophyceae-Dinophyceae" & link_genus != "Bacillariophyceae-Dinophyceae" & link_genus != "Bacillariophyceae-Bacillariophyceae" )) # Nombre d'autres associations
     data_results_reseaux[i,30] <- nrow(filter(sub_edges,link_genus != "Dinophyceae-Dinophyceae" & link_genus != "Bacillariophyceae-Dinophyceae" & link_genus != "Bacillariophyceae-Bacillariophyceae" ))/nrow(sub_edges) # Pourcentage d'autres relations
     
+    data_results_reseaux[i,31] <- sum(filter(sub_edges, link_genus == "Bacillariophyceae-Bacillariophyceae")$`data$asso`)/sum(sub_edges$`data$asso`) # Pourcentage de relation Bac-Bac pondérées par leur force
+    data_results_reseaux[i,32] <- sum(filter(sub_edges, link_genus == "Bacillariophyceae-Dinophyceae")$`data$asso`)/sum(sub_edges$`data$asso`) # Pourcentage de relation Bac-Dino pondérées par leur force
+    data_results_reseaux[i,33] <- sum(filter(sub_edges, link_genus == "Dinophyceae-Dinophyceae")$`data$asso`)/sum(sub_edges$`data$asso`) # Pourcentage de relation Bac-Dino pondérées par leur force
+    data_results_reseaux[i,34] <- sum(filter(sub_edges,link_genus != "Dinophyceae-Dinophyceae" & link_genus != "Bacillariophyceae-Dinophyceae" & link_genus != "Bacillariophyceae-Bacillariophyceae" )$`data$asso`)/sum(sub_edges$`data$asso`) # Pourcentage de relation Bac-Dino pondérées par leur force
+    
   } 
   else { 
     data_results_reseaux[i,1] <- station
@@ -503,13 +518,18 @@ for (i in 1:nrow(CL2)){
     data_results_reseaux[i,29] <- NA # N Autres
     data_results_reseaux[i,30] <- NA # % Autres
     
+    data_results_reseaux[i,31] <- NA
+    data_results_reseaux[i,32] <- NA
+    data_results_reseaux[i,33] <- NA
+    data_results_reseaux[i,34] <- NA
+    
   }
   
   colnames(data_results_reseaux) <- c("Code_point_Libelle","Date","N_noeuds","N_liens","D_liens","C_tance",
                                       "Avg_p_length","Adhes","Mod","meanN_liens","Assort","Diss","Trans","meanN_voisins",
                                       "Nat_connect","N_clust","N_bac","P_bac","N_dino","P_dino","N_autres","P_autres",
                                       "N_BacBac","P_BacBac","N_BacDino","P_BacDino","N_DinoDino","P_DinoDino","N_AAutres",
-                                      "P_AAutres")
+                                      "P_AAutres","PP_BacBac","PP_BacDino","PP_DinoDino","PP_AAutres")
   
   #plot(sub,main = paste0(station,date),layout = layout_with_fr)
   #png(paste0("output/graphs/Reseaux/TS_CLUST1/",station,date,".png"))
@@ -650,6 +670,11 @@ for (i in 1:nrow(CL3)){
     data_results_reseaux[i,29] <- nrow(filter(sub_edges, link_genus != "Dinophyceae-Dinophyceae" & link_genus != "Bacillariophyceae-Dinophyceae" & link_genus != "Bacillariophyceae-Bacillariophyceae" )) # Nombre d'autres associations
     data_results_reseaux[i,30] <- nrow(filter(sub_edges,link_genus != "Dinophyceae-Dinophyceae" & link_genus != "Bacillariophyceae-Dinophyceae" & link_genus != "Bacillariophyceae-Bacillariophyceae" ))/nrow(sub_edges) # Pourcentage d'autres relations
     
+    data_results_reseaux[i,31] <- sum(filter(sub_edges, link_genus == "Bacillariophyceae-Bacillariophyceae")$`data$asso`)/sum(sub_edges$`data$asso`) # Pourcentage de relation Bac-Bac pondérées par leur force
+    data_results_reseaux[i,32] <- sum(filter(sub_edges, link_genus == "Bacillariophyceae-Dinophyceae")$`data$asso`)/sum(sub_edges$`data$asso`) # Pourcentage de relation Bac-Dino pondérées par leur force
+    data_results_reseaux[i,33] <- sum(filter(sub_edges, link_genus == "Dinophyceae-Dinophyceae")$`data$asso`)/sum(sub_edges$`data$asso`) # Pourcentage de relation Bac-Dino pondérées par leur force
+    data_results_reseaux[i,34] <- sum(filter(sub_edges,link_genus != "Dinophyceae-Dinophyceae" & link_genus != "Bacillariophyceae-Dinophyceae" & link_genus != "Bacillariophyceae-Bacillariophyceae" )$`data$asso`)/sum(sub_edges$`data$asso`) # Pourcentage de relation Bac-Dino pondérées par leur force
+    
   } 
   else { 
     data_results_reseaux[i,1] <- station
@@ -689,13 +714,18 @@ for (i in 1:nrow(CL3)){
     data_results_reseaux[i,29] <- NA # N Autres
     data_results_reseaux[i,30] <- NA # % Autres
     
+    data_results_reseaux[i,31] <- NA
+    data_results_reseaux[i,32] <- NA
+    data_results_reseaux[i,33] <- NA
+    data_results_reseaux[i,34] <- NA
+    
   }
   
   colnames(data_results_reseaux) <- c("Code_point_Libelle","Date","N_noeuds","N_liens","D_liens","C_tance",
                                       "Avg_p_length","Adhes","Mod","meanN_liens","Assort","Diss","Trans","meanN_voisins",
                                       "Nat_connect","N_clust","N_bac","P_bac","N_dino","P_dino","N_autres","P_autres",
                                       "N_BacBac","P_BacBac","N_BacDino","P_BacDino","N_DinoDino","P_DinoDino","N_AAutres",
-                                      "P_AAutres")
+                                      "P_AAutres","PP_BacBac","PP_BacDino","PP_DinoDino","PP_AAutres")
   
   #plot(sub,main = paste0(station,date),layout = layout_with_fr)
   #png(paste0("output/graphs/Reseaux/TS_CLUST1/",station,date,".png"))

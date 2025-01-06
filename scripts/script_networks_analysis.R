@@ -142,9 +142,9 @@ E(cluster1)$info <- edgelist_genus_med$link_genus
 med_global <- ggraph(cluster1, layout = "auto") +  
   geom_edge_link(aes(edge_width = weight,edge_colour = info), alpha = 0.5, lineend = "round", linejoin = "bevel") +
   geom_node_point(aes(size = size, fill = color, stroke = 1), shape = 21,alpha = 0.5) +
-  geom_node_text(aes(label = label, fontface = "bold"),colour = "black", 
-                 repel = TRUE, size = 3, check_overlap = TRUE,
-                 vjust = 0.5, hjust = 1) + 
+  #geom_node_text(aes(label = label, fontface = "bold"),colour = "black", 
+  #               repel = TRUE, size = 3, check_overlap = TRUE,
+  #               vjust = 0.5, hjust = 1) + 
   scale_edge_width(range = c(0.1, 2)) +
   scale_size_continuous(range = c(3, 10)) +
   theme_void() +
@@ -215,6 +215,8 @@ data_association_graph <- summarise(group_by(data_association,Code_point_Libelle
 ggplot(data_association_graph) +
   geom_col(aes(y = value, x = Month, fill = Asso_type), position = "stack", na.rm = FALSE)+
   guides(fill = guide_legend(ncol = 7, byrow = F)) +
+  scale_fill_manual(values = c("P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
+                               ,"P_AAutres"      = "grey" ,"P_DinoDino" = "#009E73"))+
   theme(legend.position = "bottom")+
   facet_wrap(~Code_point_Libelle,nrow = 4)
 ggsave('med_typeassociation_station_mois.png', path = "output/graphs/networks/subnetworks/", dpi = 600, width = 400, height = 300, units = 'mm')
@@ -237,7 +239,7 @@ ggplot(data_compo_graph) +
              aes(xintercept = MonthYear),
              color = "grey3", size = 0.5,linetype = "dashed")+
   scale_x_discrete(labels = rep(c("M","A","M","J","J","A","S","O","N","D","J","F"),16))+
-  scale_fill_manual(values = c("P_bac" = "#56B4E9","P_autres"      = "grey" ,"P_dino" = "#009E73"))+
+  scale_fill_manual(values = c("P_bac" = "#1f77b4","P_autres"      = "grey" ,"P_dino" = "green"))+
   geom_text(data = subset(data_compo_graph, Month == "01"), 
             aes(x = MonthYear, y = 0.95, label = sub("-.*", "", MonthYear)),
             color = "black", size = 2.5,angle=90, vjust = 0)+
@@ -251,6 +253,8 @@ ggplot(data_compo_graph) +
   geom_col(aes(y = value, x = Month, fill = Taxon), position = "stack", na.rm = FALSE)+
   guides(fill = guide_legend(ncol = 7, byrow = F)) +
   theme(legend.position = "bottom")+
+  scale_fill_manual(values = c("P_bac" = "#1f77b4","P_autres"      = "grey" ,"P_dino" = "green"))+
+  
   facet_wrap(~Code_point_Libelle,nrow = 4)
 ggsave('med_compo_station_mois.png', path = "output/graphs/networks/subnetworks/", dpi = 600, width = 400, height = 300, units = 'mm')
 
@@ -278,6 +282,8 @@ data_association_graph <- summarise(group_by(data_association,Asso_type,Month),v
 ggplot(data_association_graph) +
   geom_col(aes(y = value, x = Month, fill = Asso_type), position = "stack", na.rm = FALSE)+
   guides(fill = guide_legend(ncol = 7, byrow = F)) +
+  scale_fill_manual(values = c("P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
+                               ,"P_AAutres"      = "grey" ,"P_DinoDino" = "#009E73"))+
   theme(legend.position = "bottom")
 ggsave('med_typeassociation_mois.png', path = "output/graphs/networks/subnetworks/", dpi = 600, width = 400, height = 300, units = 'mm')
 
@@ -293,7 +299,7 @@ ggplot(data_compo_graph) +
              aes(xintercept = MonthYear),
              color = "grey3", size = 0.5,linetype = "dashed")+
   scale_x_discrete(labels = rep(c("M","A","M","J","J","A","S","O","N","D","J","F"),16))+
-  scale_fill_manual(values = c("P_bac" = "#56B4E9","P_autres"      = "grey" ,"P_dino" = "#009E73"))+
+  scale_fill_manual(values = c("P_bac" = "#1f77b4","P_autres"      = "grey" ,"P_dino" = "#009E73"))+
   geom_text(data = subset(data_compo_graph, Month == "01"), 
             aes(x = MonthYear, y = 0.95, label = sub("-.*", "", MonthYear)),
             color = "black", size = 2.5,angle=90, vjust = 0)+
@@ -305,6 +311,8 @@ data_compo_graph <- summarise(group_by(data_compo,Taxon,Month),value=mean(value,
 ggplot(data_compo_graph) +
   geom_col(aes(y = value, x = Month, fill = Taxon), position = "stack", na.rm = FALSE)+
   guides(fill = guide_legend(ncol = 7, byrow = F)) +
+  scale_fill_manual(values = c("P_bac" = "#1f77b4","P_autres"      = "grey" ,"P_dino" = "#009E73"))+
+  
   theme(legend.position = "bottom")
 ggsave('med_compo_mois.png', path = "output/graphs/networks/subnetworks/", dpi = 600, width = 400, height = 300, units = 'mm')
 
@@ -526,9 +534,9 @@ E(cluster2)$info <- edgelist_genus_med$link_genus
 manche_global <- ggraph(cluster2, layout = "auto") +  
   geom_edge_link(aes(edge_width = weight,edge_colour = info), alpha = 0.5, lineend = "round", linejoin = "bevel") +
   geom_node_point(aes(size = size, fill = color, stroke = 1), shape = 21,alpha = 0.5) +
-  geom_node_text(aes(label = label, fontface = "bold"),colour = "black", 
-                 repel = TRUE, size = 3, check_overlap = TRUE,
-                 vjust = 0.5, hjust = 1) + 
+  #geom_node_text(aes(label = label, fontface = "bold"),colour = "black", 
+  #               repel = TRUE, size = 3, check_overlap = TRUE,
+  #               vjust = 0.5, hjust = 1) + 
   scale_edge_width(range = c(0.1, 2)) +
   scale_size_continuous(range = c(3, 10)) +
   theme_void() +
@@ -659,6 +667,8 @@ data_association_graph <- summarise(group_by(data_association,Asso_type,Month),v
 ggplot(data_association_graph) +
   geom_col(aes(y = value, x = Month, fill = Asso_type), position = "stack", na.rm = FALSE)+
   guides(fill = guide_legend(ncol = 7, byrow = F)) +
+  scale_fill_manual(values = c("P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
+                               ,"P_AAutres"      = "grey" ,"P_DinoDino" = "#009E73"))+
   theme(legend.position = "bottom")
 ggsave('manche_typeassociation_mois.png', path = "output/graphs/networks/subnetworks/", dpi = 600, width = 400, height = 300, units = 'mm')
 
@@ -685,6 +695,8 @@ data_compo_graph <- summarise(group_by(data_compo,Taxon,Month),value=mean(value,
 ggplot(data_compo_graph) +
   geom_col(aes(y = value, x = Month, fill = Taxon), position = "stack", na.rm = FALSE)+
   guides(fill = guide_legend(ncol = 7, byrow = F)) +
+  scale_fill_manual(values = c("P_bac" = "#56B4E9","P_autres"      = "grey" ,"P_dino" = "#009E73"))+
+  
   theme(legend.position = "bottom")
 ggsave('manche_compo_mois.png', path = "output/graphs/networks/subnetworks/", dpi = 600, width = 400, height = 300, units = 'mm')
 
@@ -908,9 +920,9 @@ E(cluster3)$info <- edgelist_genus_med$link_genus
 atlantic_global <-ggraph(cluster3, layout = "auto") +  
   geom_edge_link(aes(edge_width = weight,edge_colour = info), alpha = 0.5, lineend = "round", linejoin = "bevel") +
   geom_node_point(aes(size = size, fill = color, stroke = 1), shape = 21,alpha = 0.5) +
-  geom_node_text(aes(label = label, fontface = "bold"),colour = "black", 
-                 repel = TRUE, size = 3, check_overlap = TRUE,
-                 vjust = 0.5, hjust = 1) + 
+  #geom_node_text(aes(label = label, fontface = "bold"),colour = "black", 
+  #               repel = TRUE, size = 3, check_overlap = TRUE,
+  #               vjust = 0.5, hjust = 1) + 
   scale_edge_width(range = c(0.1, 2)) +
   scale_size_continuous(range = c(3, 10)) +
   theme_void() +
@@ -981,6 +993,8 @@ ggplot(data_association_graph) +
   geom_col(aes(y = value, x = Month, fill = Asso_type), position = "stack", na.rm = FALSE)+
   guides(fill = guide_legend(ncol = 7, byrow = F)) +
   theme(legend.position = "bottom")+
+  scale_fill_manual(values = c("P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
+                               ,"P_AAutres"      = "grey" ,"P_DinoDino" = "#009E73"))+
   facet_wrap(~Code_point_Libelle,nrow = 4)
 ggsave('atlantic_typeassociation_station_mois.png', path = "output/graphs/networks/subnetworks/", dpi = 600, width = 400, height = 300, units = 'mm')
 
@@ -1014,6 +1028,8 @@ ggplot(data_compo_graph) +
   geom_col(aes(y = value, x = Month, fill = Taxon), position = "stack", na.rm = FALSE)+
   guides(fill = guide_legend(ncol = 7, byrow = F)) +
   theme(legend.position = "bottom")+
+  scale_fill_manual(values = c("P_bac" = "#56B4E9","P_autres"      = "grey" ,"P_dino" = "#009E73"))+
+  
   facet_wrap(~Code_point_Libelle,nrow = 4)
 ggsave('atlantic_compo_station_mois.png', path = "output/graphs/networks/subnetworks/", dpi = 600, width = 400, height = 300, units = 'mm')
 
@@ -1040,7 +1056,9 @@ data_association_graph <- summarise(group_by(data_association,Asso_type,Month),v
 ggplot(data_association_graph) +
   geom_col(aes(y = value, x = Month, fill = Asso_type), position = "stack", na.rm = FALSE)+
   guides(fill = guide_legend(ncol = 7, byrow = F)) +
-  theme(legend.position = "bottom")
+  theme(legend.position = "bottom")+
+  scale_fill_manual(values = c("P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
+                               ,"P_AAutres"      = "grey" ,"P_DinoDino" = "#009E73"))
 ggsave('atlantic_typeassociation_mois.png', path = "output/graphs/networks/subnetworks/", dpi = 600, width = 400, height = 300, units = 'mm')
 
 data_compo_graph <- summarise(group_by(data_compo,MonthYear,Taxon,Month),value=mean(value,na.rm=T))
@@ -1065,6 +1083,7 @@ data_compo_graph <- summarise(group_by(data_compo,Taxon,Month),value=mean(value,
 ggplot(data_compo_graph) +
   geom_col(aes(y = value, x = Month, fill = Taxon), position = "stack", na.rm = FALSE)+
   guides(fill = guide_legend(ncol = 7, byrow = F)) +
+  scale_fill_manual(values = c("P_bac" = "#56B4E9","P_autres"      = "grey" ,"P_dino" = "#009E73"))+
   theme(legend.position = "bottom")
 ggsave('atlantic_compo_mois.png', path = "output/graphs/networks/subnetworks/", dpi = 600, width = 400, height = 300, units = 'mm')
 
@@ -1218,8 +1237,8 @@ ggplot(tableau_compo) +
 ggsave('composition_freq_global.png', path = "output/graphs/networks/global_networks", dpi = 600, width = 300, height = 200, units = 'mm')
 
 
-#plot_grid(med_global,manche_global,atlantic_global,nrow = 3)
-#ggsave("global_networks.png", path = "output/graphs/networks/global_networks", dpi = 600, width = 300, height = 900, units = 'mm')
+plot_grid(med_global,manche_global,atlantic_global,nrow = 3)
+ggsave("global_networks.png", path = "output/graphs/networks/global_networks", dpi = 600, width = 400, height = 900, units = 'mm')
 
 
 # Same but for the associations types 
@@ -1237,10 +1256,14 @@ freq_table_big <- rbind(med,manche,atlantic)
 
 freq_table_big$link_genus <- ifelse(freq_table_big$link_genus ==  "Bacillariophyceae-Bacillariophyceae", "Bacillariophyceae-Bacillariophyceae",
         ifelse(freq_table_big$link_genus ==  "Bacillariophyceae-Dinophyceae","Bacillariophyceae-Dinophyceae",
-          ifelse(freq_table_big$link_genus ==  "Dinophyceae-Dinophyceae","Dinophyceae-Dinophyceae" ,"Autres"
+          ifelse(freq_table_big$link_genus ==  "Dinophyceae-Dinophyceae","Dinophyceae-Dinophyceae" ,"Other association"
        )))
 
-freq_table_big$link_genus <- factor(freq_table_big$link_genus, levels = c("Autres","Dinophyceae-Dinophyceae","Bacillariophyceae-Dinophyceae","Bacillariophyceae-Bacillariophyceae"))
+freq_table_big$link_genus <- factor(freq_table_big$link_genus, levels = c("Other association","Dinophyceae-Dinophyceae","Bacillariophyceae-Dinophyceae","Bacillariophyceae-Bacillariophyceae"))
+
+freq_table_big2 <- summarise(group_by(freq_table_big,region,link_genus), Number = sum(Number)) |>
+  mutate(Freq = Number / sum(Number))
+write.csv2(freq_table_big2,file="output/tableaux/Networks/asso_global_networks.csv", row.names = FALSE,dec = ".")
 
 # Modifier dans les freq_table pour avoir que certaines et ensuite passer le reste en autre
 # Faire le graphe en dessous 
@@ -1268,6 +1291,167 @@ ggplot(freq_table_big) +
   guides(fill = guide_legend(ncol = 7, byrow = F)) +
   theme(legend.position = "bottom")
 ggsave("global_networks_associations_number.png", path = "output/graphs/networks/global_networks", dpi = 600, width = 400, height = 300, units = 'mm')
+
+# Making a new graph to synthetize association and composition
+# Chargement des bibliothèques nécessaires
+library(ggplot2)
+library(dplyr)
+
+
+
+tableau_compo <- read_delim("output/tableaux/Networks/compo_global_networks.csv", 
+                            delim = ";", escape_double = FALSE, locale = locale(decimal_mark = ",", 
+                                                                                grouping_mark = ""), trim_ws = TRUE)
+tableau_compo$Phylum.Classe <- ifelse(tableau_compo$Phylum.Classe == "Bacillariophyceae" | tableau_compo$Phylum.Classe == "Dinophyceae", 
+                                      tableau_compo$Phylum.Classe,"Other phyla")
+
+tableau_compo <- summarise(group_by(tableau_compo,region,Phylum.Classe), Number = sum(Number)) |>
+  mutate(Freq = Number / sum(Number))
+
+# Préparation des données pour le graphique en anneaux
+tableau_compo <- tableau_compo %>%
+  group_by(region) %>%
+  arrange(desc(Phylum.Classe)) %>%
+  mutate(ymin = cumsum(Freq) - Freq,
+         ymax = cumsum(Freq),
+         labelPosition = (ymax + ymin) / 2,
+         label = paste0(round(Freq * 100, 1), "%"))
+
+
+freq_table_big <- read_delim("output/tableaux/Networks/asso_global_networks.csv", 
+                             delim = ";", escape_double = FALSE, locale = locale(decimal_mark = ",", 
+                                                                                 grouping_mark = ""), trim_ws = TRUE)
+freq_table_big <- freq_table_big %>%
+  group_by(region) %>%
+  arrange(desc(link_genus)) %>%
+  mutate(ymin = cumsum(Freq) - Freq,
+         ymax = cumsum(Freq),
+         labelPosition = (ymax + ymin) / 2,
+         label = paste0(round(Freq * 100, 1), "%"))
+
+# Création du graphique en anneaux
+ggplot() +
+  geom_rect(aes(ymax = ymax, ymin = ymin, xmax = 3.9, xmin = 3, fill = Phylum.Classe),data = tableau_compo) +
+  geom_text(aes(x = 4.5, y = labelPosition, label = label, colour = Phylum.Classe), size = 3,data = tableau_compo) +
+  geom_rect(aes(ymax = ymax, ymin = ymin, xmax = 2.9, xmin = 2, fill = link_genus),data = freq_table_big) +
+  geom_text(aes(x = 1.4, y = labelPosition, label = label, colour = link_genus), size = 3,data = freq_table_big) +
+  scale_fill_manual(values = c(
+    "Bacillariophyceae" = "#1f77b4", "Dinophyceae" = "green",
+    "Bacillariophyceae-Bacillariophyceae" = "#56B4E9","Bacillariophyceae-Dinophyceae"   = "chocolate1"
+    ,"Other phyla"      = "grey" ,"Dinophyceae-Dinophyceae" = "#009E73","Other association" = "grey30"
+  ), breaks = c(
+    "Bacillariophyceae","Dinophyceae","Other phyla", "Bacillariophyceae-Bacillariophyceae", "Bacillariophyceae-Dinophyceae", 
+    "Dinophyceae-Dinophyceae", "Other association"
+  ),name = NULL) +
+  scale_colour_manual(values = c(
+    "Bacillariophyceae" = "#1f77b4", "Dinophyceae" = "green",
+    "Bacillariophyceae-Bacillariophyceae" = "#56B4E9","Bacillariophyceae-Dinophyceae"   = "chocolate1"
+    ,"Other phyla"      = "grey" ,"Dinophyceae-Dinophyceae" = "#009E73","Other association" = "grey30"
+  ), breaks = c(
+    "Bacillariophyceae","Dinophyceae","Other phyla", "Bacillariophyceae-Bacillariophyceae", "Bacillariophyceae-Dinophyceae", 
+    "Dinophyceae-Dinophyceae", "Other association"
+  ),name = NULL)+
+  coord_polar(theta = "y") +
+  xlim(c(-1, 4.6)) +
+  theme_no_axes() +
+  facet_wrap(~region) +
+  theme(legend.position = "bottom")+
+  guides(fill = guide_legend(ncol = 7), colour = guide_legend(ncol = 7))
+ggsave('asso_compo_regions_combine.png', path = "output/graphs/description_region/", dpi = 600, width = 300, height = 150, units = 'mm')
+
+
+# Ponderate
+
+
+tableau_compo <- read_delim("output/tableaux/Networks/compo_global_networks.csv", 
+                            delim = ";", escape_double = FALSE, locale = locale(decimal_mark = ",", 
+                                                                                grouping_mark = ""), trim_ws = TRUE)
+tableau_compo$Phylum.Classe <- ifelse(tableau_compo$Phylum.Classe == "Bacillariophyceae" | tableau_compo$Phylum.Classe == "Dinophyceae", 
+                                      tableau_compo$Phylum.Classe,"Other phyla")
+
+tableau_compo <- summarise(group_by(tableau_compo,region,Phylum.Classe), Number = sum(Number)) |>
+  mutate(Freq = Number / sum(Number))
+
+# Préparation des données pour le graphique en anneaux
+tableau_compo <- tableau_compo %>%
+  group_by(region) %>%
+  arrange(desc(Phylum.Classe)) %>%
+  mutate(ymin = cumsum(Freq) - Freq,
+         ymax = cumsum(Freq),
+         labelPosition = (ymax + ymin) / 2,
+         label = paste0(round(Freq * 100, 1), "%"))
+
+# Same but for the associations types 
+med <- read_delim("output/tableaux/Networks/edgelist_genus_med.csv", 
+                   delim = ";", escape_double = FALSE, locale = locale(decimal_mark = ",", 
+                                                                       grouping_mark = ""), trim_ws = TRUE)
+manche <- read_delim("output/tableaux/Networks/edgelist_genus_manche.csv", 
+                  delim = ";", escape_double = FALSE, locale = locale(decimal_mark = ",", 
+                                                                      grouping_mark = ""), trim_ws = TRUE)
+atlantic <- read_delim("output/tableaux/Networks/edgelist_genus_atlantic.csv", 
+                  delim = ";", escape_double = FALSE, locale = locale(decimal_mark = ",", 
+                                                                      grouping_mark = ""), trim_ws = TRUE)
+med$region <- "1-Mediterranean sea"
+manche$region <- "2-Eastern Channel - North Sea"
+atlantic$region <- "3-Atlantic - Western Channel"
+
+freq_table_big <- rbind(med,manche,atlantic)
+
+freq_table_big$link_genus <- ifelse(freq_table_big$link_genus ==  "Bacillariophyceae-Bacillariophyceae", "Bacillariophyceae-Bacillariophyceae",
+                                    ifelse(freq_table_big$link_genus ==  "Bacillariophyceae-Dinophyceae","Bacillariophyceae-Dinophyceae",
+                                           ifelse(freq_table_big$link_genus ==  "Dinophyceae-Dinophyceae","Dinophyceae-Dinophyceae" ,"Other association"
+                                           )))
+
+freq_table_big$link_genus <- factor(freq_table_big$link_genus, levels = c("Other association","Dinophyceae-Dinophyceae","Bacillariophyceae-Dinophyceae","Bacillariophyceae-Bacillariophyceae"))
+
+freq_table_big2 <- summarise(group_by(freq_table_big,region,link_genus), Number = sum(`data$asso`)) |>
+  mutate(Freq = Number / sum(Number))
+write.csv2(freq_table_big2,file="output/tableaux/Networks/asso_pondere_global_networks.csv", row.names = FALSE,dec = ".")
+
+
+freq_table_big <- read_delim("output/tableaux/Networks/asso_pondere_global_networks.csv", 
+                             delim = ";", escape_double = FALSE, locale = locale(decimal_mark = ",", 
+                                                                                 grouping_mark = ""), trim_ws = TRUE)
+freq_table_big <- freq_table_big %>%
+  group_by(region) %>%
+  arrange(desc(link_genus)) %>%
+  mutate(ymin = cumsum(Freq) - Freq,
+         ymax = cumsum(Freq),
+         labelPosition = (ymax + ymin) / 2,
+         label = paste0(round(Freq * 100, 1), "%"))
+
+# Création du graphique en anneaux
+ggplot() +
+  geom_rect(aes(ymax = ymax, ymin = ymin, xmax = 3.9, xmin = 3, fill = Phylum.Classe),data = tableau_compo) +
+  geom_text(aes(x = 4.5, y = labelPosition, label = label, colour = Phylum.Classe), size = 3,data = tableau_compo) +
+  geom_rect(aes(ymax = ymax, ymin = ymin, xmax = 2.9, xmin = 2, fill = link_genus),data = freq_table_big) +
+  geom_text(aes(x = 1.4, y = labelPosition, label = label, colour = link_genus), size = 3,data = freq_table_big) +
+  scale_fill_manual(values = c(
+    "Bacillariophyceae" = "#1f77b4", "Dinophyceae" = "green",
+    "Bacillariophyceae-Bacillariophyceae" = "#56B4E9","Bacillariophyceae-Dinophyceae"   = "chocolate1"
+    ,"Other phyla"      = "grey" ,"Dinophyceae-Dinophyceae" = "#009E73","Other association" = "grey30"
+  ), breaks = c(
+    "Bacillariophyceae","Dinophyceae","Other phyla", "Bacillariophyceae-Bacillariophyceae", "Bacillariophyceae-Dinophyceae", 
+    "Dinophyceae-Dinophyceae", "Other association"
+  ),name = NULL) +
+  scale_colour_manual(values = c(
+    "Bacillariophyceae" = "#1f77b4", "Dinophyceae" = "green",
+    "Bacillariophyceae-Bacillariophyceae" = "#56B4E9","Bacillariophyceae-Dinophyceae"   = "chocolate1"
+    ,"Other phyla"      = "grey" ,"Dinophyceae-Dinophyceae" = "#009E73","Other association" = "grey30"
+  ), breaks = c(
+    "Bacillariophyceae","Dinophyceae","Other phyla", "Bacillariophyceae-Bacillariophyceae", "Bacillariophyceae-Dinophyceae", 
+    "Dinophyceae-Dinophyceae", "Other association"
+  ),name = NULL)+
+  coord_polar(theta = "y") +
+  xlim(c(-1, 4.6)) +
+  theme_no_axes() +
+  facet_wrap(~region) +
+  theme(legend.position = "bottom")+
+  guides(fill = guide_legend(ncol = 7), colour = guide_legend(ncol = 7))
+ggsave('asso_pondere_compo_regions_combine.png', path = "output/graphs/description_region/", dpi = 600, width = 300, height = 150, units = 'mm')
+
+
+
 
 
 ## Correlation between diversity index and associations, compositions of subnetworks ######

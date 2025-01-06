@@ -49,16 +49,20 @@ data$region <- as.factor(data$region)
 region_col <- c("1-Mediterranean sea" = "#F8766D","2-Eastern Channel - North Sea" = "#CD9600", 
                 "3-Atlantic - Western Channel" = "#00BE67",  "4-Pertuis Sea" = "#00A9FF")
 
-BKglobal <- ggplot(filter(data, region != "4-Pertuis Sea"))+
+d <- filter(data, region != "4-Pertuis Sea")
+d$info <- "All regions"
+BKglobal <- ggplot(d)+
   geom_violin(aes(x=TBloom,y=BergerParker,group=TBloom,colour=as.character(region)),size=1,draw_quantiles = c(0.5),show.legend = FALSE,fill = "gray91")+
   geom_sina(aes(x=TBloom,y=BergerParker,group=TBloom,colour = as.character(region)),alpha = .55,show.legend = F)+
-  labs(x=NULL,y="")+
+  labs(x=NULL,y="Berger-Parker index")+
   scale_y_continuous(limits=c(0,1.10),breaks = c(0,0.33,0.66,1))+
+  scale_colour_manual(values = region_col)+
+  facet_wrap(~info)+
   theme_bw()
 
 BKregion <- ggplot(filter(data, region !="4-Pertuis Sea"))+
   geom_violin(aes(x=TBloom,y=BergerParker,group=TBloom,colour=as.character(region)),size=1,draw_quantiles = c(0.5),show.legend = FALSE,fill = "gray91")+
-  labs(x=NULL,y="Berger-Parker index")+
+  labs(x=NULL,y=NULL)+
   geom_sina(aes(x=TBloom,y=BergerParker,group=TBloom,colour=as.character(region)),alpha = .55,show.legend = F)+
   scale_colour_manual(values=region_col,guide = "none")+
   scale_y_continuous(limits=c(0,1.10),breaks = c(0,0.33,0.66,1))+
@@ -80,6 +84,10 @@ BKdetail <- ggplot(filter(data, region != "4-Pertuis Sea", Bloom_Phylum == "Bac"
 plot_grid(BKglobal,BKregion,BKdetail,ncol=1,labels = "AUTO")
 ggsave('BergerParker_bloom.png', path = "output/graphs/bloom", dpi = 600, width = 200, height = 200, units = 'mm')
 
+plot_grid(BKglobal,BKregion,ncol=2,labels = "AUTO",rel_widths = c(1,2))
+ggsave('BergerParker_bloom_V2.png', path = "output/graphs/bloom", dpi = 600, width = 220, height = 100, units = 'mm')
+
+
 # Statistical tests
 wilcox.test(filter(data,TBloom == "Bloom")$BergerParker,filter(data,TBloom != "Bloom")$BergerParker)
 
@@ -100,7 +108,7 @@ wilcox.test(filter(data,Bloom_Phylum == "Bac" & region == "3-Atlantic - Western 
 wilcox.test(filter(data,Bloom_Phylum == "Hapt" & region == "2-Eastern Channel - North Sea")$BergerParker,filter(data,TBloom != "Bloom" & region == "2-Eastern Channel - North Sea")$BergerParker)
 
 
-#### Impact of blooms we consider only dino and diatoms blooms 
+#### Impact of blooms we consider only dino and diatoms blooms #####
 data <- read_delim("output/data_modif/Table_FLORTOT_Surf_0722_COM_period_Stselect_hydro_phyto_chloro_phylum_period15_chlafilter_cluster5_withmetrics&networksdiv_PCA_coord_moments.final.csv", 
                    delim = ";", escape_double = FALSE, locale = locale(decimal_mark = ",", 
                                                                        grouping_mark = ""), trim_ws = TRUE)
@@ -117,21 +125,22 @@ blooms$Moment <-
          levels = c("Before","During","After"))
 
 datag <- pivot_longer(blooms, cols = c(RShannon, RPielou, RBergerParker),names_to = "Indice")
-
 ggplot(datag) +
   
   # Violin plot avec la médiane
   geom_violin(aes(x = Moment, y = value, group = Moment, colour = as.character(region)), 
               size = 0.8, draw_quantiles = c(0.5), show.legend = FALSE, fill = "gray96") +
   
-  # Ajout des lignes représentant les moyennes par Bloom_Phylum
-  stat_summary(aes(x = Moment, y = value, colour = Bloom_Phylum),
-               fun = mean, geom = "pointrange", alpha = 0.4, 
-               size = 1, show.legend = FALSE) +
+  # Moyenne (point) et écart-type (barres d'erreur avec extrémités horizontales)
+  stat_summary(aes(x = Moment, y = value, colour = Bloom_Phylum), 
+               fun = mean, geom = "point", size = 5, alpha = 0.6, show.legend = FALSE) +
+  stat_summary(aes(x = Moment, y = value, colour = Bloom_Phylum), 
+               fun.data = mean_sdl, fun.args = list(mult = 1), 
+               geom = "errorbar", width = 0.2, size = 0.8, show.legend = FALSE) +
   
-  # Ajout des points individuels avec geom_sina
+  # Points individuels avec geom_sina
   geom_sina(aes(x = Moment, y = value, group = Moment, colour = Bloom_Phylum), 
-            alpha = 0.20, show.legend = TRUE) +
+            alpha = 0, show.legend = TRUE) +
   
   # Labels et configuration des axes
   labs(x = "Moment", y = "Value") +
@@ -140,6 +149,8 @@ ggplot(datag) +
   # Facet_grid pour aligner les échelles par ligne
   facet_grid(rows = vars(Indice), cols = vars(region), scales = "free_y") +
   theme_bw()
+
+
 ggsave('Diversityindex_moments_combine.png', path = "output/graphs/bloom", dpi = 600, width = 200, height = 200, units = 'mm')
 
 datag <- pivot_longer(blooms, cols = c(Shannon, Pielou, BergerParker),names_to = "Indice")
@@ -150,14 +161,16 @@ ggplot(datag) +
   geom_violin(aes(x = Moment, y = value, group = Moment, colour = as.character(region)), 
               size = 0.8, draw_quantiles = c(0.5), show.legend = FALSE, fill = "gray96") +
   
-  # Ajout des lignes représentant les moyennes par Bloom_Phylum
-  stat_summary(aes(x = Moment, y = value, colour = Bloom_Phylum),
-               fun = mean, geom = "pointrange", alpha = 0.4, 
-               size = 1, show.legend = FALSE) +
+  # Moyenne (point) et écart-type (barres d'erreur avec extrémités horizontales)
+  stat_summary(aes(x = Moment, y = value, colour = Bloom_Phylum), 
+               fun = mean, geom = "point", size = 5, alpha = 0.6, show.legend = FALSE) +
+  stat_summary(aes(x = Moment, y = value, colour = Bloom_Phylum), 
+               fun.data = mean_sdl, fun.args = list(mult = 1), 
+               geom = "errorbar", width = 0.2, size = 0.8, show.legend = FALSE) +
   
-  # Ajout des points individuels avec geom_sina
+  # Points individuels avec geom_sina
   geom_sina(aes(x = Moment, y = value, group = Moment, colour = Bloom_Phylum), 
-            alpha = 0.20, show.legend = TRUE) +
+            alpha = 0, show.legend = TRUE) +
   
   # Labels et configuration des axes
   labs(x = "Moment", y = "Value") +
@@ -170,28 +183,88 @@ ggsave('OriginalDiversityindex_moments_combine.png', path = "output/graphs/bloom
 
 datag <- pivot_longer(blooms, cols = c(Dim.1,Dim.2,Dim.3),names_to = "Indice")
 
-ggplot(datag) +
+Dim1 <- ggplot(filter(datag,Indice == "Dim.1")) +
   
   # Violin plot avec la médiane
   geom_violin(aes(x = Moment, y = value, group = Moment, colour = as.character(region)), 
               size = 0.8, draw_quantiles = c(0.5), show.legend = FALSE, fill = "gray96") +
   
-  # Ajout des lignes représentant les moyennes par Bloom_Phylum
-  stat_summary(aes(x = Moment, y = value, colour = Bloom_Phylum),
-               fun = mean, geom = "pointrange", alpha = 0.4, 
-               size = 1, show.legend = FALSE) +
+  # Moyenne (point) et écart-type (barres d'erreur avec extrémités horizontales)
+  stat_summary(aes(x = Moment, y = value, colour = Bloom_Phylum), 
+               fun = mean, geom = "point", size = 5, alpha = 0.6, show.legend = FALSE) +
+  stat_summary(aes(x = Moment, y = value, colour = Bloom_Phylum), 
+               fun.data = mean_sdl, fun.args = list(mult = 1), 
+               geom = "errorbar", width = 0.2, size = 0.8, show.legend = FALSE) +
   
-  # Ajout des points individuels avec geom_sina
+  # Points individuels avec geom_sina
   geom_sina(aes(x = Moment, y = value, group = Moment, colour = Bloom_Phylum), 
-            alpha = 0.20, show.legend = TRUE) +
+            alpha = 0, show.legend = TRUE) +
   
   # Labels et configuration des axes
-  labs(x = "Moment", y = "Value") +
+  labs(x = NULL, y = "") +
   scale_colour_manual(values = region_col, guide = "none") +
   
   # Facet_grid pour aligner les échelles par ligne
-  facet_grid(rows = vars(Indice), cols = vars(region), scales = "free_y")
+  facet_grid(rows = vars(Indice), cols = vars(region), scales = "free_y")+
+  theme_bw()+
+  theme(axis.text.x = element_blank(),
+        axis.ticks.x = element_blank())
+
+Dim2 <- ggplot(filter(datag,Indice == "Dim.2")) +
+  
+  # Violin plot avec la médiane
+  geom_violin(aes(x = Moment, y = value, group = Moment, colour = as.character(region)), 
+              size = 0.8, draw_quantiles = c(0.5), show.legend = FALSE, fill = "gray96") +
+  
+  # Moyenne (point) et écart-type (barres d'erreur avec extrémités horizontales)
+  stat_summary(aes(x = Moment, y = value, colour = Bloom_Phylum), 
+               fun = mean, geom = "point", size = 5, alpha = 0.6, show.legend = FALSE) +
+  stat_summary(aes(x = Moment, y = value, colour = Bloom_Phylum), 
+               fun.data = mean_sdl, fun.args = list(mult = 1), 
+               geom = "errorbar", width = 0.2, size = 0.8, show.legend = FALSE) +
+  
+  # Points individuels avec geom_sina
+  geom_sina(aes(x = Moment, y = value, group = Moment, colour = Bloom_Phylum), 
+            alpha = 0, show.legend = TRUE) +
+  
+  # Labels et configuration des axes
+  labs(x = NULL, y = "Value") +
+  scale_colour_manual(values = region_col, guide = "none") +
+  
+  # Facet_grid pour aligner les échelles par ligne
+  facet_grid(rows = vars(Indice), cols = vars(region), scales = "free_y")+
+  theme_bw()+
+  theme(axis.text.x = element_blank(),
+        axis.ticks.x = element_blank())
+
+Dim3 <- ggplot(filter(datag,Indice == "Dim.3")) +
+  
+  # Violin plot avec la médiane
+  geom_violin(aes(x = Moment, y = value, group = Moment, colour = as.character(region)), 
+              size = 0.8, draw_quantiles = c(0.5), show.legend = FALSE, fill = "gray96") +
+  
+  # Moyenne (point) et écart-type (barres d'erreur avec extrémités horizontales)
+  stat_summary(aes(x = Moment, y = value, colour = Bloom_Phylum), 
+               fun = mean, geom = "point", size = 5, alpha = 0.6, show.legend = FALSE) +
+  stat_summary(aes(x = Moment, y = value, colour = Bloom_Phylum), 
+               fun.data = mean_sdl, fun.args = list(mult = 1), 
+               geom = "errorbar", width = 0.2, size = 0.8, show.legend = FALSE) +
+  
+  # Points individuels avec geom_sina
+  geom_sina(aes(x = Moment, y = value, group = Moment, colour = Bloom_Phylum), 
+            alpha = 0, show.legend = TRUE) +
+  
+  # Labels et configuration des axes
+  labs(x = "Moment", y = "") +
+  scale_colour_manual(values = region_col, guide = "none") +
+  
+  # Facet_grid pour aligner les échelles par ligne
+  facet_grid(rows = vars(Indice), cols = vars(region), scales = "free_y")+
+ scale_y_continuous(limits = c(-4,4))+
   theme_bw()
+
+plot_grid(Dim1,Dim2,Dim3,ncol=1)
+
 ggsave('ACPdim_moments_combine.png', path = "output/graphs/bloom", dpi = 600, width = 200, height = 200, units = 'mm')
 
 datag <- pivot_longer(blooms, cols = c(P_BacBac,P_BacDino,P_DinoDino,P_AAutres),names_to = "Indice")
@@ -202,14 +275,16 @@ ggplot(datag) +
   geom_violin(aes(x = Moment, y = value, group = Moment, colour = as.character(region)), 
               size = 0.8, draw_quantiles = c(0.5), show.legend = FALSE, fill = "gray96") +
   
-  # Ajout des lignes représentant les moyennes par Bloom_Phylum
-  stat_summary(aes(x = Moment, y = value, colour = Bloom_Phylum),
-               fun = mean, geom = "pointrange", alpha = 0.4, 
-               size = 1, show.legend = FALSE) +
+  # Moyenne (point) et écart-type (barres d'erreur avec extrémités horizontales)
+  stat_summary(aes(x = Moment, y = value, colour = Bloom_Phylum), 
+               fun = mean, geom = "point", size = 5, alpha = 0.6, show.legend = FALSE) +
+  stat_summary(aes(x = Moment, y = value, colour = Bloom_Phylum), 
+               fun.data = mean_sdl, fun.args = list(mult = 1), 
+               geom = "errorbar", width = 0.2, size = 0.8, show.legend = FALSE) +
   
-  # Ajout des points individuels avec geom_sina
+  # Points individuels avec geom_sina
   geom_sina(aes(x = Moment, y = value, group = Moment, colour = Bloom_Phylum), 
-            alpha = 0.20, show.legend = TRUE) +
+            alpha = 0, show.legend = TRUE) +
   
   # Labels et configuration des axes
   labs(x = "Moment", y = "Value") +
@@ -220,6 +295,36 @@ ggplot(datag) +
   theme_bw()
 ggsave('Associations_moments_combine.png', path = "output/graphs/bloom", dpi = 600, width = 200, height = 200, units = 'mm')
 
+
+datag <- pivot_longer(blooms, cols = c(PP_BacBac,PP_BacDino,PP_DinoDino,PP_AAutres),names_to = "Indice")
+
+ggplot(datag) +
+  
+  # Violin plot avec la médiane
+  geom_violin(aes(x = Moment, y = value, group = Moment, colour = as.character(region)), 
+              size = 0.8, draw_quantiles = c(0.5), show.legend = FALSE, fill = "gray96") +
+  
+  # Moyenne (point) et écart-type (barres d'erreur avec extrémités horizontales)
+  stat_summary(aes(x = Moment, y = value, colour = Bloom_Phylum), 
+               fun = mean, geom = "point", size = 5, alpha = 0.6, show.legend = FALSE) +
+  stat_summary(aes(x = Moment, y = value, colour = Bloom_Phylum), 
+               fun.data = mean_sdl, fun.args = list(mult = 1), 
+               geom = "errorbar", width = 0.2, size = 0.8, show.legend = FALSE) +
+  
+  # Points individuels avec geom_sina
+  geom_sina(aes(x = Moment, y = value, group = Moment, colour = Bloom_Phylum), 
+            alpha = 0, show.legend = TRUE) +
+  
+  # Labels et configuration des axes
+  labs(x = "Moment", y = "Value") +
+  scale_colour_manual(values = region_col, guide = "none") +
+  
+  # Facet_grid pour aligner les échelles par ligne
+  facet_grid(rows = vars(Indice), cols = vars(region), scales = "free_y") +
+  theme_bw()
+ggsave('Associations_pondere_moments_combine.png', path = "output/graphs/bloom", dpi = 600, width = 200, height = 200, units = 'mm')
+
+
 datag <- pivot_longer(blooms, cols = c(P_bac,P_dino,P_autres),names_to = "Indice")
 
 ggplot(datag) +
@@ -228,14 +333,16 @@ ggplot(datag) +
   geom_violin(aes(x = Moment, y = value, group = Moment, colour = as.character(region)), 
               size = 0.8, draw_quantiles = c(0.5), show.legend = FALSE, fill = "gray96") +
   
-  # Ajout des lignes représentant les moyennes par Bloom_Phylum
-  stat_summary(aes(x = Moment, y = value, colour = Bloom_Phylum),
-               fun = mean, geom = "pointrange", alpha = 0.4, 
-               size = 1, show.legend = FALSE) +
+  # Moyenne (point) et écart-type (barres d'erreur avec extrémités horizontales)
+  stat_summary(aes(x = Moment, y = value, colour = Bloom_Phylum), 
+               fun = mean, geom = "point", size = 5, alpha = 0.6, show.legend = FALSE) +
+  stat_summary(aes(x = Moment, y = value, colour = Bloom_Phylum), 
+               fun.data = mean_sdl, fun.args = list(mult = 1), 
+               geom = "errorbar", width = 0.2, size = 0.8, show.legend = FALSE) +
   
-  # Ajout des points individuels avec geom_sina
+  # Points individuels avec geom_sina
   geom_sina(aes(x = Moment, y = value, group = Moment, colour = Bloom_Phylum), 
-            alpha = 0.20, show.legend = TRUE) +
+            alpha = 0, show.legend = TRUE) +
   
   # Labels et configuration des axes
   labs(x = "Moment", y = "Value") +
@@ -270,7 +377,29 @@ DunnTest(blooms_med$Dim.2~blooms_med$Moment,method = "BH")
 kruskal.test(blooms_med$Dim.3~blooms_med$Moment)
 DunnTest(blooms_med$Dim.3~blooms_med$Moment,method = "BH")
 
+kruskal.test(blooms_med$P_bac~blooms_med$Moment)
+DunnTest(blooms_med$P_bac~blooms_med$Moment,method = "BH")
+kruskal.test(blooms_med$P_dino~blooms_med$Moment)
+DunnTest(blooms_med$P_dino~blooms_med$Moment,method = "BH")
+kruskal.test(blooms_med$P_autres~blooms_med$Moment)
+DunnTest(blooms_med$P_bac~blooms_med$Moment,method = "BH")
+
+kruskal.test(blooms_med$PP_BacBac~blooms_med$Moment)
+DunnTest(blooms_med$PP_BacBac~blooms_med$Moment,method = "BH")
+kruskal.test(blooms_med$PP_BacDino~blooms_med$Moment)
+DunnTest(blooms_med$PP_BacDino~blooms_med$Moment,method = "BH")
+kruskal.test(blooms_med$PP_DinoDino~blooms_med$Moment)
+DunnTest(blooms_med$PP_DinoDino~blooms_med$Moment,method = "BH")
+
+kruskal.test(blooms_med$P_BacBac~blooms_med$Moment)
+DunnTest(blooms_med$P_BacBac~blooms_med$Moment,method = "BH")
+kruskal.test(blooms_med$P_BacDino~blooms_med$Moment)
+DunnTest(blooms_med$P_BacDino~blooms_med$Moment,method = "BH")
+kruskal.test(blooms_med$P_DinoDino~blooms_med$Moment)
+DunnTest(blooms_med$P_DinoDino~blooms_med$Moment,method = "BH")
+
 blooms_manche <- filter(blooms, region == "2-Eastern Channel - North Sea")
+
 kruskal.test(blooms_manche$RShannon~blooms_manche$Moment)
 DunnTest(blooms_manche$RShannon~blooms_manche$Moment,method = "BH")
 kruskal.test(blooms_manche$RPielou~blooms_manche$Moment)
@@ -291,6 +420,27 @@ kruskal.test(blooms_manche$Dim.2~blooms_manche$Moment)
 DunnTest(blooms_manche$Dim.2~blooms_manche$Moment,method = "BH")
 kruskal.test(blooms_manche$Dim.3~blooms_manche$Moment)
 DunnTest(blooms_manche$Dim.3~blooms_manche$Moment,method = "BH")
+
+kruskal.test(blooms_manche$P_bac~blooms_manche$Moment)
+DunnTest(blooms_manche$P_bac~blooms_manche$Moment,method = "BH")
+kruskal.test(blooms_manche$P_dino~blooms_manche$Moment)
+DunnTest(blooms_manche$P_dino~blooms_manche$Moment,method = "BH")
+kruskal.test(blooms_manche$P_autres~blooms_manche$Moment)
+DunnTest(blooms_manche$P_bac~blooms_manche$Moment,method = "BH")
+
+kruskal.test(blooms_manche$P_BacBac~blooms_manche$Moment)
+DunnTest(blooms_manche$P_BacBac~blooms_manche$Moment,method = "BH")
+kruskal.test(blooms_manche$P_BacDino~blooms_manche$Moment)
+DunnTest(blooms_manche$P_BacDino~blooms_manche$Moment,method = "BH")
+kruskal.test(blooms_manche$P_DinoDino~blooms_manche$Moment)
+DunnTest(blooms_manche$P_DinoDino~blooms_manche$Moment,method = "BH")
+
+kruskal.test(blooms_manche$PP_BacBac~blooms_manche$Moment)
+DunnTest(blooms_manche$PP_BacBac~blooms_manche$Moment,method = "BH")
+kruskal.test(blooms_manche$PP_BacDino~blooms_manche$Moment)
+DunnTest(blooms_manche$PP_BacDino~blooms_manche$Moment,method = "BH")
+kruskal.test(blooms_manche$PP_DinoDino~blooms_manche$Moment)
+DunnTest(blooms_manche$PP_DinoDino~blooms_manche$Moment,method = "BH")
 
 blooms_atlantique <- filter(blooms, region == "3-Atlantic - Western Channel")
 kruskal.test(blooms_atlantique$RShannon~blooms_atlantique$Moment)
@@ -313,6 +463,27 @@ kruskal.test(blooms_atlantique$Dim.2~blooms_atlantique$Moment)
 DunnTest(blooms_atlantique$Dim.2~blooms_atlantique$Moment,method = "BH")
 kruskal.test(blooms_atlantique$Dim.3~blooms_atlantique$Moment)
 DunnTest(blooms_atlantique$Dim.3~blooms_atlantique$Moment,method = "BH")
+
+kruskal.test(blooms_atlantique$P_bac~blooms_atlantique$Moment)
+DunnTest(blooms_atlantique$P_bac~blooms_atlantique$Moment,method = "BH")
+kruskal.test(blooms_atlantique$P_dino~blooms_atlantique$Moment)
+DunnTest(blooms_atlantique$P_dino~blooms_atlantique$Moment,method = "BH")
+kruskal.test(blooms_atlantique$P_autres~blooms_atlantique$Moment)
+DunnTest(blooms_atlantique$P_bac~blooms_atlantique$Moment,method = "BH")
+
+kruskal.test(blooms_atlantique$P_BacBac~blooms_atlantique$Moment)
+DunnTest(blooms_atlantique$P_BacBac~blooms_atlantique$Moment,method = "BH")
+kruskal.test(blooms_atlantique$P_BacDino~blooms_atlantique$Moment)
+DunnTest(blooms_atlantique$P_BacDino~blooms_atlantique$Moment,method = "BH")
+kruskal.test(blooms_atlantique$P_DinoDino~blooms_atlantique$Moment)
+DunnTest(blooms_atlantique$P_DinoDino~blooms_atlantique$Moment,method = "BH")
+
+kruskal.test(blooms_atlantique$PP_BacBac~blooms_atlantique$Moment)
+DunnTest(blooms_atlantique$PP_BacBac~blooms_atlantique$Moment,method = "BH")
+kruskal.test(blooms_atlantique$PP_BacDino~blooms_atlantique$Moment)
+DunnTest(blooms_atlantique$PP_BacDino~blooms_atlantique$Moment,method = "BH")
+kruskal.test(blooms_atlantique$PP_DinoDino~blooms_atlantique$Moment)
+DunnTest(blooms_atlantique$PP_DinoDino~blooms_atlantique$Moment,method = "BH")
 
 ### Statistical tests on the diatoms blooms
 blooms_med <- filter(blooms, region == "1-Mediterranean sea" & Bloom_Phylum == "Bac")
@@ -337,6 +508,27 @@ DunnTest(blooms_med$Dim.2~blooms_med$Moment,method = "BH")
 kruskal.test(blooms_med$Dim.3~blooms_med$Moment)
 DunnTest(blooms_med$Dim.3~blooms_med$Moment,method = "BH")
 
+kruskal.test(blooms_med$P_bac~blooms_med$Moment)
+DunnTest(blooms_med$P_bac~blooms_med$Moment,method = "BH")
+kruskal.test(blooms_med$P_dino~blooms_med$Moment)
+DunnTest(blooms_med$P_dino~blooms_med$Moment,method = "BH")
+kruskal.test(blooms_med$P_autres~blooms_med$Moment)
+DunnTest(blooms_med$P_bac~blooms_med$Moment,method = "BH")
+
+kruskal.test(blooms_med$P_BacBac~blooms_med$Moment)
+DunnTest(blooms_med$P_BacBac~blooms_med$Moment,method = "BH")
+kruskal.test(blooms_med$P_BacDino~blooms_med$Moment)
+DunnTest(blooms_med$P_BacDino~blooms_med$Moment,method = "BH")
+kruskal.test(blooms_med$P_DinoDino~blooms_med$Moment)
+DunnTest(blooms_med$P_DinoDino~blooms_med$Moment,method = "BH")
+
+kruskal.test(blooms_med$PP_BacBac~blooms_med$Moment)
+DunnTest(blooms_med$PP_BacBac~blooms_med$Moment,method = "BH")
+kruskal.test(blooms_med$PP_BacDino~blooms_med$Moment)
+DunnTest(blooms_med$PP_BacDino~blooms_med$Moment,method = "BH")
+kruskal.test(blooms_med$PP_DinoDino~blooms_med$Moment)
+DunnTest(blooms_med$PP_DinoDino~blooms_med$Moment,method = "BH")
+
 blooms_manche <- filter(blooms, region == "2-Eastern Channel - North Sea" & Bloom_Phylum == "Bac")
 kruskal.test(blooms_manche$RShannon~blooms_manche$Moment)
 DunnTest(blooms_manche$RShannon~blooms_manche$Moment,method = "BH")
@@ -358,6 +550,27 @@ kruskal.test(blooms_manche$Dim.2~blooms_manche$Moment)
 DunnTest(blooms_manche$Dim.2~blooms_manche$Moment,method = "BH")
 kruskal.test(blooms_manche$Dim.3~blooms_manche$Moment)
 DunnTest(blooms_manche$Dim.3~blooms_manche$Moment,method = "BH")
+
+kruskal.test(blooms_manche$P_bac~blooms_manche$Moment)
+DunnTest(blooms_manche$P_bac~blooms_manche$Moment,method = "BH")
+kruskal.test(blooms_manche$P_dino~blooms_manche$Moment)
+DunnTest(blooms_manche$P_dino~blooms_manche$Moment,method = "BH")
+kruskal.test(blooms_manche$P_autres~blooms_manche$Moment)
+DunnTest(blooms_manche$P_bac~blooms_manche$Moment,method = "BH")
+
+kruskal.test(blooms_manche$P_BacBac~blooms_manche$Moment)
+DunnTest(blooms_manche$P_BacBac~blooms_manche$Moment,method = "BH")
+kruskal.test(blooms_manche$P_BacDino~blooms_manche$Moment)
+DunnTest(blooms_manche$P_BacDino~blooms_manche$Moment,method = "BH")
+kruskal.test(blooms_manche$P_DinoDino~blooms_manche$Moment)
+DunnTest(blooms_manche$P_DinoDino~blooms_manche$Moment,method = "BH")
+
+kruskal.test(blooms_manche$PP_BacBac~blooms_manche$Moment)
+DunnTest(blooms_manche$PP_BacBac~blooms_manche$Moment,method = "BH")
+kruskal.test(blooms_manche$PP_BacDino~blooms_manche$Moment)
+DunnTest(blooms_manche$PP_BacDino~blooms_manche$Moment,method = "BH")
+kruskal.test(blooms_manche$PP_DinoDino~blooms_manche$Moment)
+DunnTest(blooms_manche$PP_DinoDino~blooms_manche$Moment,method = "BH")
 
 blooms_atlantique <- filter(blooms, region == "3-Atlantic - Western Channel" & Bloom_Phylum == "Bac")
 kruskal.test(blooms_atlantique$RShannon~blooms_atlantique$Moment)
@@ -381,15 +594,37 @@ DunnTest(blooms_atlantique$Dim.2~blooms_atlantique$Moment,method = "BH")
 kruskal.test(blooms_atlantique$Dim.3~blooms_atlantique$Moment)
 DunnTest(blooms_atlantique$Dim.3~blooms_atlantique$Moment,method = "BH")
 
+kruskal.test(blooms_atlantique$P_bac~blooms_atlantique$Moment)
+DunnTest(blooms_atlantique$P_bac~blooms_atlantique$Moment,method = "BH")
+kruskal.test(blooms_atlantique$P_dino~blooms_atlantique$Moment)
+DunnTest(blooms_atlantique$P_dino~blooms_atlantique$Moment,method = "BH")
+kruskal.test(blooms_atlantique$P_autres~blooms_atlantique$Moment)
+DunnTest(blooms_atlantique$P_bac~blooms_atlantique$Moment,method = "BH")
+
+kruskal.test(blooms_atlantique$P_BacBac~blooms_atlantique$Moment)
+DunnTest(blooms_atlantique$P_BacBac~blooms_atlantique$Moment,method = "BH")
+kruskal.test(blooms_atlantique$P_BacDino~blooms_atlantique$Moment)
+DunnTest(blooms_atlantique$P_BacDino~blooms_atlantique$Moment,method = "BH")
+kruskal.test(blooms_atlantique$P_DinoDino~blooms_atlantique$Moment)
+DunnTest(blooms_atlantique$P_DinoDino~blooms_atlantique$Moment,method = "BH")
+
+kruskal.test(blooms_atlantique$PP_BacBac~blooms_atlantique$Moment)
+DunnTest(blooms_atlantique$PP_BacBac~blooms_atlantique$Moment,method = "BH")
+kruskal.test(blooms_atlantique$PP_BacDino~blooms_atlantique$Moment)
+DunnTest(blooms_atlantique$PP_BacDino~blooms_atlantique$Moment,method = "BH")
+kruskal.test(blooms_atlantique$PP_DinoDino~blooms_atlantique$Moment)
+DunnTest(blooms_atlantique$PP_DinoDino~blooms_atlantique$Moment,method = "BH")
+
 
 ### Calculate the mean for each variable 
 ### Diatoms and dinoflagellates blooms
 
 blooms <- select(blooms, Date, Code_point_Libelle, region, Moment,Bloom_Phylum,RShannon,RPielou, RBergerParker, 
                  Shannon, Pielou, BergerParker,Dim.1,Dim.2,Dim.3,P_bac,P_dino,P_autres,
-                 P_AAutres,P_BacBac,P_BacDino,P_DinoDino)
+                 P_AAutres,P_BacBac,P_BacDino,P_DinoDino,
+                 PP_AAutres,PP_BacBac,PP_BacDino,PP_DinoDino)
 
-blooms_longer <- pivot_longer(blooms, cols = c(RShannon:P_DinoDino))
+blooms_longer <- pivot_longer(blooms, cols = c(RShannon:PP_DinoDino))
 
 blooms_summary <- summarise(group_by(blooms_longer,region,Moment,name),value=mean(value,na.rm=T))
 
@@ -608,12 +843,20 @@ atlantic_before <- ggplot() +
   geom_rect(data = Associations_atlantic_before, aes(ymax=ymax+0.02, ymin=ymin, xmax=2.9, xmin=2, fill=name)) +
   geom_text( data = Compositions_atlantic_before,x=4.7, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
   geom_text( data = Associations_atlantic_before,x=1.2, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
-  scale_fill_manual(values = c("P_bac" = "#56B4E9",
-                               "P_autres"      = "grey" ,"P_dino" = "#009E73","P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
-                               ,"P_AAutres"      = "grey" ,"P_DinoDino" = "#009E73"))+
-  scale_color_manual(values = c("P_bac" = "#56B4E9",
-                                "P_autres"      = "grey" ,"P_dino" = "#009E73","P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
-                                ,"P_AAutres"      = "grey" ,"P_DinoDino" = "#009E73"))+
+  scale_fill_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"P_DinoDino" = "#009E73","P_AAutres" = "grey30"
+  ), breaks = c("P_bac","P_dino","P_autres","P_BacBac","P_BacDino","P_DinoDino","P_AAutres"
+
+  ),name = NULL) +
+  scale_colour_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"P_DinoDino" = "#009E73","P_AAutres" = "grey30"
+  ), breaks = c(
+    "P_bac","P_dino","P_autres","P_BacBac","P_BacDino","P_DinoDino","P_AAutres"
+  ),name = NULL)+
   coord_polar(theta="y") +
   xlim(c(-1, 4)) +
   theme_no_axes() +
@@ -626,12 +869,20 @@ atlantic_during <- ggplot() +
   geom_rect(data = Associations_atlantic_during, aes(ymax=ymax+0.01, ymin=ymin, xmax=2.9, xmin=2, fill=name)) +
   geom_text( data = Compositions_atlantic_during,x=4.7, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
   geom_text( data = Associations_atlantic_during,x=1.2, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
-  scale_fill_manual(values = c("P_bac" = "#56B4E9",
-                               "P_autres"      = "grey" ,"P_dino" = "#009E73","P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
-                               ,"P_AAutres"      = "grey" ,"P_DinoDino" = "#009E73"))+
-  scale_color_manual(values = c("P_bac" = "#56B4E9",
-                                "P_autres"      = "grey" ,"P_dino" = "#009E73","P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
-                                ,"P_AAutres"      = "grey" ,"P_DinoDino" = "#009E73"))+
+  scale_fill_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"P_DinoDino" = "#009E73","P_AAutres" = "grey30"
+  ), breaks = c("P_bac","P_dino","P_autres","P_BacBac","P_BacDino","P_DinoDino","P_AAutres"
+                
+  ),name = NULL) +
+  scale_colour_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"P_DinoDino" = "#009E73","P_AAutres" = "grey30"
+  ), breaks = c(
+    "P_bac","P_dino","P_autres","P_BacBac","P_BacDino","P_DinoDino","P_AAutres"
+  ),name = NULL)+
   coord_polar(theta="y") +
   xlim(c(-1, 4)) +
   theme_no_axes() +
@@ -646,12 +897,20 @@ atlantic_after <- ggplot() +
   geom_rect(data = Associations_atlantic_after, aes(ymax=ymax+0.01, ymin=ymin, xmax=2.9, xmin=2, fill=name)) +
   geom_text( data = Compositions_atlantic_after,x=4.7, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
   geom_text( data = Associations_atlantic_after,x=1.2, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
-  scale_fill_manual(values = c("P_bac" = "#56B4E9",
-                               "P_autres"      = "grey" ,"P_dino" = "#009E73","P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
-                               ,"P_AAutres"      = "grey" ,"P_DinoDino" = "#009E73"))+
-  scale_color_manual(values = c("P_bac" = "#56B4E9",
-                                "P_autres"      = "grey" ,"P_dino" = "#009E73","P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
-                                ,"P_AAutres"      = "grey" ,"P_DinoDino" = "#009E73"))+
+  scale_fill_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"P_DinoDino" = "#009E73","P_AAutres" = "grey30"
+  ), breaks = c("P_bac","P_dino","P_autres","P_BacBac","P_BacDino","P_DinoDino","P_AAutres"
+                
+  ),name = NULL) +
+  scale_colour_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"P_DinoDino" = "#009E73","P_AAutres" = "grey30"
+  ), breaks = c(
+    "P_bac","P_dino","P_autres","P_BacBac","P_BacDino","P_DinoDino","P_AAutres"
+  ),name = NULL)+
   coord_polar(theta="y") +
   xlim(c(-1, 4)) +
   theme_no_axes() +
@@ -666,12 +925,20 @@ med_before <- ggplot() +
   geom_rect(data = Associations_med_before, aes(ymax=ymax, ymin=ymin, xmax=2.9, xmin=2, fill=name)) +
   geom_text( data = Compositions_med_before,x=4.7, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
   geom_text( data = Associations_med_before,x=1.2, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
-  scale_fill_manual(values = c("P_bac" = "#56B4E9",
-                               "P_autres"      = "grey" ,"P_dino" = "#009E73","P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
-                               ,"P_AAutres"      = "grey" ,"P_DinoDino" = "#009E73"))+
-  scale_color_manual(values = c("P_bac" = "#56B4E9",
-                                "P_autres"      = "grey" ,"P_dino" = "#009E73","P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
-                                ,"P_AAutres"      = "grey" ,"P_DinoDino" = "#009E73"))+
+  scale_fill_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"P_DinoDino" = "#009E73","P_AAutres" = "grey30"
+  ), breaks = c("P_bac","P_dino","P_autres","P_BacBac","P_BacDino","P_DinoDino","P_AAutres"
+                
+  ),name = NULL) +
+  scale_colour_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"P_DinoDino" = "#009E73","P_AAutres" = "grey30"
+  ), breaks = c(
+    "P_bac","P_dino","P_autres","P_BacBac","P_BacDino","P_DinoDino","P_AAutres"
+  ),name = NULL)+
   coord_polar(theta="y") +
   xlim(c(-1, 4)) +
   theme_no_axes() +
@@ -684,12 +951,20 @@ med_during <- ggplot() +
   geom_rect(data = Associations_med_during, aes(ymax=ymax, ymin=ymin, xmax=2.9, xmin=2, fill=name)) +
   geom_text( data = Compositions_med_during,x=4.7, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
   geom_text( data = Associations_med_during,x=1.2, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
-  scale_fill_manual(values = c("P_bac" = "#56B4E9",
-                               "P_autres"      = "grey" ,"P_dino" = "#009E73","P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
-                               ,"P_AAutres"      = "grey" ,"P_DinoDino" = "#009E73"))+
-  scale_color_manual(values = c("P_bac" = "#56B4E9",
-                                "P_autres"      = "grey" ,"P_dino" = "#009E73","P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
-                                ,"P_AAutres"      = "grey" ,"P_DinoDino" = "#009E73"))+
+  scale_fill_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"P_DinoDino" = "#009E73","P_AAutres" = "grey30"
+  ), breaks = c("P_bac","P_dino","P_autres","P_BacBac","P_BacDino","P_DinoDino","P_AAutres"
+                
+  ),name = NULL) +
+  scale_colour_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"P_DinoDino" = "#009E73","P_AAutres" = "grey30"
+  ), breaks = c(
+    "P_bac","P_dino","P_autres","P_BacBac","P_BacDino","P_DinoDino","P_AAutres"
+  ),name = NULL)+
   coord_polar(theta="y") +
   xlim(c(-1, 4)) +
   theme_no_axes() +
@@ -704,12 +979,20 @@ med_after <- ggplot() +
   geom_rect(data = Associations_med_after, aes(ymax=ymax, ymin=ymin, xmax=2.9, xmin=2, fill=name)) +
   geom_text( data = Compositions_med_after,x=4.7, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
   geom_text( data = Associations_med_after,x=1.2, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
-  scale_fill_manual(values = c("P_bac" = "#56B4E9",
-                               "P_autres"      = "grey" ,"P_dino" = "#009E73","P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
-                               ,"P_AAutres"      = "grey" ,"P_DinoDino" = "#009E73"))+
-  scale_color_manual(values = c("P_bac" = "#56B4E9",
-                                "P_autres"      = "grey" ,"P_dino" = "#009E73","P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
-                                ,"P_AAutres"      = "grey" ,"P_DinoDino" = "#009E73"))+
+  scale_fill_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"P_DinoDino" = "#009E73","P_AAutres" = "grey30"
+  ), breaks = c("P_bac","P_dino","P_autres","P_BacBac","P_BacDino","P_DinoDino","P_AAutres"
+                
+  ),name = NULL) +
+  scale_colour_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"P_DinoDino" = "#009E73","P_AAutres" = "grey30"
+  ), breaks = c(
+    "P_bac","P_dino","P_autres","P_BacBac","P_BacDino","P_DinoDino","P_AAutres"
+  ),name = NULL)+
   coord_polar(theta="y") +
   xlim(c(-1, 4)) +
   theme_no_axes() +
@@ -724,12 +1007,20 @@ manche_before <- ggplot() +
   geom_rect(data = Associations_manche_before, aes(ymax=ymax+0.01, ymin=ymin, xmax=2.9, xmin=2, fill=name)) +
   geom_text( data = Compositions_manche_before,x=4.7, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
   geom_text( data = Associations_manche_before,x=1.2, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
-  scale_fill_manual(values = c("P_bac" = "#56B4E9",
-                               "P_autres"      = "grey" ,"P_dino" = "#009E73","P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
-                               ,"P_AAutres"      = "grey" ,"P_DinoDino" = "#009E73"))+
-  scale_color_manual(values = c("P_bac" = "#56B4E9",
-                                "P_autres"      = "grey" ,"P_dino" = "#009E73","P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
-                                ,"P_AAutres"      = "grey" ,"P_DinoDino" = "#009E73"))+
+  scale_fill_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"P_DinoDino" = "#009E73","P_AAutres" = "grey30"
+  ), breaks = c("P_bac","P_dino","P_autres","P_BacBac","P_BacDino","P_DinoDino","P_AAutres"
+                
+  ),name = NULL) +
+  scale_colour_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"P_DinoDino" = "#009E73","P_AAutres" = "grey30"
+  ), breaks = c(
+    "P_bac","P_dino","P_autres","P_BacBac","P_BacDino","P_DinoDino","P_AAutres"
+  ),name = NULL)+
   coord_polar(theta="y") +
   xlim(c(-1, 4)) +
   theme_no_axes() +
@@ -742,12 +1033,20 @@ manche_during <- ggplot() +
   geom_rect(data = Associations_manche_during, aes(ymax=ymax+0.01, ymin=ymin, xmax=2.9, xmin=2, fill=name)) +
   geom_text( data = Compositions_manche_during,x=4.7, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
   geom_text( data = Associations_manche_during,x=1.2, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
-  scale_fill_manual(values = c("P_bac" = "#56B4E9",
-                               "P_autres"      = "grey" ,"P_dino" = "#009E73","P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
-                               ,"P_AAutres"      = "grey" ,"P_DinoDino" = "#009E73"))+
-  scale_color_manual(values = c("P_bac" = "#56B4E9",
-                                "P_autres"      = "grey" ,"P_dino" = "#009E73","P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
-                                ,"P_AAutres"      = "grey" ,"P_DinoDino" = "#009E73"))+
+  scale_fill_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"P_DinoDino" = "#009E73","P_AAutres" = "grey30"
+  ), breaks = c("P_bac","P_dino","P_autres","P_BacBac","P_BacDino","P_DinoDino","P_AAutres"
+                
+  ),name = NULL) +
+  scale_colour_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"P_DinoDino" = "#009E73","P_AAutres" = "grey30"
+  ), breaks = c(
+    "P_bac","P_dino","P_autres","P_BacBac","P_BacDino","P_DinoDino","P_AAutres"
+  ),name = NULL)+
   coord_polar(theta="y") +
   xlim(c(-1, 4)) +
   theme_no_axes() +
@@ -762,12 +1061,20 @@ manche_after <- ggplot() +
   geom_rect(data = Associations_manche_after, aes(ymax=ymax+0.01, ymin=ymin, xmax=2.9, xmin=2, fill=name)) +
   geom_text( data = Compositions_manche_after,x=4.7, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
   geom_text( data = Associations_manche_after,x=1.2, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
-  scale_fill_manual(values = c("P_bac" = "#56B4E9",
-                               "P_autres"      = "grey" ,"P_dino" = "#009E73","P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
-                               ,"P_AAutres"      = "grey" ,"P_DinoDino" = "#009E73"))+
-  scale_color_manual(values = c("P_bac" = "#56B4E9",
-                                "P_autres"      = "grey" ,"P_dino" = "#009E73","P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
-                                ,"P_AAutres"      = "grey" ,"P_DinoDino" = "#009E73"))+
+  scale_fill_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"P_DinoDino" = "#009E73","P_AAutres" = "grey30"
+  ), breaks = c("P_bac","P_dino","P_autres","P_BacBac","P_BacDino","P_DinoDino","P_AAutres"
+                
+  ),name = NULL) +
+  scale_colour_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"P_DinoDino" = "#009E73","P_AAutres" = "grey30"
+  ), breaks = c(
+    "P_bac","P_dino","P_autres","P_BacBac","P_BacDino","P_DinoDino","P_AAutres"
+  ),name = NULL)+
   coord_polar(theta="y") +
   xlim(c(-1, 4)) +
   theme_no_axes() +
@@ -778,6 +1085,463 @@ manche <- plot_grid(manche_before,manche_during,manche_after,ncol = 3)
 
 plot_grid(med,manche,atlantic,ncol = 1)
 ggsave('asso_compo_moments_combine.png', path = "output/graphs/bloom", dpi = 600, width = 200, height = 200, units = 'mm')
+
+# With ponderate forces
+Associations <- pivot_longer(blooms_summary,cols=c(PP_AAutres,PP_BacBac,PP_BacDino,PP_DinoDino))
+Associations$value <- round(Associations$value,digits = 2)
+
+Compositions <- pivot_longer(blooms_summary,cols=c(P_autres,P_bac,P_dino))
+Compositions$value <- round(Compositions$value,digits = 2)
+
+# Create all the df needed
+# Associations 
+Associations_med_before <- filter(Associations, region == "1-Mediterranean sea" & Moment == "Before") 
+Associations_med_during <- filter(Associations, region == "1-Mediterranean sea" & Moment == "During") 
+Associations_med_after <- filter(Associations, region == "1-Mediterranean sea" & Moment == "After") 
+
+Associations_manche_before <- filter(Associations, region == "2-Eastern Channel - North Sea" & Moment == "Before") 
+Associations_manche_during <- filter(Associations, region == "2-Eastern Channel - North Sea" & Moment == "During") 
+Associations_manche_after <- filter(Associations, region == "2-Eastern Channel - North Sea" & Moment == "After") 
+
+Associations_atlantic_before <- filter(Associations, region == "3-Atlantic - Western Channel" & Moment == "Before") 
+Associations_atlantic_during <- filter(Associations, region == "3-Atlantic - Western Channel" & Moment == "During") 
+Associations_atlantic_after <- filter(Associations, region == "3-Atlantic - Western Channel" & Moment == "After") 
+
+# Compositions
+Compositions_med_before <- filter(Compositions, region == "1-Mediterranean sea" & Moment == "Before") 
+Compositions_med_during <- filter(Compositions, region == "1-Mediterranean sea" & Moment == "During") 
+Compositions_med_after <- filter(Compositions, region == "1-Mediterranean sea" & Moment == "After") 
+
+Compositions_manche_before <- filter(Compositions, region == "2-Eastern Channel - North Sea" & Moment == "Before") 
+Compositions_manche_during <- filter(Compositions, region == "2-Eastern Channel - North Sea" & Moment == "During") 
+Compositions_manche_after <- filter(Compositions, region == "2-Eastern Channel - North Sea" & Moment == "After") 
+
+Compositions_atlantic_before <- filter(Compositions, region == "3-Atlantic - Western Channel" & Moment == "Before") 
+Compositions_atlantic_during <- filter(Compositions, region == "3-Atlantic - Western Channel" & Moment == "During") 
+Compositions_atlantic_after <- filter(Compositions, region == "3-Atlantic - Western Channel" & Moment == "After")
+
+## Add some info for the graph
+# Compute the cumulative percentages (top of each rectangle)
+Associations_med_before$ymax <- cumsum(Associations_med_before$value)
+# Compute the bottom of each rectangle
+Associations_med_before$ymin <- c(0, head(Associations_med_before$ymax, n=-1))
+# Compute label position
+Associations_med_before$labelPosition <- (Associations_med_before$ymax + Associations_med_before$ymin) / 2
+# Compute a good label
+Associations_med_before$label <- paste0(Associations_med_before$value)
+
+# Compute the cumulative percentages (top of each rectangle)
+Associations_med_during$ymax <- cumsum(Associations_med_during$value)
+# Compute the bottom of each rectangle
+Associations_med_during$ymin <- c(0, head(Associations_med_during$ymax, n=-1))
+# Compute label position
+Associations_med_during$labelPosition <- (Associations_med_during$ymax + Associations_med_during$ymin) / 2
+# Compute a good label
+Associations_med_during$label <- paste0(Associations_med_during$value)
+
+# Compute the cumulative percentages (top of each rectangle)
+Associations_med_after$ymax <- cumsum(Associations_med_during$value)
+# Compute the bottom of each rectangle
+Associations_med_after$ymin <- c(0, head(Associations_med_after$ymax, n=-1))
+# Compute label position
+Associations_med_after$labelPosition <- (Associations_med_after$ymax + Associations_med_after$ymin) / 2
+# Compute a good label
+Associations_med_after$label <- paste0(Associations_med_after$value)
+
+
+## Add some info for the graph
+# Compute the cumulative percentages (top of each rectangle)
+Associations_manche_before$ymax <- cumsum(Associations_manche_before$value)
+# Compute the bottom of each rectangle
+Associations_manche_before$ymin <- c(0, head(Associations_manche_before$ymax, n=-1))
+# Compute label position
+Associations_manche_before$labelPosition <- (Associations_manche_before$ymax + Associations_manche_before$ymin) / 2
+# Compute a good label
+Associations_manche_before$label <- paste0(Associations_manche_before$value)
+
+# Compute the cumulative percentages (top of each rectangle)
+Associations_manche_during$ymax <- cumsum(Associations_manche_during$value)
+# Compute the bottom of each rectangle
+Associations_manche_during$ymin <- c(0, head(Associations_manche_during$ymax, n=-1))
+# Compute label position
+Associations_manche_during$labelPosition <- (Associations_manche_during$ymax + Associations_manche_during$ymin) / 2
+# Compute a good label
+Associations_manche_during$label <- paste0(Associations_manche_during$value)
+
+# Compute the cumulative percentages (top of each rectangle)
+Associations_manche_after$ymax <- cumsum(Associations_manche_during$value)
+# Compute the bottom of each rectangle
+Associations_manche_after$ymin <- c(0, head(Associations_manche_after$ymax, n=-1))
+# Compute label position
+Associations_manche_after$labelPosition <- (Associations_manche_after$ymax + Associations_manche_after$ymin) / 2
+# Compute a good label
+Associations_manche_after$label <- paste0(Associations_manche_after$value)
+
+
+## Add some info for the graph
+# Compute the cumulative percentages (top of each rectangle)
+Associations_atlantic_before$ymax <- cumsum(Associations_atlantic_before$value)
+# Compute the bottom of each rectangle
+Associations_atlantic_before$ymin <- c(0, head(Associations_atlantic_before$ymax, n=-1))
+# Compute label position
+Associations_atlantic_before$labelPosition <- (Associations_atlantic_before$ymax + Associations_atlantic_before$ymin) / 2
+# Compute a good label
+Associations_atlantic_before$label <- paste0(Associations_atlantic_before$value)
+
+# Compute the cumulative percentages (top of each rectangle)
+Associations_atlantic_during$ymax <- cumsum(Associations_atlantic_during$value)
+# Compute the bottom of each rectangle
+Associations_atlantic_during$ymin <- c(0, head(Associations_atlantic_during$ymax, n=-1))
+# Compute label position
+Associations_atlantic_during$labelPosition <- (Associations_atlantic_during$ymax + Associations_atlantic_during$ymin) / 2
+# Compute a good label
+Associations_atlantic_during$label <- paste0(Associations_atlantic_during$value)
+
+# Compute the cumulative percentages (top of each rectangle)
+Associations_atlantic_after$ymax <- cumsum(Associations_atlantic_during$value)
+# Compute the bottom of each rectangle
+Associations_atlantic_after$ymin <- c(0, head(Associations_atlantic_after$ymax, n=-1))
+# Compute label position
+Associations_atlantic_after$labelPosition <- (Associations_atlantic_after$ymax + Associations_atlantic_after$ymin) / 2
+# Compute a good label
+Associations_atlantic_after$label <- paste0(Associations_atlantic_after$value)
+
+
+## Add some info for the graph
+# Compute the cumulative percentages (top of each rectangle)
+Compositions_med_before$ymax <- cumsum(Compositions_med_before$value)
+# Compute the bottom of each rectangle
+Compositions_med_before$ymin <- c(0, head(Compositions_med_before$ymax, n=-1))
+# Compute label position
+Compositions_med_before$labelPosition <- (Compositions_med_before$ymax + Compositions_med_before$ymin) / 2
+# Compute a good label
+Compositions_med_before$label <- paste0(Compositions_med_before$value)
+
+# Compute the cumulative percentages (top of each rectangle)
+Compositions_med_during$ymax <- cumsum(Compositions_med_during$value)
+# Compute the bottom of each rectangle
+Compositions_med_during$ymin <- c(0, head(Compositions_med_during$ymax, n=-1))
+# Compute label position
+Compositions_med_during$labelPosition <- (Compositions_med_during$ymax + Compositions_med_during$ymin) / 2
+# Compute a good label
+Compositions_med_during$label <- paste0(Compositions_med_during$value)
+
+# Compute the cumulative percentages (top of each rectangle)
+Compositions_med_after$ymax <- cumsum(Compositions_med_during$value)
+# Compute the bottom of each rectangle
+Compositions_med_after$ymin <- c(0, head(Compositions_med_after$ymax, n=-1))
+# Compute label position
+Compositions_med_after$labelPosition <- (Compositions_med_after$ymax + Compositions_med_after$ymin) / 2
+# Compute a good label
+Compositions_med_after$label <- paste0(Compositions_med_after$value)
+
+
+## Add some info for the graph
+# Compute the cumulative percentages (top of each rectangle)
+Compositions_manche_before$ymax <- cumsum(Compositions_manche_before$value)
+# Compute the bottom of each rectangle
+Compositions_manche_before$ymin <- c(0, head(Compositions_manche_before$ymax, n=-1))
+# Compute label position
+Compositions_manche_before$labelPosition <- (Compositions_manche_before$ymax + Compositions_manche_before$ymin) / 2
+# Compute a good label
+Compositions_manche_before$label <- paste0(Compositions_manche_before$value)
+
+# Compute the cumulative percentages (top of each rectangle)
+Compositions_manche_during$ymax <- cumsum(Compositions_manche_during$value)
+# Compute the bottom of each rectangle
+Compositions_manche_during$ymin <- c(0, head(Compositions_manche_during$ymax, n=-1))
+# Compute label position
+Compositions_manche_during$labelPosition <- (Compositions_manche_during$ymax + Compositions_manche_during$ymin) / 2
+# Compute a good label
+Compositions_manche_during$label <- paste0(Compositions_manche_during$value)
+
+# Compute the cumulative percentages (top of each rectangle)
+Compositions_manche_after$ymax <- cumsum(Compositions_manche_during$value)
+# Compute the bottom of each rectangle
+Compositions_manche_after$ymin <- c(0, head(Compositions_manche_after$ymax, n=-1))
+# Compute label position
+Compositions_manche_after$labelPosition <- (Compositions_manche_after$ymax + Compositions_manche_after$ymin) / 2
+# Compute a good label
+Compositions_manche_after$label <- paste0(Compositions_manche_after$value)
+
+
+## Add some info for the graph
+# Compute the cumulative percentages (top of each rectangle)
+Compositions_atlantic_before$ymax <- cumsum(Compositions_atlantic_before$value)
+# Compute the bottom of each rectangle
+Compositions_atlantic_before$ymin <- c(0, head(Compositions_atlantic_before$ymax, n=-1))
+# Compute label position
+Compositions_atlantic_before$labelPosition <- (Compositions_atlantic_before$ymax + Compositions_atlantic_before$ymin) / 2
+# Compute a good label
+Compositions_atlantic_before$label <- paste0(Compositions_atlantic_before$value)
+
+# Compute the cumulative percentages (top of each rectangle)
+Compositions_atlantic_during$ymax <- cumsum(Compositions_atlantic_during$value)
+# Compute the bottom of each rectangle
+Compositions_atlantic_during$ymin <- c(0, head(Compositions_atlantic_during$ymax, n=-1))
+# Compute label position
+Compositions_atlantic_during$labelPosition <- (Compositions_atlantic_during$ymax + Compositions_atlantic_during$ymin) / 2
+# Compute a good label
+Compositions_atlantic_during$label <- paste0(Compositions_atlantic_during$value)
+
+# Compute the cumulative percentages (top of each rectangle)
+Compositions_atlantic_after$ymax <- cumsum(Compositions_atlantic_during$value)
+# Compute the bottom of each rectangle
+Compositions_atlantic_after$ymin <- c(0, head(Compositions_atlantic_after$ymax, n=-1))
+# Compute label position
+Compositions_atlantic_after$labelPosition <- (Compositions_atlantic_after$ymax + Compositions_atlantic_after$ymin) / 2
+# Compute a good label
+Compositions_atlantic_after$label <- paste0(Compositions_atlantic_after$value)
+
+# Doing the graph
+atlantic_before <- ggplot() +
+  geom_rect(data = Compositions_atlantic_before, aes(ymax=ymax, ymin=ymin, xmax=4, xmin=3, fill=name)) +
+  geom_rect(data = Associations_atlantic_before, aes(ymax=ymax+0.01, ymin=ymin, xmax=2.9, xmin=2, fill=name)) +
+  geom_text( data = Compositions_atlantic_before,x=4.7, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
+  geom_text( data = Associations_atlantic_before,x=1.2, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
+  scale_fill_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "PP_BacBac" = "#56B4E9","PP_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"PP_DinoDino" = "#009E73","PP_AAutres" = "grey30"
+  ), breaks = c("P_bac","P_dino","P_autres","P_BacBac","P_BacDino","P_DinoDino","P_AAutres"
+                
+  ),name = NULL) +
+  scale_colour_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "PP_BacBac" = "#56B4E9","PP_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"PP_DinoDino" = "#009E73","PP_AAutres" = "grey30"
+  ), breaks = c(
+    "P_bac","P_dino","P_autres","PP_BacBac","PP_BacDino","PP_DinoDino","PP_AAutres"
+  ),name = NULL)+
+  coord_polar(theta="y") +
+  xlim(c(-1, 4)) +
+  theme_no_axes() +
+  theme(legend.position = "none")+
+  facet_wrap(region~Moment)
+
+
+atlantic_during <- ggplot() +
+  geom_rect(data = Compositions_atlantic_during, aes(ymax=ymax, ymin=ymin, xmax=4, xmin=3, fill=name)) +
+  geom_rect(data = Associations_atlantic_during, aes(ymax=ymax, ymin=ymin, xmax=2.9, xmin=2, fill=name)) +
+  geom_text( data = Compositions_atlantic_during,x=4.7, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
+  geom_text( data = Associations_atlantic_during,x=1.2, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
+  scale_fill_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "PP_BacBac" = "#56B4E9","PP_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"PP_DinoDino" = "#009E73","PP_AAutres" = "grey30"
+  ), breaks = c("P_bac","P_dino","P_autres","PP_BacBac","PP_BacDino","PP_DinoDino","PP_AAutres"
+                
+  ),name = NULL) +
+  scale_colour_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "P_BacBac" = "#56B4E9","PP_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"PP_DinoDino" = "#009E73","PP_AAutres" = "grey30"
+  ), breaks = c(
+    "P_bac","P_dino","P_autres","PP_BacBac","PP_BacDino","PP_DinoDino","PP_AAutres"
+  ),name = NULL)+
+  coord_polar(theta="y") +
+  xlim(c(-1, 4)) +
+  theme_no_axes() +
+  theme(legend.position = "none")+
+  facet_wrap(region~Moment)
+
+
+
+
+atlantic_after <- ggplot() +
+  geom_rect(data = Compositions_atlantic_after, aes(ymax=ymax, ymin=ymin, xmax=4, xmin=3, fill=name)) +
+  geom_rect(data = Associations_atlantic_after, aes(ymax=ymax, ymin=ymin, xmax=2.9, xmin=2, fill=name)) +
+  geom_text( data = Compositions_atlantic_after,x=4.7, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
+  geom_text( data = Associations_atlantic_after,x=1.2, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
+  scale_fill_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "PP_BacBac" = "#56B4E9","PP_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"PP_DinoDino" = "#009E73","PP_AAutres" = "grey30"
+  ), breaks = c("P_bac","P_dino","P_autres","PP_BacBac","PP_BacDino","PP_DinoDino","PP_AAutres"
+                
+  ),name = NULL) +
+  scale_colour_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "PP_BacBac" = "#56B4E9","PP_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"PP_DinoDino" = "#009E73","PP_AAutres" = "grey30"
+  ), breaks = c(
+    "P_bac","P_dino","P_autres","PP_BacBac","PP_BacDino","PP_DinoDino","PP_AAutres"
+  ),name = NULL)+
+  coord_polar(theta="y") +
+  xlim(c(-1, 4)) +
+  theme_no_axes() +
+  theme(legend.position = "none")+
+  facet_wrap(region~Moment)
+
+atlantic <- plot_grid(atlantic_before,atlantic_during,atlantic_after,ncol = 3)
+
+# Doing the graph
+med_before <- ggplot() +
+  geom_rect(data = Compositions_med_before, aes(ymax=ymax, ymin=ymin, xmax=4, xmin=3, fill=name)) +
+  geom_rect(data = Associations_med_before, aes(ymax=ymax, ymin=ymin, xmax=2.9, xmin=2, fill=name)) +
+  geom_text( data = Compositions_med_before,x=4.7, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
+  geom_text( data = Associations_med_before,x=1.2, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
+  scale_fill_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "PP_BacBac" = "#56B4E9","PP_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"PP_DinoDino" = "#009E73","PP_AAutres" = "grey30"
+  ), breaks = c("P_bac","P_dino","P_autres","PP_BacBac","PP_BacDino","PP_DinoDino","PP_AAutres"
+                
+  ),name = NULL) +
+  scale_colour_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "PP_BacBac" = "#56B4E9","PP_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"PP_DinoDino" = "#009E73","PP_AAutres" = "grey30"
+  ), breaks = c(
+    "P_bac","P_dino","P_autres","PP_BacBac","PP_BacDino","PP_DinoDino","PP_AAutres"
+  ),name = NULL)+
+  coord_polar(theta="y") +
+  xlim(c(-1, 4)) +
+  theme_no_axes() +
+  theme(legend.position = "none")+
+  facet_wrap(region~Moment)
+
+
+med_during <- ggplot() +
+  geom_rect(data = Compositions_med_during, aes(ymax=ymax+0.01, ymin=ymin, xmax=4, xmin=3, fill=name)) +
+  geom_rect(data = Associations_med_during, aes(ymax=ymax, ymin=ymin, xmax=2.9, xmin=2, fill=name)) +
+  geom_text( data = Compositions_med_during,x=4.7, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
+  geom_text( data = Associations_med_during,x=1.2, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
+  scale_fill_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "PP_BacBac" = "#56B4E9","PP_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"PP_DinoDino" = "#009E73","PP_AAutres" = "grey30"
+  ), breaks = c("P_bac","P_dino","P_autres","PP_BacBac","PP_BacDino","PP_DinoDino","PP_AAutres"
+                
+  ),name = NULL) +
+  scale_colour_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "PP_BacBac" = "#56B4E9","PP_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"PP_DinoDino" = "#009E73","PP_AAutres" = "grey30"
+  ), breaks = c(
+    "P_bac","P_dino","P_autres","PP_BacBac","PP_BacDino","PP_DinoDino","PP_AAutres"
+  ),name = NULL)+
+  coord_polar(theta="y") +
+  xlim(c(-1, 4)) +
+  theme_no_axes() +
+  theme(legend.position = "none")+
+  facet_wrap(region~Moment)
+
+
+
+
+med_after <- ggplot() +
+  geom_rect(data = Compositions_med_after, aes(ymax=ymax+0.01, ymin=ymin, xmax=4, xmin=3, fill=name)) +
+  geom_rect(data = Associations_med_after, aes(ymax=ymax, ymin=ymin, xmax=2.9, xmin=2, fill=name)) +
+  geom_text( data = Compositions_med_after,x=4.7, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
+  geom_text( data = Associations_med_after,x=1.2, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
+  scale_fill_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "PP_BacBac" = "#56B4E9","PP_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"PP_DinoDino" = "#009E73","PP_AAutres" = "grey30"
+  ), breaks = c("P_bac","P_dino","P_autres","PP_BacBac","PP_BacDino","PP_DinoDino","PP_AAutres"
+                
+  ),name = NULL) +
+  scale_colour_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "PP_BacBac" = "#56B4E9","PP_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"PP_DinoDino" = "#009E73","PP_AAutres" = "grey30"
+  ), breaks = c(
+    "P_bac","P_dino","P_autres","PP_BacBac","PP_BacDino","PP_DinoDino","PP_AAutres"
+  ),name = NULL)+
+  coord_polar(theta="y") +
+  xlim(c(-1, 4)) +
+  theme_no_axes() +
+  theme(legend.position = "none")+
+  facet_wrap(region~Moment)
+
+med <- plot_grid(med_before,med_during,med_after,ncol = 3)
+
+# Doing the graph
+manche_before <- ggplot() +
+  geom_rect(data = Compositions_manche_before, aes(ymax=ymax, ymin=ymin, xmax=4, xmin=3, fill=name)) +
+  geom_rect(data = Associations_manche_before, aes(ymax=ymax+0.01, ymin=ymin, xmax=2.9, xmin=2, fill=name)) +
+  geom_text( data = Compositions_manche_before,x=4.7, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
+  geom_text( data = Associations_manche_before,x=1.2, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
+  scale_fill_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "PP_BacBac" = "#56B4E9","PP_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"PP_DinoDino" = "#009E73","PP_AAutres" = "grey30"
+  ), breaks = c("P_bac","P_dino","P_autres","PP_BacBac","PP_BacDino","PP_DinoDino","PP_AAutres"
+                
+  ),name = NULL) +
+  scale_colour_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "PP_BacBac" = "#56B4E9","PP_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"PP_DinoDino" = "#009E73","PP_AAutres" = "grey30"
+  ), breaks = c(
+    "P_bac","P_dino","P_autres","PP_BacBac","PP_BacDino","PP_DinoDino","PP_AAutres"
+  ),name = NULL)+
+  coord_polar(theta="y") +
+  xlim(c(-1, 4)) +
+  theme_no_axes() +
+  theme(legend.position = "none")+
+  facet_wrap(region~Moment)
+
+
+manche_during <- ggplot() +
+  geom_rect(data = Compositions_manche_during, aes(ymax=ymax, ymin=ymin, xmax=4, xmin=3, fill=name)) +
+  geom_rect(data = Associations_manche_during, aes(ymax=ymax, ymin=ymin, xmax=2.9, xmin=2, fill=name)) +
+  geom_text( data = Compositions_manche_during,x=4.7, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
+  geom_text( data = Associations_manche_during,x=1.2, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
+  scale_fill_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "PP_BacBac" = "#56B4E9","PP_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"PP_DinoDino" = "#009E73","PP_AAutres" = "grey30"
+  ), breaks = c("P_bac","P_dino","P_autres","PP_BacBac","PP_BacDino","PP_DinoDino","PP_AAutres"
+                
+  ),name = NULL) +
+  scale_colour_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "PP_BacBac" = "#56B4E9","PP_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"PP_DinoDino" = "#009E73","PP_AAutres" = "grey30"
+  ), breaks = c(
+    "P_bac","P_dino","P_autres","PP_BacBac","PP_BacDino","PP_DinoDino","PP_AAutres"
+  ),name = NULL)+
+  coord_polar(theta="y") +
+  xlim(c(-1, 4)) +
+  theme_no_axes() +
+  theme(legend.position = "none")+
+  facet_wrap(region~Moment)
+
+
+
+
+manche_after <- ggplot() +
+  geom_rect(data = Compositions_manche_after, aes(ymax=ymax, ymin=ymin, xmax=4, xmin=3, fill=name)) +
+  geom_rect(data = Associations_manche_after, aes(ymax=ymax, ymin=ymin, xmax=2.9, xmin=2, fill=name)) +
+  geom_text( data = Compositions_manche_after,x=4.7, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
+  geom_text( data = Associations_manche_after,x=1.2, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
+  scale_fill_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "PP_BacBac" = "#56B4E9","PP_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"PP_DinoDino" = "#009E73","PP_AAutres" = "grey30"
+  ), breaks = c("P_bac","P_dino","P_autres","PP_BacBac","PP_BacDino","PP_DinoDino","PP_AAutres"
+                
+  ),name = NULL) +
+  scale_colour_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "PP_BacBac" = "#56B4E9","PP_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"PP_DinoDino" = "#009E73","PP_AAutres" = "grey30"
+  ), breaks = c(
+    "P_bac","P_dino","P_autres","PP_BacBac","PP_BacDino","PP_DinoDino","PP_AAutres"
+  ),name = NULL)+
+  coord_polar(theta="y") +
+  xlim(c(-1, 4)) +
+  theme_no_axes() +
+  theme(legend.position = "none")+
+  facet_wrap(region~Moment)
+
+manche <- plot_grid(manche_before,manche_during,manche_after,ncol = 3)
+
+plot_grid(med,manche,atlantic,ncol = 1)
+ggsave('asso_pondere_compo_moments_combine.png', path = "output/graphs/bloom", dpi = 600, width = 200, height = 200, units = 'mm')
+
 
 #### Diatoms blooms #####
 blooms_summary <- summarise(group_by(blooms_longer,region,Moment,name,Bloom_Phylum),value=mean(value,na.rm=T))
@@ -997,12 +1761,20 @@ atlantic_before <- ggplot() +
   geom_rect(data = Associations_atlantic_before, aes(ymax=ymax, ymin=ymin, xmax=2.9, xmin=2, fill=name)) +
   geom_text( data = Compositions_atlantic_before,x=4.7, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
   geom_text( data = Associations_atlantic_before,x=1.2, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
-  scale_fill_manual(values = c("P_bac" = "#56B4E9",
-                               "P_autres"      = "grey" ,"P_dino" = "#009E73","P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
-                               ,"P_AAutres"      = "grey" ,"P_DinoDino" = "#009E73"))+
-  scale_color_manual(values = c("P_bac" = "#56B4E9",
-                                "P_autres"      = "grey" ,"P_dino" = "#009E73","P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
-                                ,"P_AAutres"      = "grey" ,"P_DinoDino" = "#009E73"))+
+  scale_fill_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"P_DinoDino" = "#009E73","P_AAutres" = "grey30"
+  ), breaks = c("P_bac","P_dino","P_autres","P_BacBac","P_BacDino","P_DinoDino","P_AAutres"
+                
+  ),name = NULL) +
+  scale_colour_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"P_DinoDino" = "#009E73","P_AAutres" = "grey30"
+  ), breaks = c(
+    "P_bac","P_dino","P_autres","P_BacBac","P_BacDino","P_DinoDino","P_AAutres"
+  ),name = NULL)+
   coord_polar(theta="y") +
   xlim(c(-1, 4)) +
   theme_no_axes() +
@@ -1015,12 +1787,20 @@ atlantic_during <- ggplot() +
   geom_rect(data = Associations_atlantic_during, aes(ymax=ymax, ymin=ymin, xmax=2.9, xmin=2, fill=name)) +
   geom_text( data = Compositions_atlantic_during,x=4.7, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
   geom_text( data = Associations_atlantic_during,x=1.2, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
-  scale_fill_manual(values = c("P_bac" = "#56B4E9",
-                               "P_autres"      = "grey" ,"P_dino" = "#009E73","P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
-                               ,"P_AAutres"      = "grey" ,"P_DinoDino" = "#009E73"))+
-  scale_color_manual(values = c("P_bac" = "#56B4E9",
-                                "P_autres"      = "grey" ,"P_dino" = "#009E73","P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
-                                ,"P_AAutres"      = "grey" ,"P_DinoDino" = "#009E73"))+
+  scale_fill_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"P_DinoDino" = "#009E73","P_AAutres" = "grey30"
+  ), breaks = c("P_bac","P_dino","P_autres","P_BacBac","P_BacDino","P_DinoDino","P_AAutres"
+                
+  ),name = NULL) +
+  scale_colour_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"P_DinoDino" = "#009E73","P_AAutres" = "grey30"
+  ), breaks = c(
+    "P_bac","P_dino","P_autres","P_BacBac","P_BacDino","P_DinoDino","P_AAutres"
+  ),name = NULL)+
   coord_polar(theta="y") +
   xlim(c(-1, 4)) +
   theme_no_axes() +
@@ -1035,12 +1815,20 @@ atlantic_after <- ggplot() +
   geom_rect(data = Associations_atlantic_after, aes(ymax=ymax, ymin=ymin, xmax=2.9, xmin=2, fill=name)) +
   geom_text( data = Compositions_atlantic_after,x=4.7, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
   geom_text( data = Associations_atlantic_after,x=1.2, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
-  scale_fill_manual(values = c("P_bac" = "#56B4E9",
-                               "P_autres"      = "grey" ,"P_dino" = "#009E73","P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
-                               ,"P_AAutres"      = "grey" ,"P_DinoDino" = "#009E73"))+
-  scale_color_manual(values = c("P_bac" = "#56B4E9",
-                                "P_autres"      = "grey" ,"P_dino" = "#009E73","P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
-                                ,"P_AAutres"      = "grey" ,"P_DinoDino" = "#009E73"))+
+  scale_fill_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"P_DinoDino" = "#009E73","P_AAutres" = "grey30"
+  ), breaks = c("P_bac","P_dino","P_autres","P_BacBac","P_BacDino","P_DinoDino","P_AAutres"
+                
+  ),name = NULL) +
+  scale_colour_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"P_DinoDino" = "#009E73","P_AAutres" = "grey30"
+  ), breaks = c(
+    "P_bac","P_dino","P_autres","P_BacBac","P_BacDino","P_DinoDino","P_AAutres"
+  ),name = NULL)+
   coord_polar(theta="y") +
   xlim(c(-1, 4)) +
   theme_no_axes() +
@@ -1055,12 +1843,20 @@ med_before <- ggplot() +
   geom_rect(data = Associations_med_before, aes(ymax=ymax, ymin=ymin, xmax=2.9, xmin=2, fill=name)) +
   geom_text( data = Compositions_med_before,x=4.7, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
   geom_text( data = Associations_med_before,x=1.2, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
-  scale_fill_manual(values = c("P_bac" = "#56B4E9",
-                               "P_autres"      = "grey" ,"P_dino" = "#009E73","P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
-                               ,"P_AAutres"      = "grey" ,"P_DinoDino" = "#009E73"))+
-  scale_color_manual(values = c("P_bac" = "#56B4E9",
-                                "P_autres"      = "grey" ,"P_dino" = "#009E73","P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
-                                ,"P_AAutres"      = "grey" ,"P_DinoDino" = "#009E73"))+
+  scale_fill_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"P_DinoDino" = "#009E73","P_AAutres" = "grey30"
+  ), breaks = c("P_bac","P_dino","P_autres","P_BacBac","P_BacDino","P_DinoDino","P_AAutres"
+                
+  ),name = NULL) +
+  scale_colour_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"P_DinoDino" = "#009E73","P_AAutres" = "grey30"
+  ), breaks = c(
+    "P_bac","P_dino","P_autres","P_BacBac","P_BacDino","P_DinoDino","P_AAutres"
+  ),name = NULL)+
   coord_polar(theta="y") +
   xlim(c(-1, 4)) +
   theme_no_axes() +
@@ -1073,12 +1869,20 @@ med_during <- ggplot() +
   geom_rect(data = Associations_med_during, aes(ymax=ymax, ymin=ymin, xmax=2.9, xmin=2, fill=name)) +
   geom_text( data = Compositions_med_during,x=4.7, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
   geom_text( data = Associations_med_during,x=1.2, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
-  scale_fill_manual(values = c("P_bac" = "#56B4E9",
-                               "P_autres"      = "grey" ,"P_dino" = "#009E73","P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
-                               ,"P_AAutres"      = "grey" ,"P_DinoDino" = "#009E73"))+
-  scale_color_manual(values = c("P_bac" = "#56B4E9",
-                                "P_autres"      = "grey" ,"P_dino" = "#009E73","P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
-                                ,"P_AAutres"      = "grey" ,"P_DinoDino" = "#009E73"))+
+  scale_fill_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"P_DinoDino" = "#009E73","P_AAutres" = "grey30"
+  ), breaks = c("P_bac","P_dino","P_autres","P_BacBac","P_BacDino","P_DinoDino","P_AAutres"
+                
+  ),name = NULL) +
+  scale_colour_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"P_DinoDino" = "#009E73","P_AAutres" = "grey30"
+  ), breaks = c(
+    "P_bac","P_dino","P_autres","P_BacBac","P_BacDino","P_DinoDino","P_AAutres"
+  ),name = NULL)+
   coord_polar(theta="y") +
   xlim(c(-1, 4)) +
   theme_no_axes() +
@@ -1093,12 +1897,20 @@ med_after <- ggplot() +
   geom_rect(data = Associations_med_after, aes(ymax=ymax, ymin=ymin, xmax=2.9, xmin=2, fill=name)) +
   geom_text( data = Compositions_med_after,x=4.7, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
   geom_text( data = Associations_med_after,x=1.2, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
-  scale_fill_manual(values = c("P_bac" = "#56B4E9",
-                               "P_autres"      = "grey" ,"P_dino" = "#009E73","P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
-                               ,"P_AAutres"      = "grey" ,"P_DinoDino" = "#009E73"))+
-  scale_color_manual(values = c("P_bac" = "#56B4E9",
-                                "P_autres"      = "grey" ,"P_dino" = "#009E73","P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
-                                ,"P_AAutres"      = "grey" ,"P_DinoDino" = "#009E73"))+
+  scale_fill_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"P_DinoDino" = "#009E73","P_AAutres" = "grey30"
+  ), breaks = c("P_bac","P_dino","P_autres","P_BacBac","P_BacDino","P_DinoDino","P_AAutres"
+                
+  ),name = NULL) +
+  scale_colour_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"P_DinoDino" = "#009E73","P_AAutres" = "grey30"
+  ), breaks = c(
+    "P_bac","P_dino","P_autres","P_BacBac","P_BacDino","P_DinoDino","P_AAutres"
+  ),name = NULL)+
   coord_polar(theta="y") +
   xlim(c(-1, 4)) +
   theme_no_axes() +
@@ -1113,12 +1925,20 @@ manche_before <- ggplot() +
   geom_rect(data = Associations_manche_before, aes(ymax=ymax, ymin=ymin, xmax=2.9, xmin=2, fill=name)) +
   geom_text( data = Compositions_manche_before,x=4.7, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
   geom_text( data = Associations_manche_before,x=1.2, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
-  scale_fill_manual(values = c("P_bac" = "#56B4E9",
-                               "P_autres"      = "grey" ,"P_dino" = "#009E73","P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
-                               ,"P_AAutres"      = "grey" ,"P_DinoDino" = "#009E73"))+
-  scale_color_manual(values = c("P_bac" = "#56B4E9",
-                                "P_autres"      = "grey" ,"P_dino" = "#009E73","P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
-                                ,"P_AAutres"      = "grey" ,"P_DinoDino" = "#009E73"))+
+  scale_fill_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"P_DinoDino" = "#009E73","P_AAutres" = "grey30"
+  ), breaks = c("P_bac","P_dino","P_autres","P_BacBac","P_BacDino","P_DinoDino","P_AAutres"
+                
+  ),name = NULL) +
+  scale_colour_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"P_DinoDino" = "#009E73","P_AAutres" = "grey30"
+  ), breaks = c(
+    "P_bac","P_dino","P_autres","P_BacBac","P_BacDino","P_DinoDino","P_AAutres"
+  ),name = NULL)+
   coord_polar(theta="y") +
   xlim(c(-1, 4)) +
   theme_no_axes() +
@@ -1131,12 +1951,20 @@ manche_during <- ggplot() +
   geom_rect(data = Associations_manche_during, aes(ymax=ymax+0.01, ymin=ymin, xmax=2.9, xmin=2, fill=name)) +
   geom_text( data = Compositions_manche_during,x=4.7, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
   geom_text( data = Associations_manche_during,x=1.2, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
-  scale_fill_manual(values = c("P_bac" = "#56B4E9",
-                               "P_autres"      = "grey" ,"P_dino" = "#009E73","P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
-                               ,"P_AAutres"      = "grey" ,"P_DinoDino" = "#009E73"))+
-  scale_color_manual(values = c("P_bac" = "#56B4E9",
-                                "P_autres"      = "grey" ,"P_dino" = "#009E73","P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
-                                ,"P_AAutres"      = "grey" ,"P_DinoDino" = "#009E73"))+
+  scale_fill_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"P_DinoDino" = "#009E73","P_AAutres" = "grey30"
+  ), breaks = c("P_bac","P_dino","P_autres","P_BacBac","P_BacDino","P_DinoDino","P_AAutres"
+                
+  ),name = NULL) +
+  scale_colour_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"P_DinoDino" = "#009E73","P_AAutres" = "grey30"
+  ), breaks = c(
+    "P_bac","P_dino","P_autres","P_BacBac","P_BacDino","P_DinoDino","P_AAutres"
+  ),name = NULL)+
   coord_polar(theta="y") +
   xlim(c(-1, 4)) +
   theme_no_axes() +
@@ -1151,12 +1979,20 @@ manche_after <- ggplot() +
   geom_rect(data = Associations_manche_after, aes(ymax=ymax+0.01, ymin=ymin, xmax=2.9, xmin=2, fill=name)) +
   geom_text( data = Compositions_manche_after,x=4.7, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
   geom_text( data = Associations_manche_after,x=1.2, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
-  scale_fill_manual(values = c("P_bac" = "#56B4E9",
-                               "P_autres"      = "grey" ,"P_dino" = "#009E73","P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
-                               ,"P_AAutres"      = "grey" ,"P_DinoDino" = "#009E73"))+
-  scale_color_manual(values = c("P_bac" = "#56B4E9",
-                                "P_autres"      = "grey" ,"P_dino" = "#009E73","P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
-                                ,"P_AAutres"      = "grey" ,"P_DinoDino" = "#009E73"))+
+  scale_fill_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"P_DinoDino" = "#009E73","P_AAutres" = "grey30"
+  ), breaks = c("P_bac","P_dino","P_autres","P_BacBac","P_BacDino","P_DinoDino","P_AAutres"
+                
+  ),name = NULL) +
+  scale_colour_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"P_DinoDino" = "#009E73","P_AAutres" = "grey30"
+  ), breaks = c(
+    "P_bac","P_dino","P_autres","P_BacBac","P_BacDino","P_DinoDino","P_AAutres"
+  ),name = NULL)+
   coord_polar(theta="y") +
   xlim(c(-1, 4)) +
   theme_no_axes() +
@@ -1167,6 +2003,468 @@ manche <- plot_grid(manche_before,manche_during,manche_after,ncol = 3)
 
 plot_grid(med,manche,atlantic,ncol = 1)
 ggsave('asso_compo_moments_combine_diatom.png', path = "output/graphs/bloom", dpi = 600, width = 200, height = 200, units = 'mm')
+
+# Same but with ponderate associations 
+blooms_summary <- summarise(group_by(blooms_longer,region,Moment,name,Bloom_Phylum),value=mean(value,na.rm=T))
+
+blooms_summary <- pivot_wider(blooms_summary,names_from = name,values_fn = mean)
+write.csv2(blooms_summary,file="output/tableaux/Blooms/mean_variable_blooms_phylum.csv", row.names = FALSE,dec = ".")
+
+Associations <- pivot_longer(blooms_summary,cols=c(PP_AAutres,PP_BacBac,PP_BacDino,PP_DinoDino))
+Associations$value <- round(Associations$value,digits = 2)
+
+Compositions <- pivot_longer(blooms_summary,cols=c(P_autres,P_bac,P_dino))
+Compositions$value <- round(Compositions$value,digits = 2)
+
+# Create all the df needed
+# Associations 
+Associations_med_before <- filter(Associations, region == "1-Mediterranean sea" & Moment == "Before" & Bloom_Phylum == "Bac") 
+Associations_med_during <- filter(Associations, region == "1-Mediterranean sea" & Moment == "During" & Bloom_Phylum == "Bac") 
+Associations_med_after <- filter(Associations, region == "1-Mediterranean sea" & Moment == "After" & Bloom_Phylum == "Bac") 
+
+Associations_manche_before <- filter(Associations, region == "2-Eastern Channel - North Sea" & Moment == "Before" & Bloom_Phylum == "Bac") 
+Associations_manche_during <- filter(Associations, region == "2-Eastern Channel - North Sea" & Moment == "During" & Bloom_Phylum == "Bac") 
+Associations_manche_after <- filter(Associations, region == "2-Eastern Channel - North Sea" & Moment == "After" & Bloom_Phylum == "Bac") 
+
+Associations_atlantic_before <- filter(Associations, region == "3-Atlantic - Western Channel" & Moment == "Before" & Bloom_Phylum == "Bac") 
+Associations_atlantic_during <- filter(Associations, region == "3-Atlantic - Western Channel" & Moment == "During" & Bloom_Phylum == "Bac") 
+Associations_atlantic_after <- filter(Associations, region == "3-Atlantic - Western Channel" & Moment == "After" & Bloom_Phylum == "Bac") 
+
+# Compositions
+Compositions_med_before <- filter(Compositions, region == "1-Mediterranean sea" & Moment == "Before" & Bloom_Phylum == "Bac") 
+Compositions_med_during <- filter(Compositions, region == "1-Mediterranean sea" & Moment == "During" & Bloom_Phylum == "Bac") 
+Compositions_med_after <- filter(Compositions, region == "1-Mediterranean sea" & Moment == "After" & Bloom_Phylum == "Bac") 
+
+Compositions_manche_before <- filter(Compositions, region == "2-Eastern Channel - North Sea" & Moment == "Before" & Bloom_Phylum == "Bac") 
+Compositions_manche_during <- filter(Compositions, region == "2-Eastern Channel - North Sea" & Moment == "During" & Bloom_Phylum == "Bac") 
+Compositions_manche_after <- filter(Compositions, region == "2-Eastern Channel - North Sea" & Moment == "After" & Bloom_Phylum == "Bac") 
+
+Compositions_atlantic_before <- filter(Compositions, region == "3-Atlantic - Western Channel" & Moment == "Before" & Bloom_Phylum == "Bac") 
+Compositions_atlantic_during <- filter(Compositions, region == "3-Atlantic - Western Channel" & Moment == "During" & Bloom_Phylum == "Bac") 
+Compositions_atlantic_after <- filter(Compositions, region == "3-Atlantic - Western Channel" & Moment == "After" & Bloom_Phylum == "Bac")
+
+## Add some info for the graph
+# Compute the cumulative percentages (top of each rectangle)
+Associations_med_before$ymax <- cumsum(Associations_med_before$value)
+# Compute the bottom of each rectangle
+Associations_med_before$ymin <- c(0, head(Associations_med_before$ymax, n=-1))
+# Compute label position
+Associations_med_before$labelPosition <- (Associations_med_before$ymax + Associations_med_before$ymin) / 2
+# Compute a good label
+Associations_med_before$label <- paste0(Associations_med_before$value)
+
+# Compute the cumulative percentages (top of each rectangle)
+Associations_med_during$ymax <- cumsum(Associations_med_during$value)
+# Compute the bottom of each rectangle
+Associations_med_during$ymin <- c(0, head(Associations_med_during$ymax, n=-1))
+# Compute label position
+Associations_med_during$labelPosition <- (Associations_med_during$ymax + Associations_med_during$ymin) / 2
+# Compute a good label
+Associations_med_during$label <- paste0(Associations_med_during$value)
+
+# Compute the cumulative percentages (top of each rectangle)
+Associations_med_after$ymax <- cumsum(Associations_med_during$value)
+# Compute the bottom of each rectangle
+Associations_med_after$ymin <- c(0, head(Associations_med_after$ymax, n=-1))
+# Compute label position
+Associations_med_after$labelPosition <- (Associations_med_after$ymax + Associations_med_after$ymin) / 2
+# Compute a good label
+Associations_med_after$label <- paste0(Associations_med_after$value)
+
+
+## Add some info for the graph
+# Compute the cumulative percentages (top of each rectangle)
+Associations_manche_before$ymax <- cumsum(Associations_manche_before$value)
+# Compute the bottom of each rectangle
+Associations_manche_before$ymin <- c(0, head(Associations_manche_before$ymax, n=-1))
+# Compute label position
+Associations_manche_before$labelPosition <- (Associations_manche_before$ymax + Associations_manche_before$ymin) / 2
+# Compute a good label
+Associations_manche_before$label <- paste0(Associations_manche_before$value)
+
+# Compute the cumulative percentages (top of each rectangle)
+Associations_manche_during$ymax <- cumsum(Associations_manche_during$value)
+# Compute the bottom of each rectangle
+Associations_manche_during$ymin <- c(0, head(Associations_manche_during$ymax, n=-1))
+# Compute label position
+Associations_manche_during$labelPosition <- (Associations_manche_during$ymax + Associations_manche_during$ymin) / 2
+# Compute a good label
+Associations_manche_during$label <- paste0(Associations_manche_during$value)
+
+# Compute the cumulative percentages (top of each rectangle)
+Associations_manche_after$ymax <- cumsum(Associations_manche_during$value)
+# Compute the bottom of each rectangle
+Associations_manche_after$ymin <- c(0, head(Associations_manche_after$ymax, n=-1))
+# Compute label position
+Associations_manche_after$labelPosition <- (Associations_manche_after$ymax + Associations_manche_after$ymin) / 2
+# Compute a good label
+Associations_manche_after$label <- paste0(Associations_manche_after$value)
+
+
+## Add some info for the graph
+# Compute the cumulative percentages (top of each rectangle)
+Associations_atlantic_before$ymax <- cumsum(Associations_atlantic_before$value)
+# Compute the bottom of each rectangle
+Associations_atlantic_before$ymin <- c(0, head(Associations_atlantic_before$ymax, n=-1))
+# Compute label position
+Associations_atlantic_before$labelPosition <- (Associations_atlantic_before$ymax + Associations_atlantic_before$ymin) / 2
+# Compute a good label
+Associations_atlantic_before$label <- paste0(Associations_atlantic_before$value)
+
+# Compute the cumulative percentages (top of each rectangle)
+Associations_atlantic_during$ymax <- cumsum(Associations_atlantic_during$value)
+# Compute the bottom of each rectangle
+Associations_atlantic_during$ymin <- c(0, head(Associations_atlantic_during$ymax, n=-1))
+# Compute label position
+Associations_atlantic_during$labelPosition <- (Associations_atlantic_during$ymax + Associations_atlantic_during$ymin) / 2
+# Compute a good label
+Associations_atlantic_during$label <- paste0(Associations_atlantic_during$value)
+
+# Compute the cumulative percentages (top of each rectangle)
+Associations_atlantic_after$ymax <- cumsum(Associations_atlantic_during$value)
+# Compute the bottom of each rectangle
+Associations_atlantic_after$ymin <- c(0, head(Associations_atlantic_after$ymax, n=-1))
+# Compute label position
+Associations_atlantic_after$labelPosition <- (Associations_atlantic_after$ymax + Associations_atlantic_after$ymin) / 2
+# Compute a good label
+Associations_atlantic_after$label <- paste0(Associations_atlantic_after$value)
+
+
+## Add some info for the graph
+# Compute the cumulative percentages (top of each rectangle)
+Compositions_med_before$ymax <- cumsum(Compositions_med_before$value)
+# Compute the bottom of each rectangle
+Compositions_med_before$ymin <- c(0, head(Compositions_med_before$ymax, n=-1))
+# Compute label position
+Compositions_med_before$labelPosition <- (Compositions_med_before$ymax + Compositions_med_before$ymin) / 2
+# Compute a good label
+Compositions_med_before$label <- paste0(Compositions_med_before$value)
+
+# Compute the cumulative percentages (top of each rectangle)
+Compositions_med_during$ymax <- cumsum(Compositions_med_during$value)
+# Compute the bottom of each rectangle
+Compositions_med_during$ymin <- c(0, head(Compositions_med_during$ymax, n=-1))
+# Compute label position
+Compositions_med_during$labelPosition <- (Compositions_med_during$ymax + Compositions_med_during$ymin) / 2
+# Compute a good label
+Compositions_med_during$label <- paste0(Compositions_med_during$value)
+
+# Compute the cumulative percentages (top of each rectangle)
+Compositions_med_after$ymax <- cumsum(Compositions_med_during$value)
+# Compute the bottom of each rectangle
+Compositions_med_after$ymin <- c(0, head(Compositions_med_after$ymax, n=-1))
+# Compute label position
+Compositions_med_after$labelPosition <- (Compositions_med_after$ymax + Compositions_med_after$ymin) / 2
+# Compute a good label
+Compositions_med_after$label <- paste0(Compositions_med_after$value)
+
+
+## Add some info for the graph
+# Compute the cumulative percentages (top of each rectangle)
+Compositions_manche_before$ymax <- cumsum(Compositions_manche_before$value)
+# Compute the bottom of each rectangle
+Compositions_manche_before$ymin <- c(0, head(Compositions_manche_before$ymax, n=-1))
+# Compute label position
+Compositions_manche_before$labelPosition <- (Compositions_manche_before$ymax + Compositions_manche_before$ymin) / 2
+# Compute a good label
+Compositions_manche_before$label <- paste0(Compositions_manche_before$value)
+
+# Compute the cumulative percentages (top of each rectangle)
+Compositions_manche_during$ymax <- cumsum(Compositions_manche_during$value)
+# Compute the bottom of each rectangle
+Compositions_manche_during$ymin <- c(0, head(Compositions_manche_during$ymax, n=-1))
+# Compute label position
+Compositions_manche_during$labelPosition <- (Compositions_manche_during$ymax + Compositions_manche_during$ymin) / 2
+# Compute a good label
+Compositions_manche_during$label <- paste0(Compositions_manche_during$value)
+
+# Compute the cumulative percentages (top of each rectangle)
+Compositions_manche_after$ymax <- cumsum(Compositions_manche_during$value)
+# Compute the bottom of each rectangle
+Compositions_manche_after$ymin <- c(0, head(Compositions_manche_after$ymax, n=-1))
+# Compute label position
+Compositions_manche_after$labelPosition <- (Compositions_manche_after$ymax + Compositions_manche_after$ymin) / 2
+# Compute a good label
+Compositions_manche_after$label <- paste0(Compositions_manche_after$value)
+
+
+## Add some info for the graph
+# Compute the cumulative percentages (top of each rectangle)
+Compositions_atlantic_before$ymax <- cumsum(Compositions_atlantic_before$value)
+# Compute the bottom of each rectangle
+Compositions_atlantic_before$ymin <- c(0, head(Compositions_atlantic_before$ymax, n=-1))
+# Compute label position
+Compositions_atlantic_before$labelPosition <- (Compositions_atlantic_before$ymax + Compositions_atlantic_before$ymin) / 2
+# Compute a good label
+Compositions_atlantic_before$label <- paste0(Compositions_atlantic_before$value)
+
+# Compute the cumulative percentages (top of each rectangle)
+Compositions_atlantic_during$ymax <- cumsum(Compositions_atlantic_during$value)
+# Compute the bottom of each rectangle
+Compositions_atlantic_during$ymin <- c(0, head(Compositions_atlantic_during$ymax, n=-1))
+# Compute label position
+Compositions_atlantic_during$labelPosition <- (Compositions_atlantic_during$ymax + Compositions_atlantic_during$ymin) / 2
+# Compute a good label
+Compositions_atlantic_during$label <- paste0(Compositions_atlantic_during$value)
+
+# Compute the cumulative percentages (top of each rectangle)
+Compositions_atlantic_after$ymax <- cumsum(Compositions_atlantic_during$value)
+# Compute the bottom of each rectangle
+Compositions_atlantic_after$ymin <- c(0, head(Compositions_atlantic_after$ymax, n=-1))
+# Compute label position
+Compositions_atlantic_after$labelPosition <- (Compositions_atlantic_after$ymax + Compositions_atlantic_after$ymin) / 2
+# Compute a good label
+Compositions_atlantic_after$label <- paste0(Compositions_atlantic_after$value)
+
+# Doing the graph
+atlantic_before <- ggplot() +
+  geom_rect(data = Compositions_atlantic_before, aes(ymax=ymax+0.01, ymin=ymin, xmax=4, xmin=3, fill=name)) +
+  geom_rect(data = Associations_atlantic_before, aes(ymax=ymax, ymin=ymin, xmax=2.9, xmin=2, fill=name)) +
+  geom_text( data = Compositions_atlantic_before,x=4.7, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
+  geom_text( data = Associations_atlantic_before,x=1.2, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
+  scale_fill_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "PP_BacBac" = "#56B4E9","PP_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"PP_DinoDino" = "#009E73","PP_AAutres" = "grey30"
+  ), breaks = c("P_bac","P_dino","P_autres","PP_BacBac","PP_BacDino","PP_DinoDino","PP_AAutres"
+                
+  ),name = NULL) +
+  scale_colour_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "PP_BacBac" = "#56B4E9","PP_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"PP_DinoDino" = "#009E73","PP_AAutres" = "grey30"
+  ), breaks = c(
+    "P_bac","P_dino","P_autres","PP_BacBac","PP_BacDino","PP_DinoDino","PP_AAutres"
+  ),name = NULL)+
+  coord_polar(theta="y") +
+  xlim(c(-1, 4)) +
+  theme_no_axes() +
+  theme(legend.position = "none")+
+  facet_wrap(region~Moment)
+
+
+atlantic_during <- ggplot() +
+  geom_rect(data = Compositions_atlantic_during, aes(ymax=ymax+0.01, ymin=ymin, xmax=4, xmin=3, fill=name)) +
+  geom_rect(data = Associations_atlantic_during, aes(ymax=ymax, ymin=ymin, xmax=2.9, xmin=2, fill=name)) +
+  geom_text( data = Compositions_atlantic_during,x=4.7, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
+  geom_text( data = Associations_atlantic_during,x=1.2, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
+  scale_fill_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "PP_BacBac" = "#56B4E9","PP_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"PP_DinoDino" = "#009E73","PP_AAutres" = "grey30"
+  ), breaks = c("P_bac","P_dino","P_autres","PP_BacBac","PP_BacDino","PP_DinoDino","PP_AAutres"
+                
+  ),name = NULL) +
+  scale_colour_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "PP_BacBac" = "#56B4E9","PP_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"PP_DinoDino" = "#009E73","PP_AAutres" = "grey30"
+  ), breaks = c(
+    "P_bac","P_dino","P_autres","PP_BacBac","PP_BacDino","PP_DinoDino","PP_AAutres"
+  ),name = NULL)+
+  coord_polar(theta="y") +
+  xlim(c(-1, 4)) +
+  theme_no_axes() +
+  theme(legend.position = "none")+
+  facet_wrap(region~Moment)
+
+
+
+
+atlantic_after <- ggplot() +
+  geom_rect(data = Compositions_atlantic_after, aes(ymax=ymax+0.01, ymin=ymin, xmax=4, xmin=3, fill=name)) +
+  geom_rect(data = Associations_atlantic_after, aes(ymax=ymax, ymin=ymin, xmax=2.9, xmin=2, fill=name)) +
+  geom_text( data = Compositions_atlantic_after,x=4.7, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
+  geom_text( data = Associations_atlantic_after,x=1.2, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
+  scale_fill_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "PP_BacBac" = "#56B4E9","PP_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"PP_DinoDino" = "#009E73","PP_AAutres" = "grey30"
+  ), breaks = c("P_bac","P_dino","P_autres","PP_BacBac","PP_BacDino","PP_DinoDino","PP_AAutres"
+                
+  ),name = NULL) +
+  scale_colour_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "PP_BacBac" = "#56B4E9","PP_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"PP_DinoDino" = "#009E73","PP_AAutres" = "grey30"
+  ), breaks = c(
+    "P_bac","P_dino","P_autres","PP_BacBac","PP_BacDino","PP_DinoDino","PP_AAutres"
+  ),name = NULL)+
+  coord_polar(theta="y") +
+  xlim(c(-1, 4)) +
+  theme_no_axes() +
+  theme(legend.position = "none")+
+  facet_wrap(region~Moment)
+
+atlantic <- plot_grid(atlantic_before,atlantic_during,atlantic_after,ncol = 3)
+
+# Doing the graph
+med_before <- ggplot() +
+  geom_rect(data = Compositions_med_before, aes(ymax=ymax, ymin=ymin, xmax=4, xmin=3, fill=name)) +
+  geom_rect(data = Associations_med_before, aes(ymax=ymax, ymin=ymin, xmax=2.9, xmin=2, fill=name)) +
+  geom_text( data = Compositions_med_before,x=4.7, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
+  geom_text( data = Associations_med_before,x=1.2, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
+  scale_fill_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "PP_BacBac" = "#56B4E9","PP_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"PP_DinoDino" = "#009E73","PP_AAutres" = "grey30"
+  ), breaks = c("P_bac","P_dino","P_autres","PP_BacBac","PP_BacDino","PP_DinoDino","PP_AAutres"
+                
+  ),name = NULL) +
+  scale_colour_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "PP_BacBac" = "#56B4E9","PP_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"PP_DinoDino" = "#009E73","PP_AAutres" = "grey30"
+  ), breaks = c(
+    "P_bac","P_dino","P_autres","PP_BacBac","PP_BacDino","PP_DinoDino","PP_AAutres"
+  ),name = NULL)+
+  coord_polar(theta="y") +
+  xlim(c(-1, 4)) +
+  theme_no_axes() +
+  theme(legend.position = "none")+
+  facet_wrap(region~Moment)
+
+
+med_during <- ggplot() +
+  geom_rect(data = Compositions_med_during, aes(ymax=ymax, ymin=ymin, xmax=4, xmin=3, fill=name)) +
+  geom_rect(data = Associations_med_during, aes(ymax=ymax, ymin=ymin, xmax=2.9, xmin=2, fill=name)) +
+  geom_text( data = Compositions_med_during,x=4.7, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
+  geom_text( data = Associations_med_during,x=1.2, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
+  scale_fill_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "PP_BacBac" = "#56B4E9","PP_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"PP_DinoDino" = "#009E73","PP_AAutres" = "grey30"
+  ), breaks = c("P_bac","P_dino","P_autres","PP_BacBac","PP_BacDino","PP_DinoDino","PP_AAutres"
+                
+  ),name = NULL) +
+  scale_colour_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "PP_BacBac" = "#56B4E9","PP_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"PP_DinoDino" = "#009E73","PP_AAutres" = "grey30"
+  ), breaks = c(
+    "P_bac","P_dino","P_autres","PP_BacBac","PP_BacDino","PP_DinoDino","PP_AAutres"
+  ),name = NULL)+
+  coord_polar(theta="y") +
+  xlim(c(-1, 4)) +
+  theme_no_axes() +
+  theme(legend.position = "none")+
+  facet_wrap(region~Moment)
+
+
+
+
+med_after <- ggplot() +
+  geom_rect(data = Compositions_med_after, aes(ymax=ymax, ymin=ymin, xmax=4, xmin=3, fill=name)) +
+  geom_rect(data = Associations_med_after, aes(ymax=ymax, ymin=ymin, xmax=2.9, xmin=2, fill=name)) +
+  geom_text( data = Compositions_med_after,x=4.7, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
+  geom_text( data = Associations_med_after,x=1.2, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
+  scale_fill_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "PP_BacBac" = "#56B4E9","PP_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"PP_DinoDino" = "#009E73","PP_AAutres" = "grey30"
+  ), breaks = c("P_bac","P_dino","P_autres","PP_BacBac","PP_BacDino","PP_DinoDino","PP_AAutres"
+                
+  ),name = NULL) +
+  scale_colour_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "PP_BacBac" = "#56B4E9","PP_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"PP_DinoDino" = "#009E73","PP_AAutres" = "grey30"
+  ), breaks = c(
+    "P_bac","P_dino","P_autres","PP_BacBac","PP_BacDino","PP_DinoDino","PP_AAutres"
+  ),name = NULL)+
+  coord_polar(theta="y") +
+  xlim(c(-1, 4)) +
+  theme_no_axes() +
+  theme(legend.position = "none")+
+  facet_wrap(region~Moment)
+
+med <- plot_grid(med_before,med_during,med_after,ncol = 3)
+
+# Doing the graph
+manche_before <- ggplot() +
+  geom_rect(data = Compositions_manche_before, aes(ymax=ymax, ymin=ymin, xmax=4, xmin=3, fill=name)) +
+  geom_rect(data = Associations_manche_before, aes(ymax=ymax, ymin=ymin, xmax=2.9, xmin=2, fill=name)) +
+  geom_text( data = Compositions_manche_before,x=4.7, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
+  geom_text( data = Associations_manche_before,x=1.2, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
+  scale_fill_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "PP_BacBac" = "#56B4E9","PP_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"PP_DinoDino" = "#009E73","PP_AAutres" = "grey30"
+  ), breaks = c("P_bac","P_dino","P_autres","PP_BacBac","PP_BacDino","PP_DinoDino","PP_AAutres"
+                
+  ),name = NULL) +
+  scale_colour_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "PP_BacBac" = "#56B4E9","PP_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"PP_DinoDino" = "#009E73","PP_AAutres" = "grey30"
+  ), breaks = c(
+    "P_bac","P_dino","P_autres","PP_BacBac","PP_BacDino","PP_DinoDino","PP_AAutres"
+  ),name = NULL)+
+  coord_polar(theta="y") +
+  xlim(c(-1, 4)) +
+  theme_no_axes() +
+  theme(legend.position = "none")+
+  facet_wrap(region~Moment)
+
+
+manche_during <- ggplot() +
+  geom_rect(data = Compositions_manche_during, aes(ymax=ymax+0.01, ymin=ymin, xmax=4, xmin=3, fill=name)) +
+  geom_rect(data = Associations_manche_during, aes(ymax=ymax, ymin=ymin, xmax=2.9, xmin=2, fill=name)) +
+  geom_text( data = Compositions_manche_during,x=4.7, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
+  geom_text( data = Associations_manche_during,x=1.2, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
+  scale_fill_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "PP_BacBac" = "#56B4E9","PP_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"PP_DinoDino" = "#009E73","PP_AAutres" = "grey30"
+  ), breaks = c("P_bac","P_dino","P_autres","PP_BacBac","PP_BacDino","PP_DinoDino","PP_AAutres"
+                
+  ),name = NULL) +
+  scale_colour_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "PP_BacBac" = "#56B4E9","PP_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"PP_DinoDino" = "#009E73","PP_AAutres" = "grey30"
+  ), breaks = c(
+    "P_bac","P_dino","P_autres","PP_BacBac","PP_BacDino","PP_DinoDino","PP_AAutres"
+  ),name = NULL)+
+  coord_polar(theta="y") +
+  xlim(c(-1, 4)) +
+  theme_no_axes() +
+  theme(legend.position = "none")+
+  facet_wrap(region~Moment)
+
+
+
+
+manche_after <- ggplot() +
+  geom_rect(data = Compositions_manche_after, aes(ymax=ymax+0.01, ymin=ymin, xmax=4, xmin=3, fill=name)) +
+  geom_rect(data = Associations_manche_after, aes(ymax=ymax, ymin=ymin, xmax=2.9, xmin=2, fill=name)) +
+  geom_text( data = Compositions_manche_after,x=4.7, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
+  geom_text( data = Associations_manche_after,x=1.2, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
+  scale_fill_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "PP_BacBac" = "#56B4E9","PP_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"PP_DinoDino" = "#009E73","PP_AAutres" = "grey30"
+  ), breaks = c("P_bac","P_dino","P_autres","PP_BacBac","PP_BacDino","PP_DinoDino","PP_AAutres"
+                
+  ),name = NULL) +
+  scale_colour_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "PP_BacBac" = "#56B4E9","PP_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"PP_DinoDino" = "#009E73","PP_AAutres" = "grey30"
+  ), breaks = c(
+    "P_bac","P_dino","P_autres","PP_BacBac","PP_BacDino","PP_DinoDino","PP_AAutres"
+  ),name = NULL)+
+  coord_polar(theta="y") +
+  xlim(c(-1, 4)) +
+  theme_no_axes() +
+  theme(legend.position = "none")+
+  facet_wrap(region~Moment)
+
+manche <- plot_grid(manche_before,manche_during,manche_after,ncol = 3)
+
+plot_grid(med,manche,atlantic,ncol = 1)
+ggsave('asso_pondere_compo_moments_combine_diatom.png', path = "output/graphs/bloom", dpi = 600, width = 200, height = 200, units = 'mm')
+
 
 #### Dinoflagellates blooms #####
 blooms_summary <- summarise(group_by(blooms_longer,region,Moment,name,Bloom_Phylum),value=mean(value,na.rm=T))
@@ -1386,12 +2684,20 @@ atlantic_before <- ggplot() +
   geom_rect(data = Associations_atlantic_before, aes(ymax=ymax, ymin=ymin, xmax=2.9, xmin=2, fill=name)) +
   geom_text( data = Compositions_atlantic_before,x=4.7, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
   geom_text( data = Associations_atlantic_before,x=1.2, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
-  scale_fill_manual(values = c("P_bac" = "#56B4E9",
-                               "P_autres"      = "grey" ,"P_dino" = "#009E73","P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
-                               ,"P_AAutres"      = "grey" ,"P_DinoDino" = "#009E73"))+
-  scale_color_manual(values = c("P_bac" = "#56B4E9",
-                                "P_autres"      = "grey" ,"P_dino" = "#009E73","P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
-                                ,"P_AAutres"      = "grey" ,"P_DinoDino" = "#009E73"))+
+  scale_fill_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"P_DinoDino" = "#009E73","P_AAutres" = "grey30"
+  ), breaks = c("P_bac","P_dino","P_autres","P_BacBac","P_BacDino","P_DinoDino","P_AAutres"
+                
+  ),name = NULL) +
+  scale_colour_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"P_DinoDino" = "#009E73","P_AAutres" = "grey30"
+  ), breaks = c(
+    "P_bac","P_dino","P_autres","P_BacBac","P_BacDino","P_DinoDino","P_AAutres"
+  ),name = NULL)+
   coord_polar(theta="y") +
   xlim(c(-1, 4)) +
   theme_no_axes() +
@@ -1404,12 +2710,20 @@ atlantic_during <- ggplot() +
   geom_rect(data = Associations_atlantic_during, aes(ymax=ymax, ymin=ymin, xmax=2.9, xmin=2, fill=name)) +
   geom_text( data = Compositions_atlantic_during,x=4.7, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
   geom_text( data = Associations_atlantic_during,x=1.2, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
-  scale_fill_manual(values = c("P_bac" = "#56B4E9",
-                               "P_autres"      = "grey" ,"P_dino" = "#009E73","P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
-                               ,"P_AAutres"      = "grey" ,"P_DinoDino" = "#009E73"))+
-  scale_color_manual(values = c("P_bac" = "#56B4E9",
-                                "P_autres"      = "grey" ,"P_dino" = "#009E73","P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
-                                ,"P_AAutres"      = "grey" ,"P_DinoDino" = "#009E73"))+
+  scale_fill_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"P_DinoDino" = "#009E73","P_AAutres" = "grey30"
+  ), breaks = c("P_bac","P_dino","P_autres","P_BacBac","P_BacDino","P_DinoDino","P_AAutres"
+                
+  ),name = NULL) +
+  scale_colour_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"P_DinoDino" = "#009E73","P_AAutres" = "grey30"
+  ), breaks = c(
+    "P_bac","P_dino","P_autres","P_BacBac","P_BacDino","P_DinoDino","P_AAutres"
+  ),name = NULL)+
   coord_polar(theta="y") +
   xlim(c(-1, 4)) +
   theme_no_axes() +
@@ -1424,12 +2738,20 @@ atlantic_after <- ggplot() +
   geom_rect(data = Associations_atlantic_after, aes(ymax=ymax, ymin=ymin, xmax=2.9, xmin=2, fill=name)) +
   geom_text( data = Compositions_atlantic_after,x=4.7, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
   geom_text( data = Associations_atlantic_after,x=1.2, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
-  scale_fill_manual(values = c("P_bac" = "#56B4E9",
-                               "P_autres"      = "grey" ,"P_dino" = "#009E73","P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
-                               ,"P_AAutres"      = "grey" ,"P_DinoDino" = "#009E73"))+
-  scale_color_manual(values = c("P_bac" = "#56B4E9",
-                                "P_autres"      = "grey" ,"P_dino" = "#009E73","P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
-                                ,"P_AAutres"      = "grey" ,"P_DinoDino" = "#009E73"))+
+  scale_fill_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"P_DinoDino" = "#009E73","P_AAutres" = "grey30"
+  ), breaks = c("P_bac","P_dino","P_autres","P_BacBac","P_BacDino","P_DinoDino","P_AAutres"
+                
+  ),name = NULL) +
+  scale_colour_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"P_DinoDino" = "#009E73","P_AAutres" = "grey30"
+  ), breaks = c(
+    "P_bac","P_dino","P_autres","P_BacBac","P_BacDino","P_DinoDino","P_AAutres"
+  ),name = NULL)+
   coord_polar(theta="y") +
   xlim(c(-1, 4)) +
   theme_no_axes() +
@@ -1444,12 +2766,20 @@ med_before <- ggplot() +
   geom_rect(data = Associations_med_before, aes(ymax=ymax, ymin=ymin, xmax=2.9, xmin=2, fill=name)) +
   geom_text( data = Compositions_med_before,x=4.7, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
   geom_text( data = Associations_med_before,x=1.2, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
-  scale_fill_manual(values = c("P_bac" = "#56B4E9",
-                               "P_autres"      = "grey" ,"P_dino" = "#009E73","P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
-                               ,"P_AAutres"      = "grey" ,"P_DinoDino" = "#009E73"))+
-  scale_color_manual(values = c("P_bac" = "#56B4E9",
-                                "P_autres"      = "grey" ,"P_dino" = "#009E73","P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
-                                ,"P_AAutres"      = "grey" ,"P_DinoDino" = "#009E73"))+
+  scale_fill_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"P_DinoDino" = "#009E73","P_AAutres" = "grey30"
+  ), breaks = c("P_bac","P_dino","P_autres","P_BacBac","P_BacDino","P_DinoDino","P_AAutres"
+                
+  ),name = NULL) +
+  scale_colour_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"P_DinoDino" = "#009E73","P_AAutres" = "grey30"
+  ), breaks = c(
+    "P_bac","P_dino","P_autres","P_BacBac","P_BacDino","P_DinoDino","P_AAutres"
+  ),name = NULL)+
   coord_polar(theta="y") +
   xlim(c(-1, 4)) +
   theme_no_axes() +
@@ -1462,12 +2792,20 @@ med_during <- ggplot() +
   geom_rect(data = Associations_med_during, aes(ymax=ymax, ymin=ymin, xmax=2.9, xmin=2, fill=name)) +
   geom_text( data = Compositions_med_during,x=4.7, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
   geom_text( data = Associations_med_during,x=1.2, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
-  scale_fill_manual(values = c("P_bac" = "#56B4E9",
-                               "P_autres"      = "grey" ,"P_dino" = "#009E73","P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
-                               ,"P_AAutres"      = "grey" ,"P_DinoDino" = "#009E73"))+
-  scale_color_manual(values = c("P_bac" = "#56B4E9",
-                                "P_autres"      = "grey" ,"P_dino" = "#009E73","P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
-                                ,"P_AAutres"      = "grey" ,"P_DinoDino" = "#009E73"))+
+  scale_fill_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"P_DinoDino" = "#009E73","P_AAutres" = "grey30"
+  ), breaks = c("P_bac","P_dino","P_autres","P_BacBac","P_BacDino","P_DinoDino","P_AAutres"
+                
+  ),name = NULL) +
+  scale_colour_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"P_DinoDino" = "#009E73","P_AAutres" = "grey30"
+  ), breaks = c(
+    "P_bac","P_dino","P_autres","P_BacBac","P_BacDino","P_DinoDino","P_AAutres"
+  ),name = NULL)+
   coord_polar(theta="y") +
   xlim(c(-1, 4)) +
   theme_no_axes() +
@@ -1482,12 +2820,20 @@ med_after <- ggplot() +
   geom_rect(data = Associations_med_after, aes(ymax=ymax, ymin=ymin, xmax=2.9, xmin=2, fill=name)) +
   geom_text( data = Compositions_med_after,x=4.7, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
   geom_text( data = Associations_med_after,x=1.2, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
-  scale_fill_manual(values = c("P_bac" = "#56B4E9",
-                               "P_autres"      = "grey" ,"P_dino" = "#009E73","P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
-                               ,"P_AAutres"      = "grey" ,"P_DinoDino" = "#009E73"))+
-  scale_color_manual(values = c("P_bac" = "#56B4E9",
-                                "P_autres"      = "grey" ,"P_dino" = "#009E73","P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
-                                ,"P_AAutres"      = "grey" ,"P_DinoDino" = "#009E73"))+
+  scale_fill_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"P_DinoDino" = "#009E73","P_AAutres" = "grey30"
+  ), breaks = c("P_bac","P_dino","P_autres","P_BacBac","P_BacDino","P_DinoDino","P_AAutres"
+                
+  ),name = NULL) +
+  scale_colour_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"P_DinoDino" = "#009E73","P_AAutres" = "grey30"
+  ), breaks = c(
+    "P_bac","P_dino","P_autres","P_BacBac","P_BacDino","P_DinoDino","P_AAutres"
+  ),name = NULL)+
   coord_polar(theta="y") +
   xlim(c(-1, 4)) +
   theme_no_axes() +
@@ -1502,12 +2848,20 @@ manche_before <- ggplot() +
   geom_rect(data = Associations_manche_before, aes(ymax=ymax+0.01, ymin=ymin, xmax=2.9, xmin=2, fill=name)) +
   geom_text( data = Compositions_manche_before,x=4.7, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
   geom_text( data = Associations_manche_before,x=1.2, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
-  scale_fill_manual(values = c("P_bac" = "#56B4E9",
-                               "P_autres"      = "grey" ,"P_dino" = "#009E73","P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
-                               ,"P_AAutres"      = "grey" ,"P_DinoDino" = "#009E73"))+
-  scale_color_manual(values = c("P_bac" = "#56B4E9",
-                                "P_autres"      = "grey" ,"P_dino" = "#009E73","P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
-                                ,"P_AAutres"      = "grey" ,"P_DinoDino" = "#009E73"))+
+  scale_fill_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"P_DinoDino" = "#009E73","P_AAutres" = "grey30"
+  ), breaks = c("P_bac","P_dino","P_autres","P_BacBac","P_BacDino","P_DinoDino","P_AAutres"
+                
+  ),name = NULL) +
+  scale_colour_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"P_DinoDino" = "#009E73","P_AAutres" = "grey30"
+  ), breaks = c(
+    "P_bac","P_dino","P_autres","P_BacBac","P_BacDino","P_DinoDino","P_AAutres"
+  ),name = NULL)+
   coord_polar(theta="y") +
   xlim(c(-1, 4)) +
   theme_no_axes() +
@@ -1520,12 +2874,20 @@ manche_during <- ggplot() +
   geom_rect(data = Associations_manche_during, aes(ymax=ymax, ymin=ymin, xmax=2.9, xmin=2, fill=name)) +
   geom_text( data = Compositions_manche_during,x=4.7, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
   geom_text( data = Associations_manche_during,x=1.2, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
-  scale_fill_manual(values = c("P_bac" = "#56B4E9",
-                               "P_autres"      = "grey" ,"P_dino" = "#009E73","P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
-                               ,"P_AAutres"      = "grey" ,"P_DinoDino" = "#009E73"))+
-  scale_color_manual(values = c("P_bac" = "#56B4E9",
-                                "P_autres"      = "grey" ,"P_dino" = "#009E73","P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
-                                ,"P_AAutres"      = "grey" ,"P_DinoDino" = "#009E73"))+
+  scale_fill_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"P_DinoDino" = "#009E73","P_AAutres" = "grey30"
+  ), breaks = c("P_bac","P_dino","P_autres","P_BacBac","P_BacDino","P_DinoDino","P_AAutres"
+                
+  ),name = NULL) +
+  scale_colour_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"P_DinoDino" = "#009E73","P_AAutres" = "grey30"
+  ), breaks = c(
+    "P_bac","P_dino","P_autres","P_BacBac","P_BacDino","P_DinoDino","P_AAutres"
+  ),name = NULL)+
   coord_polar(theta="y") +
   xlim(c(-1, 4)) +
   theme_no_axes() +
@@ -1540,12 +2902,20 @@ manche_after <- ggplot() +
   geom_rect(data = Associations_manche_after, aes(ymax=ymax, ymin=ymin, xmax=2.9, xmin=2, fill=name)) +
   geom_text( data = Compositions_manche_after,x=4.7, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
   geom_text( data = Associations_manche_after,x=1.2, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
-  scale_fill_manual(values = c("P_bac" = "#56B4E9",
-                               "P_autres"      = "grey" ,"P_dino" = "#009E73","P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
-                               ,"P_AAutres"      = "grey" ,"P_DinoDino" = "#009E73"))+
-  scale_color_manual(values = c("P_bac" = "#56B4E9",
-                                "P_autres"      = "grey" ,"P_dino" = "#009E73","P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
-                                ,"P_AAutres"      = "grey" ,"P_DinoDino" = "#009E73"))+
+  scale_fill_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"P_DinoDino" = "#009E73","P_AAutres" = "grey30"
+  ), breaks = c("P_bac","P_dino","P_autres","P_BacBac","P_BacDino","P_DinoDino","P_AAutres"
+                
+  ),name = NULL) +
+  scale_colour_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "P_BacBac" = "#56B4E9","P_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"P_DinoDino" = "#009E73","P_AAutres" = "grey30"
+  ), breaks = c(
+    "P_bac","P_dino","P_autres","P_BacBac","P_BacDino","P_DinoDino","P_AAutres"
+  ),name = NULL)+
   coord_polar(theta="y") +
   xlim(c(-1, 4)) +
   theme_no_axes() +
@@ -1556,6 +2926,458 @@ manche <- plot_grid(manche_before,manche_during,manche_after,ncol = 3)
 
 plot_grid(med,manche,atlantic,ncol = 1)
 ggsave('asso_compo_moments_combine_dino.png', path = "output/graphs/bloom", dpi = 600, width = 200, height = 200, units = 'mm')
+
+# Ponderate
+
+# Create all the df needed
+# Associations 
+Associations_med_before <- filter(Associations, region == "1-Mediterranean sea" & Moment == "Before" & Bloom_Phylum == "Dino") 
+Associations_med_during <- filter(Associations, region == "1-Mediterranean sea" & Moment == "During" & Bloom_Phylum == "Dino") 
+Associations_med_after <- filter(Associations, region == "1-Mediterranean sea" & Moment == "After" & Bloom_Phylum == "Dino") 
+
+Associations_manche_before <- filter(Associations, region == "2-Eastern Channel - North Sea" & Moment == "Before" & Bloom_Phylum == "Dino") 
+Associations_manche_during <- filter(Associations, region == "2-Eastern Channel - North Sea" & Moment == "During" & Bloom_Phylum == "Dino") 
+Associations_manche_after <- filter(Associations, region == "2-Eastern Channel - North Sea" & Moment == "After" & Bloom_Phylum == "Dino") 
+
+Associations_atlantic_before <- filter(Associations, region == "3-Atlantic - Western Channel" & Moment == "Before" & Bloom_Phylum == "Dino") 
+Associations_atlantic_during <- filter(Associations, region == "3-Atlantic - Western Channel" & Moment == "During" & Bloom_Phylum == "Dino") 
+Associations_atlantic_after <- filter(Associations, region == "3-Atlantic - Western Channel" & Moment == "After" & Bloom_Phylum == "Dino") 
+
+# Compositions
+Compositions_med_before <- filter(Compositions, region == "1-Mediterranean sea" & Moment == "Before" & Bloom_Phylum == "Dino") 
+Compositions_med_during <- filter(Compositions, region == "1-Mediterranean sea" & Moment == "During" & Bloom_Phylum == "Dino") 
+Compositions_med_after <- filter(Compositions, region == "1-Mediterranean sea" & Moment == "After" & Bloom_Phylum == "Dino") 
+
+Compositions_manche_before <- filter(Compositions, region == "2-Eastern Channel - North Sea" & Moment == "Before" & Bloom_Phylum == "Dino") 
+Compositions_manche_during <- filter(Compositions, region == "2-Eastern Channel - North Sea" & Moment == "During" & Bloom_Phylum == "Dino") 
+Compositions_manche_after <- filter(Compositions, region == "2-Eastern Channel - North Sea" & Moment == "After" & Bloom_Phylum == "Dino") 
+
+Compositions_atlantic_before <- filter(Compositions, region == "3-Atlantic - Western Channel" & Moment == "Before" & Bloom_Phylum == "Dino") 
+Compositions_atlantic_during <- filter(Compositions, region == "3-Atlantic - Western Channel" & Moment == "During" & Bloom_Phylum == "Dino") 
+Compositions_atlantic_after <- filter(Compositions, region == "3-Atlantic - Western Channel" & Moment == "After" & Bloom_Phylum == "Dino")
+
+## Add some info for the graph
+# Compute the cumulative percentages (top of each rectangle)
+Associations_med_before$ymax <- cumsum(Associations_med_before$value)
+# Compute the bottom of each rectangle
+Associations_med_before$ymin <- c(0, head(Associations_med_before$ymax, n=-1))
+# Compute label position
+Associations_med_before$labelPosition <- (Associations_med_before$ymax + Associations_med_before$ymin) / 2
+# Compute a good label
+Associations_med_before$label <- paste0(Associations_med_before$value)
+
+# Compute the cumulative percentages (top of each rectangle)
+Associations_med_during$ymax <- cumsum(Associations_med_during$value)
+# Compute the bottom of each rectangle
+Associations_med_during$ymin <- c(0, head(Associations_med_during$ymax, n=-1))
+# Compute label position
+Associations_med_during$labelPosition <- (Associations_med_during$ymax + Associations_med_during$ymin) / 2
+# Compute a good label
+Associations_med_during$label <- paste0(Associations_med_during$value)
+
+# Compute the cumulative percentages (top of each rectangle)
+Associations_med_after$ymax <- cumsum(Associations_med_during$value)
+# Compute the bottom of each rectangle
+Associations_med_after$ymin <- c(0, head(Associations_med_after$ymax, n=-1))
+# Compute label position
+Associations_med_after$labelPosition <- (Associations_med_after$ymax + Associations_med_after$ymin) / 2
+# Compute a good label
+Associations_med_after$label <- paste0(Associations_med_after$value)
+
+
+## Add some info for the graph
+# Compute the cumulative percentages (top of each rectangle)
+Associations_manche_before$ymax <- cumsum(Associations_manche_before$value)
+# Compute the bottom of each rectangle
+Associations_manche_before$ymin <- c(0, head(Associations_manche_before$ymax, n=-1))
+# Compute label position
+Associations_manche_before$labelPosition <- (Associations_manche_before$ymax + Associations_manche_before$ymin) / 2
+# Compute a good label
+Associations_manche_before$label <- paste0(Associations_manche_before$value)
+
+# Compute the cumulative percentages (top of each rectangle)
+Associations_manche_during$ymax <- cumsum(Associations_manche_during$value)
+# Compute the bottom of each rectangle
+Associations_manche_during$ymin <- c(0, head(Associations_manche_during$ymax, n=-1))
+# Compute label position
+Associations_manche_during$labelPosition <- (Associations_manche_during$ymax + Associations_manche_during$ymin) / 2
+# Compute a good label
+Associations_manche_during$label <- paste0(Associations_manche_during$value)
+
+# Compute the cumulative percentages (top of each rectangle)
+Associations_manche_after$ymax <- cumsum(Associations_manche_during$value)
+# Compute the bottom of each rectangle
+Associations_manche_after$ymin <- c(0, head(Associations_manche_after$ymax, n=-1))
+# Compute label position
+Associations_manche_after$labelPosition <- (Associations_manche_after$ymax + Associations_manche_after$ymin) / 2
+# Compute a good label
+Associations_manche_after$label <- paste0(Associations_manche_after$value)
+
+
+## Add some info for the graph
+# Compute the cumulative percentages (top of each rectangle)
+Associations_atlantic_before$ymax <- cumsum(Associations_atlantic_before$value)
+# Compute the bottom of each rectangle
+Associations_atlantic_before$ymin <- c(0, head(Associations_atlantic_before$ymax, n=-1))
+# Compute label position
+Associations_atlantic_before$labelPosition <- (Associations_atlantic_before$ymax + Associations_atlantic_before$ymin) / 2
+# Compute a good label
+Associations_atlantic_before$label <- paste0(Associations_atlantic_before$value)
+
+# Compute the cumulative percentages (top of each rectangle)
+Associations_atlantic_during$ymax <- cumsum(Associations_atlantic_during$value)
+# Compute the bottom of each rectangle
+Associations_atlantic_during$ymin <- c(0, head(Associations_atlantic_during$ymax, n=-1))
+# Compute label position
+Associations_atlantic_during$labelPosition <- (Associations_atlantic_during$ymax + Associations_atlantic_during$ymin) / 2
+# Compute a good label
+Associations_atlantic_during$label <- paste0(Associations_atlantic_during$value)
+
+# Compute the cumulative percentages (top of each rectangle)
+Associations_atlantic_after$ymax <- cumsum(Associations_atlantic_during$value)
+# Compute the bottom of each rectangle
+Associations_atlantic_after$ymin <- c(0, head(Associations_atlantic_after$ymax, n=-1))
+# Compute label position
+Associations_atlantic_after$labelPosition <- (Associations_atlantic_after$ymax + Associations_atlantic_after$ymin) / 2
+# Compute a good label
+Associations_atlantic_after$label <- paste0(Associations_atlantic_after$value)
+
+
+## Add some info for the graph
+# Compute the cumulative percentages (top of each rectangle)
+Compositions_med_before$ymax <- cumsum(Compositions_med_before$value)
+# Compute the bottom of each rectangle
+Compositions_med_before$ymin <- c(0, head(Compositions_med_before$ymax, n=-1))
+# Compute label position
+Compositions_med_before$labelPosition <- (Compositions_med_before$ymax + Compositions_med_before$ymin) / 2
+# Compute a good label
+Compositions_med_before$label <- paste0(Compositions_med_before$value)
+
+# Compute the cumulative percentages (top of each rectangle)
+Compositions_med_during$ymax <- cumsum(Compositions_med_during$value)
+# Compute the bottom of each rectangle
+Compositions_med_during$ymin <- c(0, head(Compositions_med_during$ymax, n=-1))
+# Compute label position
+Compositions_med_during$labelPosition <- (Compositions_med_during$ymax + Compositions_med_during$ymin) / 2
+# Compute a good label
+Compositions_med_during$label <- paste0(Compositions_med_during$value)
+
+# Compute the cumulative percentages (top of each rectangle)
+Compositions_med_after$ymax <- cumsum(Compositions_med_during$value)
+# Compute the bottom of each rectangle
+Compositions_med_after$ymin <- c(0, head(Compositions_med_after$ymax, n=-1))
+# Compute label position
+Compositions_med_after$labelPosition <- (Compositions_med_after$ymax + Compositions_med_after$ymin) / 2
+# Compute a good label
+Compositions_med_after$label <- paste0(Compositions_med_after$value)
+
+
+## Add some info for the graph
+# Compute the cumulative percentages (top of each rectangle)
+Compositions_manche_before$ymax <- cumsum(Compositions_manche_before$value)
+# Compute the bottom of each rectangle
+Compositions_manche_before$ymin <- c(0, head(Compositions_manche_before$ymax, n=-1))
+# Compute label position
+Compositions_manche_before$labelPosition <- (Compositions_manche_before$ymax + Compositions_manche_before$ymin) / 2
+# Compute a good label
+Compositions_manche_before$label <- paste0(Compositions_manche_before$value)
+
+# Compute the cumulative percentages (top of each rectangle)
+Compositions_manche_during$ymax <- cumsum(Compositions_manche_during$value)
+# Compute the bottom of each rectangle
+Compositions_manche_during$ymin <- c(0, head(Compositions_manche_during$ymax, n=-1))
+# Compute label position
+Compositions_manche_during$labelPosition <- (Compositions_manche_during$ymax + Compositions_manche_during$ymin) / 2
+# Compute a good label
+Compositions_manche_during$label <- paste0(Compositions_manche_during$value)
+
+# Compute the cumulative percentages (top of each rectangle)
+Compositions_manche_after$ymax <- cumsum(Compositions_manche_during$value)
+# Compute the bottom of each rectangle
+Compositions_manche_after$ymin <- c(0, head(Compositions_manche_after$ymax, n=-1))
+# Compute label position
+Compositions_manche_after$labelPosition <- (Compositions_manche_after$ymax + Compositions_manche_after$ymin) / 2
+# Compute a good label
+Compositions_manche_after$label <- paste0(Compositions_manche_after$value)
+
+
+## Add some info for the graph
+# Compute the cumulative percentages (top of each rectangle)
+Compositions_atlantic_before$ymax <- cumsum(Compositions_atlantic_before$value)
+# Compute the bottom of each rectangle
+Compositions_atlantic_before$ymin <- c(0, head(Compositions_atlantic_before$ymax, n=-1))
+# Compute label position
+Compositions_atlantic_before$labelPosition <- (Compositions_atlantic_before$ymax + Compositions_atlantic_before$ymin) / 2
+# Compute a good label
+Compositions_atlantic_before$label <- paste0(Compositions_atlantic_before$value)
+
+# Compute the cumulative percentages (top of each rectangle)
+Compositions_atlantic_during$ymax <- cumsum(Compositions_atlantic_during$value)
+# Compute the bottom of each rectangle
+Compositions_atlantic_during$ymin <- c(0, head(Compositions_atlantic_during$ymax, n=-1))
+# Compute label position
+Compositions_atlantic_during$labelPosition <- (Compositions_atlantic_during$ymax + Compositions_atlantic_during$ymin) / 2
+# Compute a good label
+Compositions_atlantic_during$label <- paste0(Compositions_atlantic_during$value)
+
+# Compute the cumulative percentages (top of each rectangle)
+Compositions_atlantic_after$ymax <- cumsum(Compositions_atlantic_during$value)
+# Compute the bottom of each rectangle
+Compositions_atlantic_after$ymin <- c(0, head(Compositions_atlantic_after$ymax, n=-1))
+# Compute label position
+Compositions_atlantic_after$labelPosition <- (Compositions_atlantic_after$ymax + Compositions_atlantic_after$ymin) / 2
+# Compute a good label
+Compositions_atlantic_after$label <- paste0(Compositions_atlantic_after$value)
+
+# Doing the graph
+atlantic_before <- ggplot() +
+  geom_rect(data = Compositions_atlantic_before, aes(ymax=ymax+0.01, ymin=ymin, xmax=4, xmin=3, fill=name)) +
+  geom_rect(data = Associations_atlantic_before, aes(ymax=ymax, ymin=ymin, xmax=2.9, xmin=2, fill=name)) +
+  geom_text( data = Compositions_atlantic_before,x=4.7, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
+  geom_text( data = Associations_atlantic_before,x=1.2, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
+  scale_fill_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "PP_BacBac" = "#56B4E9","PP_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"PP_DinoDino" = "#009E73","PP_AAutres" = "grey30"
+  ), breaks = c("P_bac","P_dino","P_autres","PP_BacBac","PP_BacDino","PP_DinoDino","PP_AAutres"
+                
+  ),name = NULL) +
+  scale_colour_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "PP_BacBac" = "#56B4E9","PP_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"PP_DinoDino" = "#009E73","PP_AAutres" = "grey30"
+  ), breaks = c(
+    "P_bac","P_dino","P_autres","PP_BacBac","PP_BacDino","PP_DinoDino","PP_AAutres"
+  ),name = NULL)+
+  coord_polar(theta="y") +
+  xlim(c(-1, 4)) +
+  theme_no_axes() +
+  theme(legend.position = "none")+
+  facet_wrap(region~Moment)
+
+
+atlantic_during <- ggplot() +
+  geom_rect(data = Compositions_atlantic_during, aes(ymax=ymax+0.01, ymin=ymin, xmax=4, xmin=3, fill=name)) +
+  geom_rect(data = Associations_atlantic_during, aes(ymax=ymax, ymin=ymin, xmax=2.9, xmin=2, fill=name)) +
+  geom_text( data = Compositions_atlantic_during,x=4.7, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
+  geom_text( data = Associations_atlantic_during,x=1.2, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
+  scale_fill_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "PP_BacBac" = "#56B4E9","PP_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"PP_DinoDino" = "#009E73","PP_AAutres" = "grey30"
+  ), breaks = c("P_bac","P_dino","P_autres","PP_BacBac","PP_BacDino","PP_DinoDino","PP_AAutres"
+                
+  ),name = NULL) +
+  scale_colour_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "PP_BacBac" = "#56B4E9","PP_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"PP_DinoDino" = "#009E73","PP_AAutres" = "grey30"
+  ), breaks = c(
+    "P_bac","P_dino","P_autres","PP_BacBac","PP_BacDino","PP_DinoDino","PP_AAutres"
+  ),name = NULL)+
+  coord_polar(theta="y") +
+  xlim(c(-1, 4)) +
+  theme_no_axes() +
+  theme(legend.position = "none")+
+  facet_wrap(region~Moment)
+
+
+
+
+atlantic_after <- ggplot() +
+  geom_rect(data = Compositions_atlantic_after, aes(ymax=ymax+0.01, ymin=ymin, xmax=4, xmin=3, fill=name)) +
+  geom_rect(data = Associations_atlantic_after, aes(ymax=ymax, ymin=ymin, xmax=2.9, xmin=2, fill=name)) +
+  geom_text( data = Compositions_atlantic_after,x=4.7, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
+  geom_text( data = Associations_atlantic_after,x=1.2, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
+  scale_fill_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "PP_BacBac" = "#56B4E9","PP_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"PP_DinoDino" = "#009E73","PP_AAutres" = "grey30"
+  ), breaks = c("P_bac","P_dino","P_autres","PP_BacBac","PP_BacDino","PP_DinoDino","PP_AAutres"
+                
+  ),name = NULL) +
+  scale_colour_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "PP_BacBac" = "#56B4E9","PP_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"PP_DinoDino" = "#009E73","PP_AAutres" = "grey30"
+  ), breaks = c(
+    "P_bac","P_dino","P_autres","PP_BacBac","PP_BacDino","PP_DinoDino","PP_AAutres"
+  ),name = NULL)+
+  coord_polar(theta="y") +
+  xlim(c(-1, 4)) +
+  theme_no_axes() +
+  theme(legend.position = "none")+
+  facet_wrap(region~Moment)
+
+atlantic <- plot_grid(atlantic_before,atlantic_during,atlantic_after,ncol = 3)
+
+# Doing the graph
+med_before <- ggplot() +
+  geom_rect(data = Compositions_med_before, aes(ymax=ymax, ymin=ymin, xmax=4, xmin=3, fill=name)) +
+  geom_rect(data = Associations_med_before, aes(ymax=ymax, ymin=ymin, xmax=2.9, xmin=2, fill=name)) +
+  geom_text( data = Compositions_med_before,x=4.7, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
+  geom_text( data = Associations_med_before,x=1.2, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
+  scale_fill_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "PP_BacBac" = "#56B4E9","PP_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"PP_DinoDino" = "#009E73","PP_AAutres" = "grey30"
+  ), breaks = c("P_bac","P_dino","P_autres","PP_BacBac","PP_BacDino","PP_DinoDino","PP_AAutres"
+                
+  ),name = NULL) +
+  scale_colour_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "PP_BacBac" = "#56B4E9","PP_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"PP_DinoDino" = "#009E73","PP_AAutres" = "grey30"
+  ), breaks = c(
+    "P_bac","P_dino","P_autres","PP_BacBac","PP_BacDino","PP_DinoDino","PP_AAutres"
+  ),name = NULL)+
+  coord_polar(theta="y") +
+  xlim(c(-1, 4)) +
+  theme_no_axes() +
+  theme(legend.position = "none")+
+  facet_wrap(region~Moment)
+
+
+med_during <- ggplot() +
+  geom_rect(data = Compositions_med_during, aes(ymax=ymax, ymin=ymin, xmax=4, xmin=3, fill=name)) +
+  geom_rect(data = Associations_med_during, aes(ymax=ymax, ymin=ymin, xmax=2.9, xmin=2, fill=name)) +
+  geom_text( data = Compositions_med_during,x=4.7, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
+  geom_text( data = Associations_med_during,x=1.2, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
+  scale_fill_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "PP_BacBac" = "#56B4E9","PP_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"PP_DinoDino" = "#009E73","PP_AAutres" = "grey30"
+  ), breaks = c("P_bac","P_dino","P_autres","PP_BacBac","PP_BacDino","PP_DinoDino","PP_AAutres"
+                
+  ),name = NULL) +
+  scale_colour_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "PP_BacBac" = "#56B4E9","PP_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"PP_DinoDino" = "#009E73","PP_AAutres" = "grey30"
+  ), breaks = c(
+    "P_bac","P_dino","P_autres","PP_BacBac","PP_BacDino","PP_DinoDino","PP_AAutres"
+  ),name = NULL)+
+  coord_polar(theta="y") +
+  xlim(c(-1, 4)) +
+  theme_no_axes() +
+  theme(legend.position = "none")+
+  facet_wrap(region~Moment)
+
+
+
+
+med_after <- ggplot() +
+  geom_rect(data = Compositions_med_after, aes(ymax=ymax, ymin=ymin, xmax=4, xmin=3, fill=name)) +
+  geom_rect(data = Associations_med_after, aes(ymax=ymax, ymin=ymin, xmax=2.9, xmin=2, fill=name)) +
+  geom_text( data = Compositions_med_after,x=4.7, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
+  geom_text( data = Associations_med_after,x=1.2, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
+  scale_fill_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "PP_BacBac" = "#56B4E9","PP_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"PP_DinoDino" = "#009E73","PP_AAutres" = "grey30"
+  ), breaks = c("P_bac","P_dino","P_autres","PP_BacBac","PP_BacDino","PP_DinoDino","PP_AAutres"
+                
+  ),name = NULL) +
+  scale_colour_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "PP_BacBac" = "#56B4E9","PP_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"PP_DinoDino" = "#009E73","PP_AAutres" = "grey30"
+  ), breaks = c(
+    "P_bac","P_dino","P_autres","PP_BacBac","PP_BacDino","PP_DinoDino","PP_AAutres"
+  ),name = NULL)+
+  coord_polar(theta="y") +
+  xlim(c(-1, 4)) +
+  theme_no_axes() +
+  theme(legend.position = "none")+
+  facet_wrap(region~Moment)
+
+med <- plot_grid(med_before,med_during,med_after,ncol = 3)
+
+# Doing the graph
+manche_before <- ggplot() +
+  geom_rect(data = Compositions_manche_before, aes(ymax=ymax, ymin=ymin, xmax=4, xmin=3, fill=name)) +
+  geom_rect(data = Associations_manche_before, aes(ymax=ymax, ymin=ymin, xmax=2.9, xmin=2, fill=name)) +
+  geom_text( data = Compositions_manche_before,x=4.7, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
+  geom_text( data = Associations_manche_before,x=1.2, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
+  scale_fill_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "PP_BacBac" = "#56B4E9","PP_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"PP_DinoDino" = "#009E73","PP_AAutres" = "grey30"
+  ), breaks = c("P_bac","P_dino","P_autres","PP_BacBac","PP_BacDino","PP_DinoDino","PP_AAutres"
+                
+  ),name = NULL) +
+  scale_colour_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "PP_BacBac" = "#56B4E9","PP_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"PP_DinoDino" = "#009E73","PP_AAutres" = "grey30"
+  ), breaks = c(
+    "P_bac","P_dino","P_autres","PP_BacBac","PP_BacDino","PP_DinoDino","PP_AAutres"
+  ),name = NULL)+
+  coord_polar(theta="y") +
+  xlim(c(-1, 4)) +
+  theme_no_axes() +
+  theme(legend.position = "none")+
+  facet_wrap(region~Moment)
+
+
+manche_during <- ggplot() +
+  geom_rect(data = Compositions_manche_during, aes(ymax=ymax, ymin=ymin, xmax=4, xmin=3, fill=name)) +
+  geom_rect(data = Associations_manche_during, aes(ymax=ymax, ymin=ymin, xmax=2.9, xmin=2, fill=name)) +
+  geom_text( data = Compositions_manche_during,x=4.7, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
+  geom_text( data = Associations_manche_during,x=1.2, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
+  scale_fill_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "PP_BacBac" = "#56B4E9","PP_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"PP_DinoDino" = "#009E73","PP_AAutres" = "grey30"
+  ), breaks = c("P_bac","P_dino","P_autres","PP_BacBac","PP_BacDino","PP_DinoDino","PP_AAutres"
+                
+  ),name = NULL) +
+  scale_colour_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "PP_BacBac" = "#56B4E9","PP_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"PP_DinoDino" = "#009E73","PP_AAutres" = "grey30"
+  ), breaks = c(
+    "P_bac","P_dino","P_autres","PP_BacBac","PP_BacDino","PP_DinoDino","PP_AAutres"
+  ),name = NULL)+
+  coord_polar(theta="y") +
+  xlim(c(-1, 4)) +
+  theme_no_axes() +
+  theme(legend.position = "none")+
+  facet_wrap(region~Moment)
+
+
+
+
+manche_after <- ggplot() +
+  geom_rect(data = Compositions_manche_after, aes(ymax=ymax, ymin=ymin, xmax=4, xmin=3, fill=name)) +
+  geom_rect(data = Associations_manche_after, aes(ymax=ymax, ymin=ymin, xmax=2.9, xmin=2, fill=name)) +
+  geom_text( data = Compositions_manche_after,x=4.7, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
+  geom_text( data = Associations_manche_after,x=1.2, aes(y=labelPosition, label=label, color=name), size=3) + # x here controls label position (inner / outer)
+  scale_fill_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "PP_BacBac" = "#56B4E9","PP_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"PP_DinoDino" = "#009E73","PP_AAutres" = "grey30"
+  ), breaks = c("P_bac","P_dino","P_autres","PP_BacBac","PP_BacDino","PP_DinoDino","PP_AAutres"
+                
+  ),name = NULL) +
+  scale_colour_manual(values = c(
+    "P_bac" = "#1f77b4", "P_dino" = "green",
+    "PP_BacBac" = "#56B4E9","PP_BacDino"   = "chocolate1"
+    ,"P_autres"      = "grey" ,"PP_DinoDino" = "#009E73","PP_AAutres" = "grey30"
+  ), breaks = c(
+    "P_bac","P_dino","P_autres","PP_BacBac","PP_BacDino","PP_DinoDino","PP_AAutres"
+  ),name = NULL)+
+  coord_polar(theta="y") +
+  xlim(c(-1, 4)) +
+  theme_no_axes() +
+  theme(legend.position = "none")+
+  facet_wrap(region~Moment)
+
+manche <- plot_grid(manche_before,manche_during,manche_after,ncol = 3)
+
+plot_grid(med,manche,atlantic,ncol = 1)
+ggsave('asso_pondere_compo_moments_combine_dino.png', path = "output/graphs/bloom", dpi = 600, width = 200, height = 200, units = 'mm')
+
 
 #### Test stats entre les moments tout blooms pour les proportions ####
 Associations_med <- filter(blooms,region == "1-Mediterranean sea")
