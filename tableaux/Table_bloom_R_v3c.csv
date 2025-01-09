@@ -1,0 +1,352 @@
+Code_point_Libelle;cluster;Date;Year;Month;season;Shannon;Pielou;BergerParker;CHLOROA;Abdtot;P_dominance;Bloom;Bloom_Phylum;Bloom_Genre
+Diana centre;1;14/09/2020;2020;9;Fall;1.56557258;0.486372468;0.589984351;1.12;129800;58.09;Dino-Prorocentrum;Dino;Prorocentrum
+Diana centre;1;03/03/2020;2020;3;Spring;0.850613494;0.28394176;0.809779951;2.19;204500;80.98;Bac-Chaetoceros;Bac;Chaetoceros
+Diana centre;1;23/12/2019;2019;12;Winter;1.979001374;0.622708576;0.369179601;2.44;270700;36.9;Bac-Chaetoceros;Bac;Chaetoceros
+Diana centre;1;10/12/2007;2007;12;Winter;1.473307006;0.531383178;0.621776504;2.59;34900;62.18;Bac-Pseudonitzschia;Bac;Pseudonitzschia
+Diana centre;1;06/01/2020;2020;1;Winter;0.96824769;0.297182014;0.791103358;2.78;1146500;79.11;Bac-Cylindrotheca;Bac;Cylindrotheca
+Diana centre;1;19/07/2021;2021;7;Summer;0.994978387;0.326809346;0.705422404;2.78;589200;70.43;Bac-Thalassionema;Bac;Thalassionema
+Diana centre;1;09/12/2019;2019;12;Winter;1.729322957;0.577262185;0.426210496;2.79;345700;42.52;Bac-Skeletonema;Bac;Skeletonema
+Diana centre;1;25/11/2019;2019;11;Fall;1.139421074;0.386973913;0.471816284;2.81;489500;46.17;Bac-Skeletonema;Bac;Skeletonema
+Diana centre;1;07/01/2008;2008;1;Winter;1.264866749;0.785905899;0.473684211;2.95;1246900;99.85;Cryptophyceae-Cryptophyceae;Cryptophyceae;Cryptophyceae
+Diana centre;1;30/08/2021;2021;8;Summer;0.132544552;0.044244458;0.980877019;2.95;2432700;97.83;Bac-Cylindrotheca;Bac;Cylindrotheca
+Diana centre;1;21/03/2011;2011;3;Spring;1.352630993;0.477419392;0.353896104;2.96;433400;35.21;Bac-Chaetoceros;Bac;Chaetoceros
+Diana centre;1;20/09/2010;2010;9;Fall;0.832873005;0.37905684;0.809090909;2.99;2128000;98.97;Dictyophyceae-Dictyophyceae;Dictyophyceae;Dictyophyceae
+Diana centre;1;08/11/2021;2021;11;Fall;0.403587354;0.123872129;0.927935425;3.16;2403400;92.79;Bac-Leptocylindrus;Bac;Leptocylindrus
+Diana centre;1;27/09/2021;2021;9;Fall;1.098613456;0.373114696;0.708273553;3.43;420200;70.49;Bac-Chaetoceros;Bac;Chaetoceros
+Diana centre;1;15/07/2009;2009;7;Summer;0.764028232;0.269668443;0.855379189;3.6;56700;85.54;Bac-Chaetoceros;Bac;Chaetoceros
+Diana centre;1;07/11/2016;2016;11;Fall;0.921176182;0.340162151;0.724734043;3.8;307000;71.01;Bac-Cerataulina;Bac;Cerataulina
+Diana centre;1;16/01/2017;2017;1;Winter;0.802437356;0.312847251;0.840052016;4.17;76900;84.01;Bac-Pseudonitzschia;Bac;Pseudonitzschia
+Diana centre;1;26/07/2010;2010;7;Summer;0.808473041;0.298544333;0.729725173;4.36;1188100;72.86;Bac-Dactyliosolen;Bac;Dactyliosolen
+Diana centre;1;02/08/2021;2021;8;Summer;1.169708246;0.373053868;0.672750218;4.92;2064000;67.15;Bac-Cylindrotheca;Bac;Cylindrotheca
+Le Cornard;4;07/04/2014;2014;4;Spring;1.244949477;0.415574345;0.468075437;5.08;446700;46.12;Bac-Thalassiosira;Bac;Thalassiosira
+Diana centre;1;29/10/2007;2007;10;Fall;0.867563228;0.789690082;0.666666667;5.26;600;66.67;Dino-Protoperidinium;Dino;Protoperidinium
+Diana centre;1;31/08/2020;2020;8;Summer;0.427439191;0.140396138;0.921313643;6.19;907600;92.11;Bac-Cylindrotheca;Bac;Cylindrotheca
+Le Cornard;4;11/06/2012;2012;6;Summer;2.179523927;0.78609709;0.333333333;7.56;18000;32.22;Bac-Paralia;Bac;Paralia
+Calvi;1;15/03/2022;2022;3;Spring;1.530897652;0.786725766;0.380952381;0.96;88100;94.67;Cryptophyceae-Cryptophyceae;Cryptophyceae;Cryptophyceae
+Calvi;1;06/03/2019;2019;3;Spring;1.897528584;0.623259845;0.411184211;0.97;39600;31.57;Bac-Chaetoceros;Bac;Chaetoceros
+Calvi;1;14/02/2012;2012;2;Winter;1.975813689;0.712624153;0.345360825;0.99;20900;32;Bac-Chaetoceros;Bac;Chaetoceros
+Calvi;1;04/02/2011;2011;2;Winter;1.716829185;0.781362635;0.371428571;1.07;14700;74.83;Cryptophyceae-Cryptophyceae;Cryptophyceae;Cryptophyceae
+Calvi;1;18/02/2019;2019;2;Winter;1.261735181;0.387261447;0.679456907;1.09;178700;64.41;Bac-Chaetoceros;Bac;Chaetoceros
+Calvi;1;19/03/2018;2018;3;Spring;0.895379905;0.556330814;0.75;1.11;23500;90.21;Cryptophyceae-Cryptophyceae;Cryptophyceae;Cryptophyceae
+Calvi;1;04/03/2020;2020;3;Spring;1.844621476;0.947947919;0.230769231;1.19;5000;58;Cryptophyceae-Cryptophyceae;Cryptophyceae;Cryptophyceae
+Calvi;1;01/04/2013;2013;4;Spring;1.847171031;0.72015887;0.336633663;1.26;17200;37.8;Bac-Chaetoceros;Bac;Chaetoceros
+Calvi;1;29/03/2016;2016;3;Spring;1.700101991;0.948844987;0.314285714;1.26;10300;59.22;Cryptophyceae-Cryptophyceae;Cryptophyceae;Cryptophyceae
+Calvi;1;08/02/2011;2011;2;Winter;1.754105331;0.978984825;0.25;1.32;2100;23.81;Dictyophyceae-Dictyocha;Dictyophyceae;Dictyocha
+Calvi;1;15/03/2021;2021;3;Spring;1.054920168;0.960229718;0.4;1.47;9400;93.62;Cryptophyceae-Cryptophyceae;Cryptophyceae;Cryptophyceae
+Calvi;1;15/03/2021;2021;3;Spring;1.054920168;0.960229718;0.4;1.47;9400;93.62;Cryptophyceae-Cryptophyceae;Cryptophyceae;Cryptophyceae
+Calvi;1;09/03/2011;2011;3;Spring;1.114893088;0.484191916;0.449640288;1.73;48300;33.95;Cryptophyceae-Cryptophyceae;Cryptophyceae;Cryptophyceae
+Calvi;1;31/03/2009;2009;3;Spring;0.950270539;0.864973521;0.6;1.8;1800;33;Bac-Naviculaceae;Bac;Naviculaceae
+Calvi;1;19/03/2012;2012;3;Spring;1.270681722;0.709180972;0.6;2.46;18200;87.91;Cryptophyceae-Cryptophyceae;Cryptophyceae;Cryptophyceae
+Calvi;1;20/04/2017;2017;4;Spring;1.763442963;0.848036806;0.333333333;3.6;7000;48.5;Cryptophyceae-Cryptophyceae;Cryptophyceae;Cryptophyceae
+Calvi;1;27/02/2012;2012;2;Winter;1.969239877;0.821236815;0.37254902;6.32;14700;28.57;Cryptophyceae-Cryptophyceae;Cryptophyceae;Cryptophyceae
+22B - Toulon gde rade;1;16/06/2008;2008;6;Summer;0.390043076;0.147796363;0.916528469;0.42;180900;91.65;Bac-Leptocylindrus;Bac;Leptocylindrus
+22B - Toulon gde rade;1;13/11/2018;2018;11;Fall;1.273974273;0.42526306;0.684007707;1.08;58200;61;Bac-Chaetoceros;Bac;Chaetoceros
+22B - Toulon gde rade;1;12/04/2022;2022;4;Spring;1.925685607;0.642809648;0.356923077;1.12;240200;85.43;Cryptophyceae-Cryptophyceae;Cryptophyceae;Cryptophyceae
+22B - Toulon gde rade;1;17/11/2014;2014;11;Fall;1.921081794;0.621499647;0.3156708;1.17;89400;31.32;Bac-Chaetoceros;Bac;Chaetoceros
+22B - Toulon gde rade;1;27/09/2010;2010;9;Fall;1.133954149;0.442096116;0.479459178;1.26;192900;47.8;Bac-Leptocylindrus;Bac;Leptocylindrus
+22B - Toulon gde rade;1;28/11/2016;2016;11;Fall;1.796256032;0.680643051;0.451923077;1.26;19500;45.64;Cryptophyceae-Cryptophyceae;Cryptophyceae;Cryptophyceae
+22B - Toulon gde rade;1;09/06/2009;2009;6;Summer;1.077340094;0.397828701;0.668478261;1.29;112000;65.89;Bac-Leptocylindrus;Bac;Leptocylindrus
+22B - Toulon gde rade;1;09/07/2019;2019;7;Summer;1.557241012;0.538768415;0.449006623;1.48;104000;32.6;Bac-Chaetoceros;Bac;Chaetoceros
+22B - Toulon gde rade;1;23/04/2012;2012;4;Spring;0.12234572;0.058835854;0.980030206;1.55;596000;97.9;Bac-Chaetoceros;Bac;Chaetoceros
+22B - Toulon gde rade;1;09/10/2007;2007;10;Fall;1.932806573;0.929483486;0.214285714;1.66;20100;92.04;Cryptophyceae-Cryptophyceae;Cryptophyceae;Cryptophyceae
+22B - Toulon gde rade;1;16/10/2018;2018;10;Fall;0.381975292;0.132154381;0.929617021;1.82;1175500;92.92;Bac-Pseudonitzschia;Bac;Pseudonitzschia
+22B - Toulon gde rade;1;28/10/2019;2019;10;Fall;0.736230663;0.254718328;0.829106516;1.86;519400;81.83;Bac-Cylindrotheca;Bac;Cylindrotheca
+22B - Toulon gde rade;1;07/11/2011;2011;11;Fall;1.053586863;0.410763222;0.740830033;2.2;581300;74.01;Bac-Skeletonema;Bac;Skeletonema
+22B - Toulon gde rade;1;03/06/2008;2008;6;Summer;0.588069878;0.229271536;0.84131352;2.22;1090200;84.13;Bac-Leptocylindrus;Bac;Leptocylindrus
+Anse de Carteau 2;1;16/08/2022;2022;8;Summer;0.819488495;0.240941176;0.761493797;3.21;6303500;76.15;Bac-Skeletonema;Bac;Skeletonema
+Anse de Carteau 2;1;15/06/2015;2015;6;Summer;0.598600415;0.190911025;0.85347282;3.23;4531300;85.34;Bac-Chaetoceros;Bac;Chaetoceros
+Anse de Carteau 2;1;18/04/2016;2016;4;Spring;1.062931682;0.330218293;0.706355125;3.47;2433400;70.07;Bac-Chaetoceros;Bac;Chaetoceros
+Anse de Carteau 2;1;26/04/2011;2011;4;Spring;1.039671397;0.347050839;0.507435323;3.57;507200;49.11;Bac-Pseudonitzschia;Bac;Pseudonitzschia
+Anse de Carteau 2;1;16/11/2015;2015;11;Fall;1.627143705;0.543153912;0.374437444;3.58;239600;34.72;Bac-Leptocylindrus;Bac;Leptocylindrus
+Anse de Carteau 2;1;25/05/2009;2009;5;Spring;0.722342528;0.273712329;0.563422515;3.6;3874200;56.26;Bac-Pseudonitzschia;Bac;Pseudonitzschia
+Anse de Carteau 2;1;14/03/2022;2022;3;Spring;1.49118542;0.482421527;0.422566958;3.61;756000;42.16;Bac-Chaetoceros;Bac;Chaetoceros
+Anse de Carteau 2;1;03/10/2016;2016;10;Fall;1.24980672;0.404331787;0.442892515;3.63;1575200;44.29;Bac-Cylindrotheca;Bac;Cylindrotheca
+Anse de Carteau 2;1;02/11/2016;2016;11;Fall;1.188776419;0.364868384;0.622486969;3.68;1957100;42.72;Bac-Skeletonema;Bac;Skeletonema
+Anse de Carteau 2;1;19/01/2009;2009;1;Winter;0.294931;0.114985116;0.928266402;3.69;2319700;92.77;Bac-Skeletonema;Bac;Skeletonema
+Anse de Carteau 2;1;06/06/2011;2011;6;Summer;1.221570847;0.422634509;0.664264264;4.12;166500;66.43;Bac-Pseudonitzschia;Bac;Pseudonitzschia
+Anse de Carteau 2;1;11/06/2018;2018;6;Summer;1.542942943;0.515047007;0.34607438;4.14;774400;34.61;Bac-Chaetoceros;Bac;Chaetoceros
+Anse de Carteau 2;1;05/05/2008;2008;5;Spring;0.225698246;0.098019503;0.955851633;5.2;4841300;77.5;Bac-Chaetoceros;Bac;Chaetoceros
+Anse de Carteau 2;1;24/08/2015;2015;8;Summer;1.529737647;0.494893768;0.336520076;5.43;733500;33.6;Bac-Leptocylindrus;Bac;Leptocylindrus
+Anse de Carteau 2;1;28/12/2015;2015;12;Winter;1.203948163;0.389495835;0.630821546;5.7;2031700;63;Bac-Skeletonema;Bac;Skeletonema
+Anse de Carteau 2;1;22/10/2012;2012;10;Fall;0.381380032;0.123382334;0.932873205;6.17;898500;93.2;Bac-Chaetoceros;Bac;Chaetoceros
+Anse de Carteau 2;1;27/09/2021;2021;9;Fall;1.203010554;0.35370207;0.563318777;6.17;2291800;56.3;Bac-Skeletonema;Bac;Skeletonema
+Anse de Carteau 2;1;11/08/2014;2014;8;Summer;0.389502468;0.115672186;0.923423921;7.65;4525500;92.28;Bac-Chaetoceros;Bac;Chaetoceros
+Anse de Carteau 2;1;16/07/2007;2007;7;Summer;0.467388652;0.161705376;0.885414137;8.45;18533800;88.54;Bac-Chaetoceros;Bac;Chaetoceros
+Bouzigues (a);1;11/02/2019;2019;2;Winter;1.418571637;0.645619775;0.596491228;3.878;22800;59.65;Dino-Gyrodinium;Dino;Gyrodinium
+Bouzigues (a);1;21/07/2008;2008;7;Summer;1.474461679;0.531799638;0.46410305;4.259;527900;46.41;Bac-Chaetoceros;Bac;Chaetoceros
+Bouzigues (a);1;27/03/2019;2019;3;Spring;0.405584413;0.1581257;0.931372549;5.125;82000;92.68;Bac-Cylindrotheca;Bac;Cylindrotheca
+Bouzigues (a);1;06/11/2018;2018;11;Fall;2.015668344;0.875393639;0.31884058;5.886;6900;31.88;Dino-Gymnodinium;Dino;Gymnodinium
+Bouzigues (a);1;23/08/2022;2022;8;Summer;0.818157176;0.245530301;0.615001498;5.96;8011800;61.5;Bac-Chaetoceros;Bac;Chaetoceros
+Bouzigues (a);1;04/11/2019;2019;11;Fall;1.589327042;0.5868898;0.502911593;6.51;189000;50.26;Bac-Rhizosolenia;Bac;Rhizosolenia
+Bouzigues (a);1;05/12/2011;2011;12;Winter;0.222812153;0.072083175;0.967567911;6.648;1575600;96.76;Bac-Chaetoceros;Bac;Chaetoceros
+Bouzigues (a);1;15/07/2019;2019;7;Summer;0.401486069;0.129886948;0.922888759;8.587;858500;92.29;Bac-Pseudonitzschia;Bac;Pseudonitzschia
+Bouzigues (a);1;12/09/2011;2011;9;Fall;0.280946662;0.109533025;0.951300236;8.864;423000;95.13;Dino-Gonyaulax;Dino;Gonyaulax
+Bouzigues (a);1;28/01/2019;2019;1;Winter;1.975851932;0.795141311;0.392638037;15.097;16300;39.2;Dino-Gyrodinium;Dino;Gyrodinium
+Bouzigues (a);1;19/11/2018;2018;11;Fall;1.747118645;0.645157407;0.342052314;21.329;49700;34.2;Bac-Cylindrotheca;Bac;Cylindrotheca
+Bouzigues (a);1;15/01/2019;2019;1;Winter;2.14425415;0.862911349;0.197802198;24.353;9100;19.8;Bac-Chaetoceros;Bac;Chaetoceros
+Bouzigues (a);1;03/12/2018;2018;12;Winter;2.501337413;0.882862358;0.150537634;26.315;9300;15;Bac-Cylindrotheca;Bac;Cylindrotheca
+SËte mer;1;01/10/2014;2014;10;Fall;1.856809513;0.630615722;0.39160401;2.078;319200;39.16;Bac-Dactyliosolen;Bac;Dactyliosolen
+SËte mer;1;21/01/2009;2009;1;Winter;0.70832894;0.240564992;0.805930711;2.562;2043600;80.59;Bac-Skeletonema;Bac;Skeletonema
+SËte mer;1;25/05/2021;2021;5;Spring;2.114897875;0.665469494;0.262443439;2.63;154700;26.24;Bac-Chaetoceros;Bac;Chaetoceros
+SËte mer;1;11/03/2013;2013;3;Spring;1.32272543;0.449228338;0.624131944;2.701;346000;62.34;Bac-Chaetoceros;Bac;Chaetoceros
+SËte mer;1;07/05/2012;2012;5;Spring;0.651045215;0.21384149;0.843877653;3.047;1003900;84.37;Bac-Pseudonitzschia;Bac;Pseudonitzschia
+SËte mer;1;13/10/2014;2014;10;Fall;1.168187573;0.412318958;0.710447761;3.047;335000;71.04;Bac-Chaetoceros;Bac;Chaetoceros
+SËte mer;1;11/05/2016;2016;5;Spring;1.114043939;0.39320863;0.551591658;3.255;182200;55.16;Bac-Chaetoceros;Bac;Chaetoceros
+SËte mer;1;09/11/2015;2015;11;Fall;2.280265236;0.77443114;0.25;3.324;87400;24.83;Bac-Pseudonitzschia;Bac;Pseudonitzschia
+SËte mer;1;21/06/2021;2021;6;Summer;1.300621477;0.40406078;0.510671906;3.6;2595600;51.07;Bac-Chaetoceros;Bac;Chaetoceros
+SËte mer;1;28/11/2011;2011;11;Fall;1.527913743;0.551078395;0.38501171;3.67;1067700;38.49;Bac-Skeletonema;Bac;Skeletonema
+SËte mer;1;10/06/2014;2014;6;Summer;0.796565965;0.275592911;0.70446227;4.224;6557200;70.49;Bac-Chaetoceros;Bac;Chaetoceros
+SËte mer;1;10/06/2013;2013;6;Summer;0.327453858;0.105936383;0.927813465;4.501;2817900;92.77;Bac-Pseudonitzschia;Bac;Pseudonitzschia
+SËte mer;1;30/09/2013;2013;9;Fall;0.276134375;0.088067257;0.948064161;4.501;3721900;94.81;Bac-Pseudonitzschia;Bac;Pseudonitzschia
+SËte mer;1;12/11/2008;2008;11;Fall;1.285819618;0.463761396;0.609331476;4.543;434000;60.48;Bac-Chaetoceros;Bac;Chaetoceros
+SËte mer;1;23/03/2020;2020;3;Spring;1.156309385;0.426989642;0.574184658;4.571;435400;57.42;Bac-Pseudonitzschia;Bac;Pseudonitzschia
+SËte mer;1;16/07/2007;2007;7;Summer;0.688181816;0.229720734;0.798965683;5.125;4563400;79.9;Bac-Chaetoceros;Bac;Chaetoceros
+SËte mer;1;21/12/2015;2015;12;Winter;1.566489588;0.522907071;0.365730392;5.471;1053300;35.73;Bac-Pseudonitzschia;Bac;Pseudonitzschia
+Barcares;1;01/10/2014;2014;10;Fall;1.627532401;0.543283662;0.392964393;2.176;233100;39.39;Bac-Chaetoceros;Bac;Chaetoceros
+Barcares;1;28/11/2011;2011;11;Fall;1.952132618;0.689017162;0.399484536;2.216;77600;39.95;Bac-Chaetoceros;Bac;Chaetoceros
+Barcares;1;30/09/2013;2013;9;Fall;0.56217499;0.202761767;0.839429492;2.355;1738800;83.94;Bac-Pseudonitzschia;Bac;Pseudonitzschia
+Barcares;1;04/07/2022;2022;7;Summer;1.408560071;0.462653865;0.594189316;2.42;106900;59.31;Bac-Chaetoceros;Bac;Chaetoceros
+Barcares;1;20/02/2013;2013;2;Winter;0.57537184;0.199064995;0.864026236;2.77;1585600;86.4;Bac-Pseudonitzschia;Bac;Pseudonitzschia
+Barcares;1;06/04/2020;2020;4;Spring;0.978754118;0.36142392;0.746931866;2.839;236300;74.69;Bac-Pseudonitzschia;Bac;Pseudonitzschia
+Barcares;1;24/11/2014;2014;11;Fall;1.755573533;0.586024842;0.370020964;2.978;190800;37;Bac-Chaetoceros;Bac;Chaetoceros
+Barcares;1;29/10/2014;2014;10;Fall;1.611711161;0.59515557;0.493975904;3.047;166000;49.49;Bac-Chaetoceros;Bac;Chaetoceros
+Barcares;1;02/06/2008;2008;6;Summer;1.29100717;0.455668887;0.494970583;3.082;526900;49.5;Bac-Chaetoceros;Bac;Chaetoceros
+Barcares;1;23/03/2020;2020;3;Spring;1.081584597;0.390099183;0.647406892;3.186;287300;64.74;Bac-Pseudonitzschia;Bac;Pseudonitzschia
+Barcares;1;07/05/2012;2012;5;Spring;0.245442621;0.093003899;0.958211921;4.224;1510000;95.92;Bac-Pseudonitzschia;Bac;Pseudonitzschia
+Barcares;1;02/02/2015;2015;2;Winter;1.729965478;0.623953154;0.363300493;4.501;81200;36.33;Bac-Chaetoceros;Bac;Chaetoceros
+Barcares;1;12/04/2022;2022;4;Spring;1.484504127;0.455635402;0.549215204;4.78;2115200;54.92;Bac-Pseudonitzschia;Bac;Pseudonitzschia
+Parc Leucate 2;1;06/01/2014;2014;1;Winter;1.945389658;0.701651003;0.296511628;3.255;34400;29.65;Bac-Skeletonema;Bac;Skeletonema
+Parc Leucate 2;1;23/05/2011;2011;5;Spring;0.255679138;0.158862381;0.941011236;6.026;142400;94.1;Bac-Nitzschia;Bac;Nitzschia
+Parc Leucate 2;1;07/06/2022;2022;6;Summer;1.838845248;0.66322323;0.462616822;7.13;22200;44.6;Dino-Prorocentrum;Dino;Prorocentrum
+Parc Leucate 2;1;10/04/2012;2012;4;Spring;0.709269901;0.341086723;0.788526015;7.358;322120;78.85;Dino-Gymnodinium;Dino;Gymnodinium
+Parc Leucate 2;1;26/12/2011;2011;12;Winter;0.01442891;0.008965186;0.998312883;11.149;1304000;99.83;Dino-Prorocentrum;Dino;Prorocentrum
+Parc Leucate 2;1;28/02/2012;2012;2;Winter;0.003191769;0.00178136;0.999700688;18.005;2338700;99.97;Dino-Prorocentrum;Dino;Prorocentrum
+Parc Leucate 2;1;31/01/2012;2012;1;Winter;1.424442779;0.885056061;0.375;19.958;3200;37.5;Dino-Prorocentrum;Dino;Prorocentrum
+Parc Leucate 2;1;26/03/2012;2012;3;Spring;0.032614606;0.014843547;0.995226532;33.24;10830700;99.52;Dino-Prorocentrum;Dino;Prorocentrum
+Parc Leucate 2;1;13/03/2012;2012;3;Spring;0.00469552;0.002917491;0.99952391;34.348;7141500;99.94;Dino-Prorocentrum;Dino;Prorocentrum
+Auger;4;26/03/2007;2007;3;Spring;0.178200503;0.067524302;0.972729716;5.21;1512402;97.17;Bac-Skeletonema;Bac;Skeletonema
+Auger;4;29/02/2012;2012;2;Winter;1.792901908;0.580031473;0.405310971;5.72;143300;40.47;Bac-Skeletonema;Bac;Skeletonema
+Auger;4;03/06/2008;2008;6;Summer;1.649150808;0.463850734;0.429979606;7.9;589800;42.9;Bac-Chaetoceros;Bac;Chaetoceros
+Auger;4;27/04/2015;2015;4;Spring;1.846937922;0.589042044;0.260045924;8.13;359800;25.18;Bac-Pseudonitzschia;Bac;Pseudonitzschia
+Auger;4;25/07/2007;2007;7;Summer;0.788410484;0.244933488;0.850073081;8.21;879827;84.68;Bac-Leptocylindrus;Bac;Leptocylindrus
+Auger;4;23/03/2009;2009;3;Spring;0.311089633;0.105653279;0.941047453;8.81;3374500;94.09;Bac-Skeletonema;Bac;Skeletonema
+Auger;4;22/07/2014;2014;7;Summer;1.79729545;0.590337397;0.355987055;9.12;186200;35.45;Bac-Chaetoceros;Bac;Chaetoceros
+Auger;4;23/04/2007;2007;4;Spring;1.40850456;0.4273587;0.376102994;9.8;2773200;37.5;Bac-Skeletonema;Bac;Skeletonema
+Auger;4;10/06/2014;2014;6;Summer;1.590827908;0.522521328;0.558197127;9.84;404400;55.74;Bac-Chaetoceros;Bac;Chaetoceros
+Auger;4;30/07/2013;2013;7;Summer;1.121733811;0.326656375;0.757462127;10.27;1335000;39.25;Bac-Leptocylindrus;Bac;Leptocylindrus
+Auger;4;18/10/2011;2011;10;Fall;1.631121466;0.489502208;0.551901999;10.33;778700;54.96;Bac-Leptocylindrus;Bac;Leptocylindrus
+Auger;4;04/09/2007;2007;9;Fall;1.310909495;0.407256933;0.705375019;10.53;655500;69.87;Bac-Leptocylindrus;Bac;Leptocylindrus
+Auger;4;02/04/2012;2012;4;Spring;1.77093363;0.550171465;0.472546651;11.25;747300;47.1;Bac-Asterionellopsis;Bac;Asterionellopsis
+Auger;4;20/05/2014;2014;5;Spring;0.850812549;0.271348786;0.829966461;11.39;388630;82.14;Dino-Gymnodiniaceae;Dino;Gymnodiniaceae
+Auger;4;16/04/2012;2012;4;Spring;1.550443024;0.481672208;0.380138815;13.11;936500;38;Bac-Skeletonema;Bac;Skeletonema
+Auger;4;11/05/2015;2015;5;Spring;0.251206379;0.085315532;0.948158702;13.29;1824900;94.81;Bac-Pseudonitzschia;Bac;Pseudonitzschia
+Auger;4;10/04/2007;2007;4;Spring;0.437103774;0.154278454;0.878906399;14.26;4003263;87.8;Bac-Skeletonema;Bac;Skeletonema
+Auger;4;06/08/2007;2007;8;Summer;0.312907972;0.096040117;0.950707808;15.29;3045706;94.61;Bac-Leptocylindrus;Bac;Leptocylindrus
+Auger;4;14/03/2012;2012;3;Spring;0.243701584;0.074798761;0.961021279;15.77;8299400;96.1;Bac-Skeletonema;Bac;Skeletonema
+Auger;4;17/05/2016;2016;5;Spring;0.11650072;0.037689783;0.980887751;20.17;6027648;98.09;Bac-Dactyliosolen;Bac;Dactyliosolen
+Le Cornard;4;20/03/2013;2013;3;Spring;0.173902706;0.064216943;0.974661306;7.68;888770;97.38;Bac-Skeletonema;Bac;Skeletonema
+Diana centre;1;25/10/2021;2021;10;Fall;1.345033602;0.412828038;0.438748412;8.02;3468300;43.83;Bac-Cylindrotheca;Bac;Cylindrotheca
+Le Cornard;4;19/03/2012;2012;3;Spring;1.11657985;0.361230836;0.757877942;8.03;501400;75.79;Bac-Skeletonema;Bac;Skeletonema
+Le Cornard;4;17/03/2010;2010;3;Spring;0.747046676;0.263674699;0.579207921;8.33;2020900;57.89;Bac-Skeletonema;Bac;Skeletonema
+Le Cornard;4;06/07/2009;2009;7;Summer;2.0900813;0.686505468;0.217391304;8.34;203200;21.65;Bac-Chaetoceros;Bac;Chaetoceros
+Le Cornard;4;09/08/2011;2011;8;Summer;2.373972934;0.746989529;0.28436019;8.8;129800;27.73;Dino-Gymnodiniaceae;Dino;Gymnodiniaceae
+Diana centre;1;26/12/2007;2007;12;Winter;0;0;1;8.86;2666100;100;Cryptophyceae-Cryptophyceae;Cryptophyceae;Cryptophyceae
+Le Cornard;4;10/06/2014;2014;6;Summer;2.008128428;0.694764756;0.283737024;9;145700;28.14;Dino-Gymnodiniaceae;Dino;Gymnodiniaceae
+Le Cornard;4;03/06/2008;2008;6;Summer;1.727406981;0.536649152;0.426612494;9.57;789700;42.55;Bac-Chaetoceros;Bac;Chaetoceros
+Le Cornard;4;15/07/2008;2008;7;Summer;1.758746622;0.587084045;0.46705286;9.65;561200;45.97;Bac-Leptocylindrus;Bac;Leptocylindrus
+Le Cornard;4;24/03/2014;2014;3;Spring;0.093828347;0.034647935;0.987369998;10.01;1148660;98.69;Bac-Skeletonema;Bac;Skeletonema
+Le Cornard;4;06/08/2007;2007;8;Summer;0.374701136;0.141982947;0.935645334;10.36;590070;93.14;Bac-Leptocylindrus;Bac;Leptocylindrus
+Le Cornard;4;22/08/2011;2011;8;Summer;1.238866014;0.406916368;0.660285212;10.73;515700;65.54;Bac-Amphora;Bac;Amphora
+Le Cornard;4;16/04/2012;2012;4;Spring;1.666364845;0.531452055;0.446621524;12.76;694100;44.66;Bac-Leptocylindrus;Bac;Leptocylindrus
+Le Cornard;4;09/08/2016;2016;8;Summer;1.858518901;0.775062582;0.373626374;13.09;9100;37.36;Bac-thalassiosiraceae;Bac;thalassiosiraceae
+Le Cornard;4;06/05/2010;2010;5;Spring;1.427489659;0.433119028;0.644329897;14.08;855600;64.28;Bac-Asterionellopsis;Bac;Asterionellopsis
+Le Cornard;4;14/03/2012;2012;3;Spring;0.169860919;0.057688721;0.973658317;14.51;7459860;97.36;Bac-Skeletonema;Bac;Skeletonema
+Le Cornard;4;17/06/2008;2008;6;Summer;0.184085276;0.066394729;0.968493319;27.21;1633400;96.73;Dino-Gymnodinium;Dino;Gymnodinium
+Teychan bis;3;10/04/2007;2007;4;Spring;1.196999817;0.376645545;0.543337646;5.48;2630160;49.82;Bac-Pseudonitzschia;Bac;Pseudonitzschia
+Teychan bis;3;07/08/2007;2007;8;Summer;1.890035476;0.602787103;0.397628733;5.15;541030;39.65;Cryptophyceae-Cryptomonadales;Cryptophyceae;Cryptomonadales
+Teychan bis;3;31/10/2007;2007;10;Fall;0.82809431;0.281240099;0.642125312;5.22;1522800;64.2;Bac-Pseudonitzschia;Bac;Pseudonitzschia
+Teychan bis;3;11/02/2011;2011;2;Winter;0.395777253;0.128040057;0.920697236;6.49;2002500;87.84;Bac-Asterionellopsis;Bac;Asterionellopsis
+Teychan bis;3;25/02/2011;2011;2;Winter;0.122376693;0.044138062;0.982905983;4.13;1171850;83.91;Bac-Asterionellopsis;Bac;Asterionellopsis
+Teychan bis;3;13/04/2012;2012;4;Spring;0.203712473;0.064969813;0.971049457;6.99;1068000;90.45;Bac-Asterionellopsis;Bac;Asterionellopsis
+Teychan bis;3;21/07/2014;2014;7;Summer;1.306904778;0.416809819;0.476056543;7.61;1016320;44.97;Bac-Lithodesmium;Bac;Lithodesmium
+Teychan bis;3;23/02/2018;2018;2;Winter;0.331908547;0.094925734;0.949540031;7.05;927180;89.95;Bac-Asterionellopsis;Bac;Asterionellopsis
+Teychan bis;3;04/05/2021;2021;5;Spring;1.86448852;0.512562023;0.447704058;5.64;584910;40.99;Bac-Leptocylindrus;Bac;Leptocylindrus
+Teychan bis;3;15/11/2021;2021;11;Fall;0.197978258;0.055246885;0.962959977;5.75;4282300;94.82;Bac-Asterionellopsis;Bac;Asterionellopsis
+Teychan bis;3;11/04/2022;2022;4;Spring;0.879937635;0.256243714;0.673529058;6.09;1433750;58.64;Bac-Asterionellopsis;Bac;Asterionellopsis
+Bois de la Chaise large;3;13/05/2009;2009;5;Spring;1.799793369;0.540120921;0.503302051;5.22;297300;48.71;Bac-Rhizosolenia;Bac;Rhizosolenia
+Bois de la Chaise large;3;05/05/2010;2010;5;Spring;2.408867948;0.68310314;0.25;5.32;291200;24.73;Bac-Chaetoceros;Bac;Chaetoceros
+Bois de la Chaise large;3;14/05/2012;2012;5;Spring;1.875173648;0.546063085;0.522896913;5.32;499100;51.93;Bac-Asterionellopsis;Bac;Asterionellopsis
+Bois de la Chaise large;3;08/03/2010;2010;3;Spring;0.860834645;0.297828348;0.784487982;5.38;1005800;77.23;Bac-Skeletonema;Bac;Skeletonema
+Bois de la Chaise large;3;02/08/2021;2021;8;Summer;1.862134864;0.564996066;0.3032645;5.48;788264;30.23;Dino-Lepidodinium;Dino;Lepidodinium
+Bois de la Chaise large;3;18/06/2018;2018;6;Summer;1.257304751;0.373387078;0.675565241;6.43;367300;67.52;Bac-Chaetoceros;Bac;Chaetoceros
+Bois de la Chaise large;3;27/05/2009;2009;5;Spring;1.973553095;0.658788208;0.441955193;6.94;98600;44.02;Bac-Rhizosolenia;Bac;Rhizosolenia
+Bois de la Chaise large;3;07/05/2007;2007;5;Spring;1.025305548;0.322620573;0.655538099;6.99;1527700;63.79;Bac-Leptocylindrus;Bac;Leptocylindrus
+Bois de la Chaise large;3;21/05/2007;2007;5;Spring;1.302145025;0.390775842;0.628803245;8.03;644900;62.49;Bac-Chaetoceros;Bac;Chaetoceros
+Bois de la Chaise large;3;11/06/2012;2012;6;Summer;1.561042284;0.47364064;0.492813142;8.2;887400;48.68;Bac-Chaetoceros;Bac;Chaetoceros
+Bois de la Chaise large;3;01/07/2013;2013;7;Summer;1.196634106;0.359111844;0.70279262;8.77;994500;70.1;Bac-Chaetoceros;Bac;Chaetoceros
+Bois de la Chaise large;3;03/05/2021;2021;5;Spring;1.485976412;0.488081938;0.506253722;9.14;171300;49.62;Bac-Guinardia;Bac;Guinardia
+Bois de la Chaise large;3;24/03/2010;2010;3;Spring;0.681000572;0.211564723;0.836150419;9.18;1532400;83.29;Bac-Skeletonema;Bac;Skeletonema
+Bois de la Chaise large;3;17/06/2013;2013;6;Summer;1.115566329;0.351021848;0.615020395;9.53;4882400;61.46;Bac-Leptocylindrus;Bac;Leptocylindrus
+Bois de la Chaise large;3;24/03/2009;2009;3;Spring;0.620704872;0.184333336;0.892974062;10.08;817000;86.81;Bac-Skeletonema;Bac;Skeletonema
+Bois de la Chaise large;3;19/05/2010;2010;5;Spring;1.931472077;0.655972866;0.305672761;10.08;216500;30.1;Bac-Cerataulina;Bac;Cerataulina
+Bois de la Chaise large;3;10/04/2007;2007;4;Spring;0.810888332;0.266343359;0.505714575;10.42;1980000;50.51;Bac-Asterionellopsis;Bac;Asterionellopsis
+Bois de la Chaise large;3;29/05/2012;2012;5;Spring;2.193546385;0.644933574;0.19676259;10.53;612200;17.8;Bac-Guinardia;Bac;Guinardia
+Bois de la Chaise large;3;11/05/2015;2015;5;Spring;1.178747484;0.350057596;0.710411622;11.41;831000;70.61;Bac-Guinardia;Bac;Guinardia
+Bois de la Chaise large;3;27/04/2009;2009;4;Spring;1.929720049;0.556799509;0.34668955;17.12;762850;34;Bac-Dactyliosolen;Bac;Dactyliosolen
+Bois de la Chaise large;3;21/07/2014;2014;7;Summer;0.058720001;0.02289324;0.991422753;21.05;4862900;99.12;Dino-Lepidodinium;Dino;Lepidodinium
+Bois de la Chaise large;3;26/07/2007;2007;7;Summer;0.901508021;0.291651776;0.577420547;21.59;1082400;57.74;Dino-Lepidodinium;Dino;Lepidodinium
+Bois de la Chaise large;3;10/07/2019;2019;7;Summer;0.432849847;0.14975577;0.912133891;50.3;239100;91.18;Bac-Chaetoceros;Bac;Chaetoceros
+GÈfosse;3;10/04/2008;2008;4;Spring;0.741713381;0.309318505;0.827806997;3.53;438400;82.57;Bac-Chaetoceros;Bac;Chaetoceros
+GÈfosse;3;14/03/2008;2008;3;Spring;1.169825432;0.50804873;0.66025641;3.79;91400;45.08;Bac-Thalassiosira;Bac;Thalassiosira
+GÈfosse;3;22/09/2020;2020;9;Fall;1.704485446;0.551427382;0.377560976;4.56;364100;71.68;Cryptophyceae-Cryptophyceae;Cryptophyceae;Cryptophyceae
+GÈfosse;3;23/04/2008;2008;4;Spring;1.589887753;0.587096854;0.415857605;4.72;123700;41.55;Bac-Rhizosolenia;Bac;Rhizosolenia
+GÈfosse;3;02/10/2014;2014;10;Fall;0.5502895;0.180747395;0.836055524;4.83;2287800;83.46;Bac-Pseudonitzschia;Bac;Pseudonitzschia
+GÈfosse;3;03/07/2014;2014;7;Summer;0.77558724;0.26833477;0.780002229;5.33;2692400;78;Bac-Chaetoceros;Bac;Chaetoceros
+GÈfosse;3;11/08/2014;2014;8;Summer;1.236328251;0.412696509;0.62006079;5.5;297400;61.74;Bac-Dactyliosolen;Bac;Dactyliosolen
+GÈfosse;3;05/04/2018;2018;4;Spring;1.235160912;0.427336348;0.67369186;5.62;144700;64.06;Bac-Thalassiosira;Bac;Thalassiosira
+GÈfosse;3;23/06/2009;2009;6;Summer;1.45396051;0.550939342;0.4625;6.12;128000;46.25;Bac-Rhizosolenia;Bac;Rhizosolenia
+GÈfosse;3;21/05/2007;2007;5;Spring;1.172913807;0.509389994;0.636363636;6.27;96800;63.64;Bac-Guinardia;Bac;Guinardia
+GÈfosse;3;11/05/2015;2015;5;Spring;1.074805533;0.365028972;0.671711613;6.43;365500;66.79;Bac-Dactyliosolen;Bac;Dactyliosolen
+GÈfosse;3;25/04/2016;2016;4;Spring;1.980345245;0.685152434;0.238964097;6.64;170000;23.88;Bac-Dactyliosolen;Bac;Dactyliosolen
+GÈfosse;3;23/06/2016;2016;6;Summer;0.297423709;0.104977519;0.948186233;6.94;1750500;94.82;Bac-Leptocylindrus;Bac;Leptocylindrus
+GÈfosse;3;09/06/2020;2020;6;Summer;1.338803719;0.401777176;0.566478814;7.18;1447600;56.24;Bac-Leptocylindrus;Bac;Leptocylindrus
+GÈfosse;3;24/05/2016;2016;5;Spring;0.836244195;0.274671714;0.750292872;7.2;1130800;73.63;Bac-Dactyliosolen;Bac;Dactyliosolen
+GÈfosse;3;13/05/2009;2009;5;Spring;0.594788021;0.214524432;0.861239368;7.67;412700;85.87;Bac-Plagiogramma;Bac;Plagiogramma
+GÈfosse;3;22/06/2020;2020;6;Summer;0.377010747;0.120239656;0.924175889;10.06;1721800;91.67;Bac-Leptocylindrus;Bac;Leptocylindrus
+GÈfosse;3;06/06/2016;2016;6;Summer;1.106599347;0.332092266;0.745721271;10.89;409700;74.44;Bac-Guinardia;Bac;Guinardia
+les HÈbihens;3;09/05/2007;2007;5;Spring;0.576020054;0.224573656;0.854410617;2.89;7181900;96.43;Hapt-Phaeocystis;Hapt;Phaeocystis
+les HÈbihens;3;23/03/2021;2021;3;Spring;1.076044282;0.359192406;0.737920371;3.19;260300;73.34;Bac-Thalassiosira;Bac;Thalassiosira
+les HÈbihens;3;17/05/2021;2021;5;Spring;0.756455471;0.261715632;0.604522231;3.19;921300;60.36;Bac-Guinardia;Bac;Guinardia
+les HÈbihens;3;03/05/2021;2021;5;Spring;0.795765843;0.253792796;0.840930233;3.32;542900;66.61;Bac-Dactyliosolen;Bac;Dactyliosolen
+les HÈbihens;3;26/04/2022;2022;4;Spring;1.321940409;0.457359994;0.584084551;3.88;438600;42.84;Bac-Guinardia;Bac;Guinardia
+les HÈbihens;3;17/05/2016;2016;5;Spring;0.901506365;0.296107644;0.52926671;4.57;771400;52.86;Bac-Thalassiosira;Bac;Thalassiosira
+les HÈbihens;3;09/05/2011;2011;5;Spring;0.807258119;0.305888815;0.591736469;4.85;869520;59.15;Bac-Dactyliosolen;Bac;Dactyliosolen
+les HÈbihens;3;07/04/2021;2021;4;Spring;1.451757877;0.451013943;0.370272374;5.4;655800;36.28;Bac-Dactyliosolen;Bac;Dactyliosolen
+les HÈbihens;3;15/04/2013;2013;4;Spring;0.989274175;0.324935748;0.782777347;5.48;517400;29.3;Bac-Pseudonitzschia;Bac;Pseudonitzschia
+les HÈbihens;3;14/10/2013;2013;10;Fall;0.744599551;0.274957809;0.834224599;5.8;59500;78.66;Bac-Rhizosolenia;Bac;Rhizosolenia
+les HÈbihens;3;12/05/2015;2015;5;Spring;0.236495184;0.083472423;0.962998283;5.9;526900;95.82;Bac-Dactyliosolen;Bac;Dactyliosolen
+les HÈbihens;3;17/03/2009;2009;3;Spring;0.282394208;0.099672765;0.950303852;6.11;1375052;94.98;Bac-Thalassiosira;Bac;Thalassiosira
+les HÈbihens;3;24/03/2014;2014;3;Spring;1.168757046;0.404362187;0.638593244;6.34;216500;63.74;Bac-Thalassiosira;Bac;Thalassiosira
+les HÈbihens;3;27/05/2008;2008;5;Spring;0.967700934;0.389431504;0.512493512;6.98;1351600;51.14;Bac-Guinardia;Bac;Guinardia
+les HÈbihens;3;09/06/2008;2008;6;Summer;0.594896234;0.214563461;0.834337068;8.12;1394294;83.4;Bac-Guinardia;Bac;Guinardia
+les HÈbihens;3;24/04/2018;2018;4;Spring;0.842323688;0.276668576;0.663341008;8.3;1174800;66.22;Bac-Thalassiosira;Bac;Thalassiosira
+Loguivy;3;07/05/2018;2018;5;Spring;0.603296627;0.187424635;0.882458771;2.01;667200;88.22;Bac-Dactyliosolen;Bac;Dactyliosolen
+Loguivy;3;23/09/2008;2008;9;Fall;1.289693148;0.455205095;0.613651877;2.27;147000;61.16;Bac-Guinardia;Bac;Guinardia
+Loguivy;3;25/04/2022;2022;4;Spring;0.544232142;0.192090067;0.884111573;2.63;1510000;57.03;Hapt-Phaeocystis;Hapt;Phaeocystis
+Loguivy;3;23/04/2007;2007;4;Spring;1.672083164;0.590171992;0.388264669;2.65;160900;38.66;Bac-Dactyliosolen;Bac;Dactyliosolen
+Loguivy;3;15/09/2014;2014;9;Fall;1.627607169;0.526556071;0.426863572;2.81;143400;42.33;Bac-Guinardia;Bac;Guinardia
+Loguivy;3;12/03/2012;2012;3;Spring;1.200447517;0.423705303;0.6;3.12;257600;54.97;Bac-Thalassiosira;Bac;Thalassiosira
+Loguivy;3;24/07/2008;2008;7;Summer;0.382260641;0.129824609;0.922509428;3.14;1074079;92.22;Bac-Guinardia;Bac;Guinardia
+Loguivy;3;18/05/2021;2021;5;Spring;0.957794318;0.314595914;0.616171955;3.32;785700;61.3;Bac-Guinardia;Bac;Guinardia
+Loguivy;3;11/04/2016;2016;4;Spring;0.259235951;0.08267786;0.958320226;3.34;636100;95.79;Bac-Thalassiosira;Bac;Thalassiosira
+Loguivy;3;26/03/2019;2019;3;Spring;2.142464307;0.674143492;0.4092827;3.46;47700;40.67;Bac-Lauderia;Bac;Lauderia
+Loguivy;3;21/05/2008;2008;5;Spring;1.183874768;0.388854013;0.578691171;3.54;508853;57.85;Bac-Guinardia;Bac;Guinardia
+Loguivy;3;06/04/2021;2021;4;Spring;1.711806318;0.545944658;0.398033247;3.74;428200;39.7;Bac-Dactyliosolen;Bac;Dactyliosolen
+Loguivy;3;23/04/2018;2018;4;Spring;0.999737276;0.323430458;0.725751598;3.91;745900;71.52;Bac-Dactyliosolen;Bac;Dactyliosolen
+Loguivy;3;16/04/2013;2013;4;Spring;1.10572519;0.343512844;0.738646352;4.02;342000;73.71;Bac-Thalassiosira;Bac;Thalassiosira
+Loguivy;3;11/03/2019;2019;3;Spring;1.856990729;0.600765197;0.431306306;4.16;89600;42.75;Bac-Lauderia;Bac;Lauderia
+Loguivy;3;09/05/2022;2022;5;Spring;0.947262171;0.341652609;0.663026521;4.29;1085100;47;Bac-Guinardia;Bac;Guinardia
+Loguivy;3;07/05/2008;2008;5;Spring;0.581773252;0.191088509;0.885636097;5.87;789036;88.43;Bac-Cerataulina;Bac;Cerataulina
+Loguivy;3;09/06/2008;2008;6;Summer;0.873616747;0.296700578;0.572891907;6.29;2505755;57.26;Bac-Guinardia;Bac;Guinardia
+Men er Roue;3;17/03/2008;2008;3;Spring;0.891648037;0.32159405;0.659006421;3.75;298100;65.41;Bac-Skeletonema;Bac;Skeletonema
+Men er Roue;3;03/09/2007;2007;9;Fall;1.461040546;0.487707316;0.37515006;4.79;2733800;39.22;Bac-Cerataulina;Bac;Cerataulina
+Men er Roue;3;04/06/2012;2012;6;Summer;1.612681983;0.478924949;0.462867723;5.1;2058200;35.77;Bac-Leptocylindrus;Bac;Leptocylindrus
+Men er Roue;3;12/05/2008;2008;5;Spring;0.919359665;0.293210448;0.622980181;5.5;2568300;62.3;Bac-Chaetocerotaceae;Bac;Chaetocerotaceae
+Men er Roue;3;25/03/2014;2014;3;Spring;1.012725528;0.322987529;0.75030012;5.82;673400;35.76;Bac-Thalassiosira;Bac;Thalassiosira
+Men er Roue;3;30/07/2018;2018;7;Summer;0.322046471;0.102709955;0.95130603;5.98;806500;73.16;Dino-Lepidodinium;Dino;Lepidodinium
+Men er Roue;3;20/02/2012;2012;2;Winter;0.677442668;0.230075295;0.779651106;6.26;2093400;76.43;Bac-Skeletonema;Bac;Skeletonema
+Men er Roue;3;18/03/2013;2013;3;Spring;0.287161042;0.087128415;0.946397119;6.81;3822500;94.18;Bac-Skeletonema;Bac;Skeletonema
+Men er Roue;3;15/05/2017;2017;5;Spring;0.987442509;0.306766263;0.789018303;6.81;398100;59.56;Bac-Dactyliosolen;Bac;Dactyliosolen
+Men er Roue;3;01/04/2008;2008;4;Spring;0.629763069;0.222278732;0.770353552;6.96;1238400;76.71;Bac-Skeletonema;Bac;Skeletonema
+Men er Roue;3;19/05/2014;2014;5;Spring;0.929823712;0.285388632;0.605180344;7.2;5006400;79.74;Bac-Leptocylindrus;Bac;Leptocylindrus
+Men er Roue;3;16/03/2015;2015;3;Spring;0.899135617;0.295328951;0.747269592;7.59;1106200;70.51;Bac-Skeletonema;Bac;Skeletonema
+Men er Roue;3;18/10/2010;2010;10;Fall;1.757118125;0.58654044;0.385026738;7.87;113500;31.72;Dino-Gymnodiniales;Dino;Gymnodiniales
+Men er Roue;3;01/10/2013;2013;10;Fall;1.585173999;0.445856206;0.521123198;8.03;1596300;51.62;Bac-Leptocylindrus;Bac;Leptocylindrus
+Men er Roue;3;26/11/2007;2007;11;Fall;1.432936399;0.529139526;0.612244898;8.09;44600;60.54;Cilio-Mesodinium;Cilio;Mesodinium
+Men er Roue;3;17/05/2010;2010;5;Spring;0.621942773;0.195699257;0.867699198;8.75;1072300;86.73;Bac-Cerataulina;Bac;Cerataulina
+Men er Roue;3;14/05/2012;2012;5;Spring;1.685516069;0.517331531;0.501432665;8.97;846600;49.61;Bac-Cerataulina;Bac;Cerataulina
+Men er Roue;3;15/03/2022;2022;3;Spring;0.872986127;0.296486405;0.573321442;9.58;998300;45.08;Bac-Skeletonema;Bac;Skeletonema
+Ouest Loscolo;3;06/03/2012;2012;3;Spring;0.866527844;0.254771407;0.788225876;12.08;1672100;76.55;Bac-Skeletonema;Bac;Skeletonema
+Ouest Loscolo;3;14/05/2012;2012;5;Spring;1.440741246;0.437139732;0.446051431;12.63;2972700;49.39;Bac-Lauderia;Bac;Lauderia
+Ouest Loscolo;3;20/10/2008;2008;10;Fall;0.048435817;0.01469606;0.99430106;15.6;13109500;30.14;Bac-Leptocylindrus;Bac;Leptocylindrus
+Ouest Loscolo;3;27/06/2016;2016;6;Summer;0.645800304;0.212118753;0.823609443;16.99;2513740;82.36;Bac-Chaetoceros;Bac;Chaetoceros
+Ouest Loscolo;3;12/05/2008;2008;5;Spring;1.218672207;0.369761082;0.463571042;17.3;2588600;46.36;Bac-Chaetocerotaceae;Bac;Chaetocerotaceae
+Ouest Loscolo;3;24/07/2007;2007;7;Summer;0.902594672;0.280406801;0.707769739;17.41;1271600;70.78;Dino-Lepidodinium;Dino;Lepidodinium
+Ouest Loscolo;3;16/06/2014;2014;6;Summer;1.261419861;0.367333885;0.607471009;17.41;3185400;60.19;Bac-Chaetoceros;Bac;Chaetoceros
+Ouest Loscolo;3;11/03/2009;2009;3;Spring;0.050314178;0.017407511;0.992848389;17.83;6448600;99.25;Bac-Skeletonema;Bac;Skeletonema
+Ouest Loscolo;3;17/09/2007;2007;9;Fall;1.499241281;0.460158643;0.56839712;18.42;1697800;53.01;Bac-Leptocylindrus;Bac;Leptocylindrus
+Ouest Loscolo;3;16/03/2015;2015;3;Spring;0.741431153;0.215909702;0.726909273;18.5;2208200;72.46;Bac-Thalassiosira;Bac;Thalassiosira
+Ouest Loscolo;3;02/04/2007;2007;4;Spring;0.905098514;0.307392519;0.672388561;18.65;2528300;67.24;Bac-Skeletonema;Bac;Skeletonema
+Ouest Loscolo;3;17/08/2021;2021;8;Summer;0.701738745;0.292647787;0.67626228;19.28;1025900;57.71;Dino-Lingulodinium;Dino;Lingulodinium
+Ouest Loscolo;3;25/06/2012;2012;6;Summer;1.521204953;0.47258889;0.632754769;20.31;612600;78.49;Dino-Prorocentrum;Dino;Prorocentrum
+Ouest Loscolo;3;23/06/2008;2008;6;Summer;0.789714611;0.227863471;0.820157653;28.4;4526200;79.54;Bac-Chaetocerotaceae;Bac;Chaetocerotaceae
+Ouest Loscolo;3;28/04/2008;2008;4;Spring;1.009177557;0.293879242;0.728365275;31.5;4397400;72.77;Bac-Skeletonema;Bac;Skeletonema
+Ouest Loscolo;3;11/07/2007;2007;7;Summer;0.046757504;0.015879937;0.99446415;72.25;3016700;99.45;Dino-Lepidodinium;Dino;Lepidodinium
+Ouest Loscolo;3;26/06/2007;2007;6;Summer;0.170389331;0.052934422;0.974914695;115.74;2666900;97.49;Dino-Lepidodinium;Dino;Lepidodinium
+Point 1 Boulogne;2;05/04/2007;2007;4;Spring;1.927248453;0.666782205;0.36920405;15.99;2487888;72.39;Hapt-Phaeocystis;Hapt;Phaeocystis
+Point 1 Boulogne;2;22/04/2008;2008;4;Spring;1.866536828;0.658805604;0.343317829;23.02;17004002;98.29;Hapt-Phaeocystis;Hapt;Phaeocystis
+Point 1 Boulogne;2;05/05/2008;2008;5;Spring;2.154935259;0.661409272;0.361859863;25.84;11517268;94.99;Hapt-Phaeocystis;Hapt;Phaeocystis
+Point 1 Boulogne;2;02/06/2008;2008;6;Summer;1.473336988;0.500379528;0.529498089;14.57;6150083;82.77;Hapt-Phaeocystis;Hapt;Phaeocystis
+Point 1 Boulogne;2;11/03/2009;2009;3;Spring;2.158588355;0.654943932;0.21752126;18.39;824327;20.53;Bac-Asterionellopsis;Bac;Asterionellopsis
+Point 1 Boulogne;2;15/01/2010;2010;1;Winter;1.758753234;0.568983849;0.529065795;11.93;881514;44.19;Bac-Chaetoceros;Bac;Chaetoceros
+Point 1 Boulogne;2;23/02/2010;2010;2;Winter;1.282895832;0.443851497;0.531661373;10.91;1240700;34.25;Bac-Chaetoceros;Bac;Chaetoceros
+Point 1 Boulogne;2;02/03/2010;2010;3;Spring;0.980730455;0.339309451;0.749450606;12.69;1827345;44.34;Bac-Chaetoceros;Bac;Chaetoceros
+Point 1 Boulogne;2;16/03/2011;2011;3;Spring;1.863118865;0.632758525;0.414165011;15.9;716270;55.1;Hapt-Phaeocystis;Hapt;Phaeocystis
+Point 1 Boulogne;2;05/03/2015;2015;3;Spring;1.614067577;0.530154601;0.514919469;17.78;352460;47.28;Bac-Chaetoceros;Bac;Chaetoceros
+Point 1 Boulogne;2;05/09/2016;2016;9;Fall;0.208658117;0.067504125;0.968002197;10.48;5359001;95.11;Bac-Chaetoceros;Bac;Chaetoceros
+At so;2;10/03/2015;2015;3;Spring;1.232242364;0.392997811;0.594643595;12.96;1599172;55.62;Bac-Asterionellopsis;Bac;Asterionellopsis
+At so;2;30/03/2018;2018;3;Spring;2.352103246;0.740108057;0.208222729;13.56;515232;27.99;Hapt-Phaeocystis;Hapt;Phaeocystis
+At so;2;23/04/2008;2008;4;Spring;1.492692498;0.443291167;0.623021846;19.61;14204933;93.98;Hapt-Phaeocystis;Hapt;Phaeocystis
+At so;2;13/05/2009;2009;5;Spring;1.094224232;0.456326948;0.540958692;21.86;6875217;95.13;Hapt-Phaeocystis;Hapt;Phaeocystis
+At so;2;22/05/2008;2008;5;Spring;1.74654973;0.583012623;0.368578446;21.94;6557420;92.77;Hapt-Phaeocystis;Hapt;Phaeocystis
+At so;2;23/07/2008;2008;7;Summer;0.636279411;0.197671313;0.839454961;22.25;7606858;61.9;Bac-Chaetoceros;Bac;Chaetoceros
+At so;2;23/03/2012;2012;3;Spring;1.74271678;0.61510256;0.348551247;22.35;5670486;94.28;Hapt-Phaeocystis;Hapt;Phaeocystis
+At so;2;04/06/2008;2008;6;Summer;1.674697956;0.591094899;0.450378987;22.55;16295372;86;Cryptophyceae-Cryptophyceae;Cryptophyceae;Cryptophyceae
+At so;2;08/03/2011;2011;3;Spring;1.517428963;0.483952085;0.464597866;22.92;1925254;45.4;Bac-Asterionellopsis;Bac;Asterionellopsis
+At so;2;28/04/2014;2014;4;Spring;0.48992313;0.156250688;0.909289299;23.68;8195709;75.39;Hapt-Phaeocystis;Hapt;Phaeocystis
+At so;2;22/03/2016;2016;3;Spring;1.217176891;0.406303628;0.688948911;24.71;803115;67.01;Bac-Asterionellopsis;Bac;Asterionellopsis
+At so;2;03/04/2007;2007;4;Spring;1.524639655;0.577721309;0.551269248;25.22;1963575;63.59;Hapt-Phaeocystis;Hapt;Phaeocystis
+At so;2;20/03/2015;2015;3;Spring;1.683799746;0.607302386;0.510930151;28.22;819313;50;Bac-Asterionellopsis;Bac;Asterionellopsis
+At so;2;06/03/2018;2018;3;Spring;1.914400274;0.610557744;0.369615702;32.91;711139;36.26;Bac-Asterionellopsis;Bac;Asterionellopsis
+At so;2;07/05/2008;2008;5;Spring;2.237564139;0.746917259;0.273917714;33.52;1569720;63.11;Hapt-Phaeocystis;Hapt;Phaeocystis
+At so;2;14/03/2013;2013;3;Spring;1.556326271;0.52856462;0.387692053;42.21;1125294;28.35;Bac-Asterionellopsis;Bac;Asterionellopsis
+Antifer ponton p√©trolier;2;04/05/2016;2016;5;Spring;1.508447498;0.468625564;0.490469758;8.34;667100;48.99;Bac-Chaetoceros;Bac;Chaetoceros
+Antifer ponton p√©trolier;2;04/05/2015;2015;5;Spring;1.58750492;0.513582374;0.537881385;10.4;584000;53.73;Bac-Chaetoceros;Bac;Chaetoceros
+Antifer ponton p√©trolier;2;26/07/2021;2021;7;Summer;1.100694141;0.323619602;0.562533567;10.65;2807000;82.39;Bac-Leptocylindrus;Bac;Leptocylindrus
+Antifer ponton p√©trolier;2;08/06/2009;2009;6;Summer;1.818531623;0.572215488;0.37995788;11.12;570700;37.94;Bac-Guinardia;Bac;Guinardia
+Antifer ponton p√©trolier;2;18/06/2008;2008;6;Summer;0.540548521;0.172396593;0.907341622;11.5;1351200;90.73;Bac-Skeletonema;Bac;Skeletonema
+Antifer ponton p√©trolier;2;06/06/2016;2016;6;Summer;0.956599625;0.297184383;0.536318275;12.79;10503100;53.62;Bac-Chaetoceros;Bac;Chaetoceros
+Antifer ponton p√©trolier;2;01/08/2012;2012;8;Summer;0.226609437;0.071304468;0.965420618;13;3279400;95.61;Bac-Chaetoceros;Bac;Chaetoceros
+Antifer ponton p√©trolier;2;01/08/2019;2019;8;Summer;1.802360602;0.546859773;0.378456459;13.15;629800;29.12;Dino-Lepidodinium;Dino;Lepidodinium
+Antifer ponton p√©trolier;2;06/07/2009;2009;7;Summer;1.246743342;0.409503746;0.420638677;13.2;4527100;41.23;Bac-Chaetoceros;Bac;Chaetoceros
+Antifer ponton p√©trolier;2;08/08/2018;2018;8;Summer;1.03200614;0.290268666;0.633208565;13.28;7768400;61.63;Bac-Chaetoceros;Bac;Chaetoceros
+Antifer ponton p√©trolier;2;27/05/2009;2009;5;Spring;0.562883474;0.198673169;0.887599832;13.3;1191700;88.6;Bac-Guinardia;Bac;Guinardia
+Antifer ponton p√©trolier;2;14/05/2007;2007;5;Spring;2.296743026;0.780027381;0.292397661;13.9;114200;26.27;Bac-Chaetoceros;Bac;Chaetoceros
+Antifer ponton p√©trolier;2;05/08/2013;2013;8;Summer;0.955784993;0.283843488;0.756392337;14.91;3658100;75.45;Bac-Chaetoceros;Bac;Chaetoceros
+Antifer ponton p√©trolier;2;09/08/2010;2010;8;Summer;0.221350677;0.073888671;0.958303047;15.6;5641500;95.82;Bac-Chaetoceros;Bac;Chaetoceros
+Antifer ponton p√©trolier;2;01/08/2016;2016;8;Summer;1.10134358;0.342151621;0.672530108;16.83;2029900;66.3;Bac-Leptocylindrus;Bac;Leptocylindrus
+Antifer ponton p√©trolier;2;06/07/2021;2021;7;Summer;0.387507881;0.116291746;0.911860077;17.43;5106100;90.87;Bac-Chaetoceros;Bac;Chaetoceros
+Antifer ponton p√©trolier;2;20/06/2016;2016;6;Summer;0.121383644;0.038194332;0.981071618;17.9;28275300;98.11;Bac-Chaetoceros;Bac;Chaetoceros
+Antifer ponton p√©trolier;2;03/08/2022;2022;8;Summer;1.885914416;0.572211093;0.354080221;17.99;146100;35.04;Dino-Lepidodinium;Dino;Lepidodinium
+Antifer ponton p√©trolier;2;05/09/2016;2016;9;Fall;0.286860944;0.097424652;0.937687149;19.5;8783300;93.77;Bac-Leptocylindrus;Bac;Leptocylindrus
+Antifer ponton p√©trolier;2;30/07/2008;2008;7;Summer;1.20755301;0.42621323;0.582259375;31.6;950600;52.76;Bac-Chaetoceros;Bac;Chaetoceros
+Antifer ponton p√©trolier;2;04/08/2009;2009;8;Summer;1.431819952;0.528727256;0.507901565;38.3;1272100;50.78;Dino-Gymnodinium;Dino;Gymnodinium
+Antifer ponton p√©trolier;2;22/08/2018;2018;8;Summer;1.032188751;0.320667465;0.763539597;47.1;8321100;64.65;Bac-Skeletonema;Bac;Skeletonema
+Cabourg;2;02/05/2007;2007;5;Spring;0.076126713;0.025854404;0.990616716;9.12;8527200;99.05;Bac-Chaetoceros;Bac;Chaetoceros
+Cabourg;2;17/03/2010;2010;3;Spring;1.345642254;0.509895044;0.563243243;10.8;192800;54.05;Bac-Thalassiosira;Bac;Thalassiosira
+Cabourg;2;21/05/2008;2008;5;Spring;0.914291422;0.33761982;0.749817879;11.8;961300;74.95;Bac-Pseudonitzschia;Bac;Pseudonitzschia
+Cabourg;2;04/06/2008;2008;6;Summer;2.071305449;0.703463534;0.335097002;11.8;128800;29.5;Bac-Chaetoceros;Bac;Chaetoceros
+Cabourg;2;22/09/2014;2014;9;Fall;1.045288989;0.324737283;0.779627816;12.5;586900;67.81;Bac-Chaetoceros;Bac;Chaetoceros
+Cabourg;2;18/04/2007;2007;4;Spring;0.708880272;0.295626035;0.812148481;12.98;1104900;78.41;Bac-Skeletonema;Bac;Skeletonema
+Cabourg;2;06/05/2008;2008;5;Spring;1.563410528;0.609528809;0.30561253;13.4;1086100;50.09;Hapt-Phaeocystis;Hapt;Phaeocystis
+Cabourg;2;01/10/2007;2007;10;Fall;1.199930774;0.432783544;0.645671332;14.2;411000;60.61;Dino-Akashiwo;Dino;Akashiwo
+Cabourg;2;21/05/2015;2015;5;Spring;0.683549531;0.215084315;0.861909746;14.38;1624700;86.17;Bac-Chaetoceros;Bac;Chaetoceros
+Cabourg;2;13/09/2007;2007;9;Fall;1.778505044;0.604021702;0.322326269;14.71;203900;32.07;Dino-Prorocentrum;Dino;Prorocentrum
+Cabourg;2;02/05/2022;2022;5;Spring;1.169452436;0.367977542;0.521432497;16.91;2288900;49.74;Bac-Lauderia;Bac;Lauderia
+Cabourg;2;01/08/2007;2007;8;Summer;0.994621378;0.292432713;0.58930519;17.62;4130900;44.47;Bac-Chaetoceros;Bac;Chaetoceros
+Cabourg;2;22/06/2020;2020;6;Summer;0.143144624;0.044470378;0.978893972;19.14;7254200;97.63;Bac-Leptocylindrus;Bac;Leptocylindrus
+Cabourg;2;08/06/2020;2020;6;Summer;0.948224221;0.294582417;0.482650674;19.32;3075600;47.62;Bac-Leptocylindrus;Bac;Leptocylindrus
+Cabourg;2;03/09/2013;2013;9;Fall;0.96046451;0.32061093;0.766397507;20.35;2131500;76.14;Bac-Chaetoceros;Bac;Chaetoceros
+Cabourg;2;21/05/2007;2007;5;Spring;1.331037091;0.480070153;0.415286323;26.38;423700;41.42;Bac-Guinardia;Bac;Guinardia
+Cabourg;2;08/06/2016;2016;6;Summer;0.291259117;0.090484732;0.947062482;29.268;23638400;94.7;Bac-Chaetoceros;Bac;Chaetoceros
+Cabourg;2;13/08/2007;2007;8;Summer;1.289829688;0.395884429;0.641190076;39.62;1903400;64.09;Bac-Leptocylindrus;Bac;Leptocylindrus
