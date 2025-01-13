@@ -13,6 +13,7 @@ library(gratia)
 library(scatterpie)
 library(OTUtable)
 library(vegan)
+library(readr)
 
 #### Import data ###### 
 
