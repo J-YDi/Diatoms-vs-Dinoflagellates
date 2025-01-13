@@ -1,6 +1,6 @@
 # TITLE
 ## AUTORS
-### ^1 Nantes Université, Institut des Substances et Organismes de la Mer, ISOMER, UR 2160, F-44000 Nantes, France
+### $^1$ Nantes Université, Institut des Substances et Organismes de la Mer, ISOMER, UR 2160, F-44000 Nantes, France
 ### Supervised by Samuel Chaffron (LS2N), Pierre Gernez (ISOMer) & Victor Pochic (ISOMer, IFREMER-LERMPL)
 
 #### Github organisation
