@@ -18,7 +18,7 @@
 + 8_script_blooms_analysis.R : Script to analyze the effet of a bloom on the different variables.
 
 ##### data folder :
-
++ contains the original datasets
 
 ##### data_modif folder : 
 + contains all the original dataset modified for the study, all can be obtained by the different scripts and the files from the data folder 
