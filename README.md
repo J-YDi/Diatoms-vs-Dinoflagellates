@@ -4,7 +4,7 @@
 #### $^2$ Ifremer, PHYTOX, Laboratoire PHYSALG, F-44000 Nantes, France
 #### $^3$ Université de Nantes, CNRS UMR 6004, LS2N, F-44000 Nantes, France
 
-#### Github repository organization
+#### <u>Github repository organization</u>
 
 ##### Scripts folder :
 + 0_data_import.R : Script used to manipulate original datasets and create new ones
@@ -28,4 +28,4 @@
 
 
 
-###### Contact : diasjeanyves@yahoo.com
+###### <u>Contact : diasjeanyves@yahoo.com</u>
