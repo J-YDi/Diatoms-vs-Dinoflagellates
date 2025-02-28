@@ -1,4 +1,10 @@
-# Script Suite Stage JY Dias # 09/12/2024
+################################################################################
+# Diatoms vs dinoflagellates: a network analysis of bloom impacts on diversity #
+#                    and phytoplankton associations | R scripts                #
+################################################################################
+
+# Script used to create the map #
+# 02/28/2025
 
 # Load packages
 library(ggplot2)
@@ -21,7 +27,7 @@ data$lat <- as.numeric(data$lat)
 
 # Color for each region
 region_col <- c("1-Mediterranean sea" = "#F8766D","2-Eastern Channel - North Sea" = "#CD9600", 
-                 "3-Atlantic - Western Channel" = "#00BE67",  "4-Pertuis Sea" = "#00A9FF")
+                 "3-Atlantic - Western Channel" = "#00BE67",  "4-Pertuis Sea" = "gray85")
 
 # Making the map
 Worldmap <- map_data('worldHires')
@@ -35,9 +41,9 @@ ggplot() + geom_polygon(data = Worldmap, aes(x = long, y = lat, group = group), 
   geom_text(data = filter(data,Code_point_Libelle == "Teychan bis") ,aes(x = lon + 1.17, y = lat,label = "Teychan bis" ), stat = 'unique', size = 3,color="black",fontface = "bold") +
   geom_text(data = filter(data,Code_point_Libelle == "Ouest Loscolo") ,aes(x = lon + 1.3, y = lat,label = "Ouest Loscolo" ), stat = 'unique', size = 3,color="black",fontface = "bold") +
   geom_text(data = filter(data,Code_point_Libelle == "Men er Roue") ,aes(x = lon - 1.3, y = lat,label = "Men er Roue" ), stat = 'unique', size = 3,color="black",fontface = "bold") +
-  geom_text(data = filter(data,Code_point_Libelle == "Le Cornard") ,aes(x = lon + 1.1, y = lat,label = "Le Cornard" ), stat = 'unique', size = 3,color="black",fontface = "bold") +
+  geom_text(data = filter(data,Code_point_Libelle == "Le Cornard") ,aes(x = lon + 1.1, y = lat,label = "Le Cornard" ), stat = 'unique', size = 3,color="grey89") +
   geom_text(data = filter(data,Code_point_Libelle == "Bois de la Chaise large") ,aes(x = lon + 2, y = lat,label = "Bois de la Chaise large" ), stat = 'unique', size = 3,color="black",fontface = "bold") +
-  geom_text(data = filter(data,Code_point_Libelle == "Auger") ,aes(x = lon + .8, y = lat,label = "Auger" ), stat = 'unique', size = 3,color="black",fontface = "bold") +
+  geom_text(data = filter(data,Code_point_Libelle == "Auger") ,aes(x = lon + .8, y = lat,label = "Auger" ), stat = 'unique', size = 3,color="grey89") +
   geom_text(data = filter(data,Code_point_Libelle == "Point 1 Boulogne") ,aes(x = lon + 1.7, y = lat,label = "Point 1 Boulogne" ), stat = 'unique', size = 3,color="black",fontface = "bold") +
   geom_text(data = filter(data,Code_point_Libelle == "Loguivy") ,aes(x = lon - .9, y = lat+0.2,label = "Loguivy" ), stat = 'unique', size = 3,color="black",fontface = "bold") +
   
@@ -60,7 +66,7 @@ ggplot() + geom_polygon(data = Worldmap, aes(x = long, y = lat, group = group), 
   geom_text(data = filter(data,region == "1-Mediterranean sea") ,aes(x = lon, y = lat,label = "1" ), stat = 'unique', size = 4,color="gray75") +
   geom_text(data = filter(data,region == "2-Eastern Channel - North Sea") ,aes(x = lon, y = lat,label = "2" ), stat = 'unique', size = 4,color="gray75") +
   geom_text(data = filter(data,region == "3-Atlantic - Western Channel") ,aes(x = lon, y = lat,label = "3" ), stat = 'unique', size = 4,color="gray75") +
-  geom_text(data = filter(data,region == "4-Pertuis Sea") ,aes(x = lon, y = lat,label = "4" ), stat = 'unique', size = 4,color="gray75") +
+  geom_text(data = filter(data,region == "4-Pertuis Sea") ,aes(x = lon, y = lat,label = "4" ), stat = 'unique', size = 4,color="gray80") +
   
   geom_text(aes(x = -3.5, y = 46, label = 'Atlantic ocean'), stat = 'unique', size = 4,color = "lightblue4",fontface="italic",angle=-45) +
   geom_text(aes(x = -3.2, y = 50, label = 'English channel'), stat = 'unique', size = 4,color = "lightblue4",fontface="italic",angle=28) +
@@ -76,4 +82,4 @@ ggplot() + geom_polygon(data = Worldmap, aes(x = long, y = lat, group = group), 
   guides(color = guide_legend(override.aes = list(size = 3),direction = "horizontal"))
 
 # Save it 
-ggsave('maps_station_lgtermregion.png', path = "output/graphs/maps", dpi = 600, width = 200, height = 200, units = 'mm')
+#ggsave('maps_station_lgtermregion.png', path = "output/graphs/maps", dpi = 600, width = 200, height = 200, units = 'mm')
