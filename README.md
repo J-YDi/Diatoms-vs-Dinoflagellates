@@ -12,7 +12,7 @@
 + 4_script_Chlatimeseries_processing.R : Script to detect blooms
 + 5_script_region_analysis.R : Script to investigate the differences between regions
 + 6_script_networks_analysis.R : Script to analyze composition and associations type in the networks and make a PCA to sum up the different metrics
-+ 7_script_compo-asso_analysis.R : Script to investigate the relationship between composition and associations type and test of randomization
++ 7_script_randomizationtest.R : Script to investigate the relationship between composition and associations type and test of randomization
 + 8_script_blooms_analysis.R : Script to analyze the effet of a bloom on the different variables.
 
 ##### data_modif folder : 
