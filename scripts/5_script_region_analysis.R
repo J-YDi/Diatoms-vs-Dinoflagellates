@@ -1,4 +1,10 @@
-# Script Suite Stage JY Dias # 09/12/2024
+################################################################################
+# Diatoms vs dinoflagellates: a network analysis of bloom impacts on diversity #
+#                    and phytoplankton associations | R scripts                #
+################################################################################
+
+# Script to investigate the differences between regions #
+# 02/28/2025
 
 # Load packages
 library(ggplot2)
@@ -33,97 +39,7 @@ region_col <- c("1-Mediterranean sea" = "#F8766D","2-Eastern Channel - North Sea
 data <- filter(data, region != "4-Pertuis Sea")
 
 ### Graph to show phytoplankton composition by season and cluster #####
-# Class level
-# Prepare data for graph
-data$Others <- rowSums(select(data,Raphidophyceae:`Autres protistes`,Dinoflagellata,Xanthophyceae),na.rm = T)
-datam <- summarise(group_by(data,region,season,Month,Year), Bacillariophyceae=mean(Bacillariophyceae,na.rm=T),
-                   Dinophyceae=mean(Dinophyceae,na.rm=T),Cryptophyceae=mean(Cryptophyceae,na.rm=T),
-                   Haptophyta=mean(Haptophyta,na.rm=T),Ciliophora=mean(Ciliophora,na.rm=T),Others=mean(Others,na.rm=T))
-
-# Compute total abundances to have relative composition
-datam$Abdtot <- rowSums(datam[,c(5:10)],na.rm=T)
-datam[,c(5:10)] <- datam[,c(5:10)]/datam$Abdtot
-
-date_string <- paste(datam$Year, datam$Month, "01", sep = "-")
-
-# Convert to date format
-datam$Date <- as.Date(date_string,format = "%Y-%m-%d")
-
-# Make it as the graph needs
-datag <- pivot_longer(data = datam,cols = Bacillariophyceae:Others,names_to = "Phylum")
-datag$Abdtot <- NULL
-
-datag$MonthYear <- format(datag$Date, "%Y-%m")
-datag$Phylum <- as.factor(datag$Phylum)
-
-datag$Phylum <-
-  factor(datag$Phylum,
-         levels = c("Bacillariophyceae","Dinophyceae","Ciliophora","Cryptophyceae","Haptophyta","Others"))
-
-datag$Date <- as.Date(datag$Date,format="%Y-%m-%d")
-
-ggplot(datag) +
-  geom_col(aes(x = MonthYear, y = value * 100, fill = Phylum), position = "stack", na.rm = FALSE, width = 1) +
-  facet_wrap(~region, scales = "free", ncol = 1) +
-  scale_x_discrete(labels = function(x) format(as.Date(paste(x, "01", sep = "-")), "%Y-%m")) +
-  theme(axis.text.x = element_text(vjust = 0.5, hjust = 0.5, size = 5))+
-  labs(x="Date",y="Relative abundance (%)",fill="Taxon")+
-  scale_x_discrete(labels = rep(c("M","A","M","J","J","A","S","O","N","D","J","F"),16))+
-  scale_fill_manual(values = c("#56B4E9", "#009E73" ,"#F0E442", "#CC79A7","#996136","grey60"))+
-   geom_text(data = subset(datag, format(Date, "%m") == "01"), 
-            aes(x = MonthYear, y = 90, label = format(Date, "%Y")),
-            color = "black", size = 2.5,angle=90, vjust = 0)+
-  geom_vline(data = subset(datag, format(Date, "%m") == "01"), 
-                      aes(xintercept = MonthYear),
-                      color = "grey3", size = 0.5,linetype = "dashed")+
-  guides(fill = guide_legend(ncol = 6, byrow = TRUE)) +
-  theme(legend.position = "bottom",legend.text = element_text(size = 7),legend.title = element_text(size=7))
-ggsave('Relativeabundance_class.png', path = "output/graphs/description_region",dpi = 500, width = 360, height =200, units = 'mm')
-
-# Make it with log abundance
-# Prepare data for graph
-data$Others <- rowSums(select(data,Raphidophyceae:`Autres protistes`,Dinoflagellata,Xanthophyceae),na.rm = T)
-datam <- summarise(group_by(data,region,season,Month,Year), Bacillariophyceae=mean(Bacillariophyceae,na.rm=T),
-                   Dinophyceae=mean(Dinophyceae,na.rm=T),Cryptophyceae=mean(Cryptophyceae,na.rm=T),
-                   Haptophyta=mean(Haptophyta,na.rm=T),Ciliophora=mean(Ciliophora,na.rm=T),Others=mean(Others,na.rm=T))
-
-date_string <- paste(datam$Year, datam$Month, "01", sep = "-")
-
-# Convert to date format
-datam$Date <- as.Date(date_string,format = "%Y-%m-%d")
-
-# Make it as the graph needs
-datag <- pivot_longer(data = datam,cols = Bacillariophyceae:Others,names_to = "Phylum")
-datag$MonthYear <- format(datag$Date, "%Y-%m")
-datag$Phylum <- as.factor(datag$Phylum)
-
-datag$Phylum <-
-  factor(datag$Phylum,
-         levels = c("Bacillariophyceae","Dinophyceae","Ciliophora","Cryptophyceae","Haptophyta","Others"))
-
-datag$Date <- as.Date(datag$Date,format="%Y-%m-%d")
-
-ggplot(datag) +
-  geom_col(aes(x = MonthYear, y = log(value+1), fill = Phylum), position = "stack", na.rm = FALSE, width = 1) +
-  facet_wrap(~region, scales = "free", ncol = 1) +
-  theme(axis.text.x = element_text(vjust = 0.5, hjust = 0.5, size = 5))+
-  labs(x="Date",y="Log Abundance",fill="Taxon")+
-  scale_x_discrete(labels = rep(c("M","A","M","J","J","A","S","O","N","D","J","F"),16))+
-  scale_fill_manual(values = c("#56B4E9", "#009E73" ,"#F0E442", "#CC79A7","#996136","grey60"))+
-  geom_text(data = subset(datag, format(Date, "%m") == "01"), 
-            aes(x = MonthYear, y = 63, label = format(Date, "%Y")),
-            color = "black", size = 2.5,angle=90, vjust = 0)+
-  geom_vline(data = subset(datag, format(Date, "%m") == "01"), 
-             aes(xintercept = MonthYear),
-             color = "grey3", size = 0.5,linetype = "dashed")+
-  guides(fill = guide_legend(ncol = 6, byrow = TRUE)) +
-  scale_y_continuous(limits = c(0,65))+
-  theme(legend.position = "bottom",legend.text = element_text(size = 7),legend.title = element_text(size=7))
-ggsave('Abundance_class.png', path = "output/graphs/description_region",dpi = 500, width = 360, height =200, units = 'mm')
-
-
-
-# Make it by Genus
+# By Genus
 # Compute the mean of all genus by season and cluster
 data_graph <- data[,c(3,354,24:328)] %>%
   group_by(season, region) %>%
@@ -136,7 +52,7 @@ data_graph[,c(3:307)] <- data_graph[,c(3:307)]/data_graph$Abdtot
 datag <- pivot_longer(data = data_graph,cols = Actinoptychus:Coscinodiscophycidae,names_to = "Phylum")
 datag$Abdtot <- NULL
 
-# Group by season and region, and select the 5 most abundant phyla for each region
+# Group by season and region, and select the 4 most abundant phyla for each region
 # Determine the most abundant phyla for each region and season
 
 data_graph <- datag %>%
@@ -146,65 +62,9 @@ data_graph <- datag %>%
   group_by(season, region) %>%
   mutate(rank = rank(desc(abondance)))
 
-write.csv(data_graph,file="output/tableaux/phyla_mostabundant_region_season.csv")
+#write.csv(data_graph,file="output/tableaux/phyla_mostabundant_region_season.csv")
 
-# We select this taxa
-selection_phylum <- c("Skeletonema","Pseudo-nitzschia","Chaetoceros","Chaetocerotaceae","Nitzschia","Cryptophyceae",
-                      "Cryptomonadales","Cylindrotheca","Leptocylindrus","Akashiwo","Phaeocystis","Akashiwo",
-                      "Phaeocystis","Asterionellopsis","Chrysochromulina","Azadinium")
-
-datataxon <- data |>
-  select(Month,Year,region,selection_phylum)
-# Agglomerate Chaetoceros with Chaetocerotaceae and Cryptophyceae with Cryptomonadales
-datataxon$Chaetocerotaceae <- rowSums(datataxon[,c("Chaetoceros","Chaetocerotaceae")],na.rm=T)
-datataxon$Cryptophyceae <- rowSums(datataxon[,c("Cryptophyceae","Cryptomonadales")],na.rm=T)
-datataxon <- select(datataxon,-c(Chaetoceros,Cryptomonadales))
-
-# Select the others
-dataothers <- data |>
-  select(-selection_phylum) |>
-  select(region,Actinoptychus:Coscinodiscophycidae)
-
-dataothers$Others <- rowSums(select(dataothers,Actinoptychus:Coscinodiscophycidae),na.rm = T)
-dataothers <- select(dataothers,Others)
-
-datagraph <- cbind(datataxon,dataothers)
-
-
-data_graph <- datagraph %>%
-  group_by(Month,Year, region) %>%
-  summarise_all(~mean(., na.rm = TRUE))
-
-# Convert to date format
-date_string <- paste(data_graph$Year, data_graph$Month, "01", sep = "-")
-data_graph$Date <- as.Date(date_string,format = "%Y-%m-%d")
-data_graph$MonthYear <- format(data_graph$Date, "%Y-%m")
-
-datag <- pivot_longer(data = data_graph,cols = Skeletonema:Others,names_to = "Phylum")
-
-datag$Phylum <- factor(datag$Phylum, levels = c("Others", "Skeletonema","Pseudo-nitzschia","Chaetoceros","Nitzschia","Cryptophyceae",
-                                                "Cylindrotheca","Leptocylindrus","Akashiwo",
-                                                "Phaeocystis","Asterionellopsis","Chrysochromulina","Azadinium"))
-
-ggplot(datag) +
-  geom_col(aes(x = MonthYear, y = log(value+1), fill = Phylum), position = "stack", na.rm = FALSE, width = 1) +
-  facet_wrap(~region, scales = "free", ncol = 1) +
-  scale_x_discrete(labels = rep(c("M","A","M","J","J","A","S","O","N","D","J","F"),16))+
-  geom_vline(data = subset(datag, format(Date, "%m") == "01"), 
-             aes(xintercept = MonthYear),
-             color = "grey3", size = 0.5,linetype = "dashed")+
-  geom_text(data = subset(datag, format(Date, "%m") == "01"), 
-            aes(x = MonthYear, y = 93, label = format(Date, "%Y")),
-            color = "black", size = 2.5,angle=90, vjust = 0)+
-  theme(axis.text.x = element_text(vjust = 0.5, hjust = 0.5, size = 5))+
-  labs(x="Date",y="Log Abundance",fill="Taxon")+
-  scale_y_continuous(limits = c(0,100))+
-  scale_fill_manual(values = c("grey","#A6CEE3", "#1F78B4", "#B2DF8A", "#33A02C",
-                               "#FDBF6F", "#FF7F00", "#6A3D9A", "#FFFF99", "#FB9A99"
-                               , "#FFBCFF" , "#BC00BC", "#510051","#B15928"))
-ggsave('Abundance_genus.png', path = "output/graphs/description_region",dpi = 500, width = 360, height =200, units = 'mm')
-
-# Make it relative
+# Select those 
 selection_phylum <- c("Skeletonema","Pseudo-nitzschia","Chaetoceros","Chaetocerotaceae","Nitzschia","Cryptophyceae",
                       "Cryptomonadales","Cylindrotheca","Leptocylindrus","Akashiwo","Phaeocystis","Akashiwo",
                       "Phaeocystis","Asterionellopsis","Chrysochromulina","Azadinium")
@@ -215,6 +75,7 @@ datataxon$Chaetocerotaceae <- rowSums(datataxon[,c("Chaetoceros","Chaetocerotace
 datataxon$Cryptophyceae <- rowSums(datataxon[,c("Cryptophyceae","Cryptomonadales")],na.rm=T)
 datataxon <- select(datataxon,-c(Chaetoceros,Cryptomonadales))
 
+# Create the "Other" category
 dataothers <- data |>
   select(-selection_phylum) |>
   select(region,Actinoptychus:Coscinodiscophycidae)
@@ -222,9 +83,10 @@ dataothers <- data |>
 dataothers$Others <- rowSums(select(dataothers,Actinoptychus:Coscinodiscophycidae),na.rm = T)
 dataothers <- select(dataothers,Others)
 
+# Bind them
 datagraph <- cbind(datataxon,dataothers)
 
-
+# Mean by month, region, year
 data_graph <- datagraph %>%
   group_by(Month,Year, region) %>%
   summarise_all(~mean(., na.rm = TRUE))
@@ -233,7 +95,6 @@ data_graph$Abdtot <- rowSums(data_graph[,c(4:16)],na.rm=T)
 data_graph[,c(4:16)] <- data_graph[,c(4:16)]/data_graph$Abdtot
 
 data_graph$Abdtot <- NULL
-
 
 # Convert to date format
 date_string <- paste(data_graph$Year, data_graph$Month, "01", sep = "-")
@@ -246,21 +107,56 @@ datag$Phylum <- factor(datag$Phylum, levels = c("Asterionellopsis","Chaetocerota
                                                 ,"Nitzschia","Pseudo-nitzschia", "Skeletonema","Akashiwo","Azadinium",
                                                 "Chrysochromulina","Phaeocystis","Cryptophyceae","Others"))
 
-ggplot(datag) +
+# Graph by region
+med <- ggplot(filter(datag,region=="1-Mediterranean sea")) +
   geom_col(aes(x = MonthYear, y = value*100, fill = Phylum), position = "stack", na.rm = FALSE, width = 1) +
   facet_wrap(~region, scales = "free", ncol = 1) +
   scale_x_discrete(labels = rep(c("M","A","M","J","J","A","S","O","N","D","J","F"),16))+
-  geom_vline(data = subset(datag, format(Date, "%m") == "01"), 
+  geom_vline(data = subset(filter(datag,region=="1-Mediterranean sea"), format(Date, "%m") == "01"), 
              aes(xintercept = MonthYear),
              color = "grey3", size = 0.5,linetype = "dashed")+
-  geom_text(data = subset(datag, format(Date, "%m") == "01"), 
-            aes(x = MonthYear, y = 104, label = format(Date, "%Y")),
-            color = "black", size = 2,angle=90, vjust = 0)+
-  theme(axis.text.x = element_text(vjust = 0.5, hjust = 0.5, size = 5))+
-  labs(x="Date",y="Relative Abundance (%)",fill="Taxon")+
+  geom_text(data = subset(filter(datag,region=="1-Mediterranean sea"), format(Date, "%m") == "07"), 
+            aes(x = MonthYear, y = 101, label = format(Date, "%Y")),
+            color = "black", size = 3,angle=0, vjust = 0)+
+  theme(axis.text.x = element_blank(),legend.position = "none")+
+  labs(x=NULL,,y="")+
   scale_fill_manual(values = c("#FFBCFF", "#B2DF8A","#FF7F00", "#6A3D9A", "#33A02C", "#1F78B4","#A6CEE3",
                                "#FFFF99","#510051", "#BC00BC", "#FB9A99","#FDBF6F","grey"))
-ggsave('Relativeabundance_genus.png', path = "output/graphs/description_region",dpi = 500, width = 360, height =200, units = 'mm')
+
+manche <- ggplot(filter(datag,region=="2-Eastern Channel - North Sea")) +
+  geom_col(aes(x = MonthYear, y = value*100, fill = Phylum), position = "stack", na.rm = FALSE, width = 1) +
+  facet_wrap(~region, scales = "free", ncol = 1) +
+  scale_x_discrete(labels = rep(c("M","A","M","J","J","A","S","O","N","D","J","F"),16))+
+  geom_vline(data = subset(filter(datag,region=="2-Eastern Channel - North Sea"), format(Date, "%m") == "01"), 
+             aes(xintercept = MonthYear),
+             color = "grey3", size = 0.5,linetype = "dashed")+
+  #geom_text(data = subset(filter(datag,region=="2-Eastern Channel - North Sea"), format(Date, "%m") == "07"), 
+  #          aes(x = MonthYear, y = 101, label = format(Date, "%Y")),
+  #          color = "black", size = 3,angle=0, vjust = 0)+
+  theme(axis.text.x = element_blank(),legend.position = "none")+
+  labs(x=NULL,y="Relative abundance (%)")+
+  scale_fill_manual(values = c("#FFBCFF", "#B2DF8A","#FF7F00", "#6A3D9A", "#33A02C", "#1F78B4","#A6CEE3",
+                               "#FFFF99","#510051", "#BC00BC", "#FB9A99","#FDBF6F","grey"))
+
+atl <- ggplot(filter(datag,region=="3-Atlantic - Western Channel")) +
+  geom_col(aes(x = MonthYear, y = value*100, fill = Phylum), position = "stack", na.rm = FALSE, width = 1) +
+  facet_wrap(~region, scales = "free", ncol = 1) +
+  scale_x_discrete(labels = rep(c("M","A","M","J","J","A","S","O","N","D","J","F"),16))+
+  geom_vline(data = subset(filter(datag,region=="3-Atlantic - Western Channel"), format(Date, "%m") == "01"), 
+             aes(xintercept = MonthYear),
+             color = "grey3", size = 0.5,linetype = "dashed")+
+  #geom_text(data = subset(filter(datag,region=="3-Atlantic - Western Channel"), format(Date, "%m") == "07"), 
+  #          aes(x = MonthYear, y = 101, label = format(Date, "%Y")),
+  #          color = "black", size = 3,angle=0, vjust = 0)+
+  theme(axis.text.x = element_text(size = 6),legend.position = "none")+
+  labs(x="Date",y="")+
+  scale_fill_manual(values = c("#FFBCFF", "#B2DF8A","#FF7F00", "#6A3D9A", "#33A02C", "#1F78B4","#A6CEE3",
+                               "#FFFF99","#510051", "#BC00BC", "#FB9A99","#FDBF6F","grey"))
+# Final graph:
+plot_grid(med,manche,atl,nrow = 3,greedy = "FALSE" )
+#ggsave('Relativeabundance_genus.png', path = "output/graphs/description_region",dpi = 500, width = 360, height =200, units = 'mm')
+
+
 
 
 ### Test difference between regions for the networks properties ######
@@ -308,13 +204,16 @@ kruskal.test(data$Shannon~data$region)
 DunnTest(data$Shannon~data$region,method = "BH")
 
 
-# graph
+# Viz
+# Differences between station for diversity indexes and PCA's dimensions
+colnames(data) <- c("Date","Code_point_Libelle","region","Dim.1","Dim.2","Dim.3","Shannon","Pielou","Berger-Parker",
+                    "Bacillariophyceae","Dinophyceae","Other taxa","Bac-Bac","Bac-Dino","Dino-Dino","Other asso.")
 
-datal <- pivot_longer(data,names_to = "Var",cols = Dim.1:BergerParker)
-BK <- ggplot(filter(datal,Var == "BergerParker"))+
+datal <- pivot_longer(data,names_to = "Var",cols = Dim.1:`Berger-Parker`)
+BK <- ggplot(filter(datal,Var == "Berger-Parker"))+
   geom_boxplot(aes(y=value,group=region,fill=region),size = 1)+
   scale_fill_manual(values=region_col,guide = "none")+
-  labs(x=NULL,y="")+
+  labs(x=NULL,y=NULL)+
   facet_grid(Var~region,scales = "free_y")+
   theme(axis.text.x = element_blank(),
         axis.ticks.x = element_blank())
@@ -322,7 +221,7 @@ BK <- ggplot(filter(datal,Var == "BergerParker"))+
 Pielou <- ggplot(filter(datal,Var == "Pielou"))+
   geom_boxplot(aes(y=value,group=region,fill=region),size = 1)+
   scale_fill_manual(values=region_col,guide = "none")+
-  labs(x=NULL,y="")+
+  labs(x=NULL,y=NULL)+
   facet_grid(Var~region,scales = "free_y")+
   theme(axis.text.x = element_blank(),
         axis.ticks.x = element_blank())
@@ -330,7 +229,7 @@ Pielou <- ggplot(filter(datal,Var == "Pielou"))+
 Shannon <- ggplot(filter(datal,Var == "Shannon"))+
   geom_boxplot(aes(y=value,group=region,fill=region),size = 1)+
   scale_fill_manual(values=region_col,guide = "none")+
-  labs(x=NULL,y="")+
+  labs(x=NULL,y="Value")+
   facet_grid(Var~region,scales = "free_y")+
   theme(axis.text.x = element_blank(),
         axis.ticks.x = element_blank())
@@ -338,7 +237,7 @@ Shannon <- ggplot(filter(datal,Var == "Shannon"))+
 Dim.1 <- ggplot(filter(datal,Var == "Dim.1"))+
   geom_boxplot(aes(y=value,group=region,fill=region),size = 1)+
   scale_fill_manual(values=region_col,guide = "none")+
-  labs(x=NULL,y="")+
+  labs(x=NULL,y="Value")+
   facet_grid(Var~region,scales = "free_y")+
   theme(axis.text.x = element_blank(),
         axis.ticks.x = element_blank())
@@ -346,7 +245,7 @@ Dim.1 <- ggplot(filter(datal,Var == "Dim.1"))+
 Dim.2 <- ggplot(filter(datal,Var == "Dim.2"))+
   geom_boxplot(aes(y=value,group=region,fill=region),size = 1)+
   scale_fill_manual(values=region_col,guide = "none")+
-  labs(x=NULL,y="")+
+  labs(x=NULL,y=NULL)+
   facet_grid(Var~region,scales = "free_y")+
   theme(axis.text.x = element_blank(),
         axis.ticks.x = element_blank())
@@ -354,11 +253,33 @@ Dim.2 <- ggplot(filter(datal,Var == "Dim.2"))+
 Dim.3 <- ggplot(filter(datal,Var == "Dim.3"))+
   geom_boxplot(aes(y=value,group=region,fill=region),size = 1)+
   scale_fill_manual(values=region_col,guide = "none")+
-  labs(x=NULL,y="")+
+  labs(x=NULL,y=NULL)+
   facet_grid(Var~region,scales = "free_y")+
   scale_y_continuous(limits = c(-5,7.5))+
   theme(axis.text.x = element_blank(),
         axis.ticks.x = element_blank())
 
 plot_grid(Shannon,Pielou,BK,Dim.1,Dim.2,Dim.3, ncol = 3)
-ggsave('difference_region_metrics.png', path = "output/graphs/description_region",dpi = 500, width = 460, height =200, units = 'mm')
+#ggsave('difference_region_metrics.png', path = "output/graphs/description_region",dpi = 500, width = 460, height =200, units = 'mm')
+
+# For association networks composition
+datal <- pivot_longer(data,names_to = "Var",cols = c(Bacillariophyceae,Dinophyceae,`Other taxa`))
+compo <- ggplot(filter(datal))+
+  geom_boxplot(aes(y=value,group=region,fill=region),size = 1)+
+  scale_fill_manual(values=region_col,guide = "none")+
+  labs(x=NULL,y="Proportion")+
+  facet_grid(Var~region,scales = "free_y")+
+  theme(axis.text.x = element_blank(),
+        axis.ticks.x = element_blank())
+
+datal <- pivot_longer(data,names_to = "Var",cols = c(`Bac-Bac`,`Bac-Dino`,`Dino-Dino`))
+asso <- ggplot(filter(datal))+
+  geom_boxplot(aes(y=value,group=region,fill=region),size = 1)+
+  scale_fill_manual(values=region_col,guide = "none")+
+  labs(x=NULL,y=NULL)+
+  facet_grid(Var~region,scales = "free_y")+
+  theme(axis.text.x = element_blank(),
+        axis.ticks.x = element_blank())
+
+plot_grid(compo,asso)
+#ggsave('difference_region_compo_asso.png', path = "output/graphs/description_region",dpi = 500, width = 360, height =200, units = 'mm')
