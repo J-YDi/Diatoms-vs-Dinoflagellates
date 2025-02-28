@@ -1,4 +1,10 @@
-# Script Suite Stage JY Dias # 09/12/2024
+################################################################################
+# Diatoms vs dinoflagellates: a network analysis of bloom impacts on diversity #
+#                    and phytoplankton associations | R scripts                #
+################################################################################
+
+# Script used to create the different regions #
+# 02/28/2025
 
 # Loading packages
 library(cluster)
@@ -160,4 +166,4 @@ ggplot() + geom_polygon(data = Worldmap, aes(x = long, y = lat, group = group), 
 
 #Save the clusters 
 data_clust_result <- select(data_clust_result,Code_point_Libelle,cluster)
-write.csv2(data_clust_result,file="output/tableaux/clusters_EM_01_k5_final.csv", row.names = FALSE,dec = ".")
+#write.csv2(data_clust_result,file="output/tableaux/clusters_EM_01_k5_final.csv", row.names = FALSE,dec = ".")

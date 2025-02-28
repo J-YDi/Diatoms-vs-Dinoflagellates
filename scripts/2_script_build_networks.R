@@ -1,4 +1,10 @@
-# Script Suite Stage JY Dias # 12/12/2024
+################################################################################
+# Diatoms vs dinoflagellates: a network analysis of bloom impacts on diversity #
+#                    and phytoplankton associations | R scripts                #
+################################################################################
+
+# Script used to build the global and temporal networks with the different metrics #
+# 02/28/2025
 
 # Load packages
 library(readr)
@@ -51,7 +57,7 @@ net_props_cluster1 <- netAnalyze(net_cluster1,
 # Keep only the positive associations
 edgelist_1 <- filter(net_cluster1$edgelist1[,c("v1","v2","asso")],asso > 0)
 # Save the edge list
-write.csv2(edgelist_1,file="output/tableaux/Networks/edgelist_med.csv", row.names = FALSE,dec = ".")
+#write.csv2(edgelist_1,file="output/tableaux/Networks/edgelist_med.csv", row.names = FALSE,dec = ".")
 
 # Store the association matrix
 assoMat_1 <- as.data.frame(net_cluster1$assoMat1)
@@ -59,11 +65,11 @@ assoMat_1 <- as.data.frame(net_cluster1$assoMat1)
 assoMat_1[assoMat_1 < 0] <- 0
 assoMat_1 <- assoMat_1[, colSums(assoMat_1) != 0]
 assoMat_1 <- assoMat_1[rowSums(assoMat_1) != 0, ]
-write.csv2(assoMat_1,file="output/tableaux/Networks/assoMat_med.csv", row.names = FALSE,dec = ".")
+#write.csv2(assoMat_1,file="output/tableaux/Networks/assoMat_med.csv", row.names = FALSE,dec = ".")
 # Save the network composition
 taxon_list_1 <- as.data.frame(rownames(assoMat_1))
 colnames(taxon_list_1) <- "Taxon"
-write.csv2(taxon_list_1,file="output/tableaux/Networks/taxon_list_med.csv", row.names = FALSE,dec = ".")
+#write.csv2(taxon_list_1,file="output/tableaux/Networks/taxon_list_med.csv", row.names = FALSE,dec = ".")
 
 
 ### Cluster 2-Eastern Channel - North Sea ####
@@ -95,7 +101,7 @@ net_props_cluster2 <- netAnalyze(net_cluster2,
 # Keep only the positive associations
 edgelist_2 <- filter(net_cluster2$edgelist1[,c("v1","v2","asso")],asso > 0)
 # Save the edge list
-write.csv2(edgelist_2,file="output/tableaux/Networks/edgelist_manche.csv", row.names = FALSE,dec = ".")
+#write.csv2(edgelist_2,file="output/tableaux/Networks/edgelist_manche.csv", row.names = FALSE,dec = ".")
 
 # Store the association matrix
 assoMat_2 <- as.data.frame(net_cluster2$assoMat1)
@@ -103,11 +109,11 @@ assoMat_2 <- as.data.frame(net_cluster2$assoMat1)
 assoMat_2[assoMat_2 < 0] <- 0
 assoMat_2 <- assoMat_2[, colSums(assoMat_2) != 0]
 assoMat_2 <- assoMat_2[rowSums(assoMat_2) != 0, ]
-write.csv2(assoMat_2,file="output/tableaux/Networks/assoMat_manche.csv", row.names = FALSE,dec = ".")
+#write.csv2(assoMat_2,file="output/tableaux/Networks/assoMat_manche.csv", row.names = FALSE,dec = ".")
 # Save the network composition
 taxon_list_2 <- as.data.frame(rownames(assoMat_2))
 colnames(taxon_list_2) <- "Taxon"
-write.csv2(taxon_list_2,file="output/tableaux/Networks/taxon_list_manche.csv", row.names = FALSE,dec = ".")
+#write.csv2(taxon_list_2,file="output/tableaux/Networks/taxon_list_manche.csv", row.names = FALSE,dec = ".")
 
 ### Cluster 3-Atlantic - Western Channel ####
 # Select cluster 
@@ -138,7 +144,7 @@ net_props_cluster3 <- netAnalyze(net_cluster3,
 # Keep only the positive associations
 edgelist_3 <- filter(net_cluster3$edgelist1[,c("v1","v2","asso")],asso > 0)
 # Save the edge list
-write.csv2(edgelist_3,file="output/tableaux/Networks/edgelist_atlantic.csv", row.names = FALSE,dec = ".")
+#write.csv2(edgelist_3,file="output/tableaux/Networks/edgelist_atlantic.csv", row.names = FALSE,dec = ".")
 
 # Store the association matrix
 assoMat_3 <- as.data.frame(net_cluster3$assoMat1)
@@ -146,11 +152,11 @@ assoMat_3 <- as.data.frame(net_cluster3$assoMat1)
 assoMat_3[assoMat_3 < 0] <- 0
 assoMat_3 <- assoMat_3[, colSums(assoMat_3) != 0]
 assoMat_3 <- assoMat_3[rowSums(assoMat_3) != 0, ]
-write.csv2(assoMat_3,file="output/tableaux/Networks/assoMat_atlantic.csv", row.names = FALSE,dec = ".")
+#write.csv2(assoMat_3,file="output/tableaux/Networks/assoMat_atlantic.csv", row.names = FALSE,dec = ".")
 # Save the network composition
 taxon_list_3 <- as.data.frame(rownames(assoMat_3))
 colnames(taxon_list_3) <- "Taxon"
-write.csv2(taxon_list_3,file="output/tableaux/Networks/taxon_list_atlantic.csv", row.names = FALSE,dec = ".")
+#write.csv2(taxon_list_3,file="output/tableaux/Networks/taxon_list_atlantic.csv", row.names = FALSE,dec = ".")
 
 # Compute the temporal networks #####
 ### Cluster 1-Mediterranean sea ####
@@ -342,7 +348,7 @@ for (i in 1:nrow(CL1)){
     #print(i/nrow(CL1)*100)
 }
 # Save it
-write.csv2(data_results_reseaux,file="output/tableaux/Networks/subnetworks/results_metrics_reseaux_cluster1.csv", row.names = FALSE,dec = ".")
+#write.csv2(data_results_reseaux,file="output/tableaux/Networks/subnetworks/results_metrics_reseaux_cluster1.csv", row.names = FALSE,dec = ".")
 
 ### Cluster 2-Eastern Channel - North Sea ####
 # Import data
@@ -533,7 +539,7 @@ for (i in 1:nrow(CL2)){
   #print(i/nrow(CL2)*100)
 }
 # Save it
-write.csv2(data_results_reseaux,file="output/tableaux/Networks/subnetworks/results_metrics_reseaux_cluster2.csv", row.names = FALSE,dec = ".")
+#write.csv2(data_results_reseaux,file="output/tableaux/Networks/subnetworks/results_metrics_reseaux_cluster2.csv", row.names = FALSE,dec = ".")
 
 
 ### Cluster 3-Atlantic - Western Channel ####
@@ -725,6 +731,6 @@ for (i in 1:nrow(CL3)){
   #print(i/nrow(CL3)*100)
 }
 # Save it
-write.csv2(data_results_reseaux,file="output/tableaux/Networks/subnetworks/results_metrics_reseaux_cluster3.csv", row.names = FALSE,dec = ".")
+#write.csv2(data_results_reseaux,file="output/tableaux/Networks/subnetworks/results_metrics_reseaux_cluster3.csv", row.names = FALSE,dec = ".")
 
 
