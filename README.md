@@ -1,6 +1,6 @@
 # Diatoms vs dinoflagellates: a network analysis of bloom impacts on diversity and phytoplankton associations in French coastal waters | R script and generated data
-## Dias Jean-Yves $^1$, Pochic Victor $^1$ $^,$ $^2$ , Chaffron Samuel $^3$, Gernez Pierre $^1$
-#### $^1$ Nantes Université, Institut des Substances et Organismes de la Mer, ISOMER, UR 2160, F-44000 Nantes, France ; $^2$ Ifremer, PHYTOX, COAST, F-44000 Nantes, France ; $^3$ Université de Nantes, CNRS UMR 6004, LS2N, F-44000 Nantes, France
+## Dias Jean-Yves $^1$, Pochic Victor $^1$ $^,$ $^2$ , Chaffron Samuel $^3$ $^,$ $^4$, Gernez Pierre $^1$
+#### $^1$ Nantes Université, Institut des Substances et Organismes de la Mer, ISOMER, UR 2160, F-44000 Nantes, France ; $^2$ Ifremer, PHYTOX, COAST, F-44000 Nantes, France ; $^3$ Université de Nantes, CNRS UMR 6004, LS2N, F-44000 Nantes, France ; $^4$ Research Federation for the Study of Global Ocean Systems Ecology and Evolution, FR2022/Tara Oceans GOSEE, F-75016 Paris, France
 ## **Article access : doi.org//**
 
 #### Github repository organization
