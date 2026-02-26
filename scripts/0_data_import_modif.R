@@ -4,7 +4,7 @@
 ################################################################################
 
 # Script used to manipulate original datasets and create new ones #
-# 02/28/2025
+# 02/26/2026
 
 # Load packages
 library(dplyr)
@@ -568,13 +568,6 @@ for (i in 2:(nrow(data)-1)){
 for (i in 2:(nrow(data)-1)){
   if (data[i-1,]$Moment == "During" & data[i+1,]$Moment == "During"  & (data[i,]$Code_point_Libelle == data[i-1,]$Code_point_Libelle )){
     data[i,"Moment"]$Moment <- "During"
-  }
-}
-
-# Create a second before
-for (i in 2:nrow(data)){
-  if (data[i,]$Moment == "Before" & data[i-1,]$Moment == "Nothing" & (data[i,]$Code_point_Libelle == data[i+1,]$Code_point_Libelle )){
-    data[i-1,"Moment"]$Moment <- "Before -1"
   }
 }
 
