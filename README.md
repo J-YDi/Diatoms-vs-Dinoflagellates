@@ -15,6 +15,7 @@
 + 6_script_networks_analysis.R : Script to analyze composition and associations type in the networks and make a PCA to sum up the different metrics
 + 7_script_randomizationtest.R : Script to investigate the relationship between composition and associations type and test of randomization
 + 8_script_blooms_analysis.R : Script to analyze the effet of a bloom on the different variables.
++ 9_script_negative&positive_asso.R : Script to analyze both negative and positive associations.
 
 ##### data_modif folder : 
 + contains all the original dataset modified for the study, all can be obtained by the different scripts and the original raw data (available at SEANOE, thanks to IFREMER, https://doi.org/10.17882/47248 or uppon request)
