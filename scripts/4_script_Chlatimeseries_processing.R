@@ -4,7 +4,7 @@
 ################################################################################
 
 # Script to detect blooms #
-# 02/28/2025
+# 02/26/2026
 
 # Loading packages
 library(readr)
@@ -99,7 +99,7 @@ for (i in c(1:21)){
   Table_regul$Outlier <- "NON"
   Table_regul[outliers_CHLOROA,]$Outlier <- "OUI"
   # Save it
-  #write.csv2(Table_regul,file=paste0("output/tableaux/CHLAprocessing/",nom_fichier,".csv"), row.names = FALSE,dec = ".")
+  write.csv2(Table_regul,file=paste0("output/tableaux/CHLAprocessing/",nom_fichier,".csv"), row.names = FALSE,dec = ".")
   
 }
 
@@ -337,9 +337,170 @@ for (k in 1:21){
   
   nom_fichier <- paste0("Outliers_matchingdate",station)
   nom_fichier <- paste0(nom_fichier)
-  #write.csv2(data_Date_ok,file=paste0("output/tableaux/CHLAprocessing/Matchingdate_outliers/",nom_fichier,".csv"), row.names = FALSE,dec = ".")
+  write.csv2(data_Date_ok,file=paste0("output/tableaux/CHLAprocessing/Matchingdate_outliers/",nom_fichier,".csv"), row.names = FALSE,dec = ".")
   
 }
+
+# Data viz to see outliers and STL decomposition
+
+datagraph <- data_Ansecarteau
+datagraph$Outlier <- ifelse(datagraph$Outlier == "OUI","Yes","No")
+ggplot() +
+  geom_line(
+    data = filter(data, Code_point_Libelle == "Anse de Carteau 2"),
+    aes(x = Date, y = CHLOROA, colour = "Raw"), size = 1
+  ) +
+  geom_line(
+    data = datagraph,
+    aes(x = Date, y = CHLOROA, colour = "Regularized"), size = 1, alpha = 0.3
+  ) +
+  geom_line(
+    data = datagraph,
+    aes(x = Date, y = CHLOROA_noseason, colour = "Regularized + Deseasonalized"), size = 1,alpha = 0.3
+  ) +
+  geom_point(
+    data = datagraph,
+    aes(x = Date, y = CHLOROA_noseason, colour = Outlier, size = Outlier)
+  ) +
+  geom_hline(
+    yintercept = min(filter(datagraph, Outlier == "Yes" & CHLOROA_noseason >= 0)$CHLOROA_noseason),
+    aes(colour = "Threshold"), size = 1
+  ) +
+  scale_x_date(breaks = seq(datagraph$Date[1], datagraph$Date[nrow(datagraph)], by = 100)) +
+  scale_colour_manual(
+    values = c(
+      "Raw" = "green",
+      "Regularized" = "blue",
+      "Regularized + Deseasonalized" = "red",
+      "Threshold" = "orange"
+    ),
+    breaks = c("Raw", "Regularized", "Regularized + Deseasonalized", "Threshold", "OUI", "NON"),
+    name = NULL
+  ) +
+  
+  scale_size_manual(
+    values = c("No" = 1, "Yes" = 5),
+    name = "Bloom"
+  ) +
+  
+  guides(
+    colour = guide_legend(order = 1, title = "Time serie"),
+    size   = guide_legend(order = 2)
+  ) +
+  
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1, size = 10)) +
+  labs(
+    title = "Chla time series Anse de Carteau",
+    x = "Date",
+    y = "Chla concentration (µg/L)"
+  )
+ggsave('Anse_carteau_bloom_ts_review.png', path = "output/graphs/bloom", dpi = 600, width = 300, height = 200, units = 'mm')
+
+datagraph <- data_MenerRoue
+datagraph$Outlier <- ifelse(datagraph$Outlier == "OUI","Yes","No")
+ggplot() +
+  geom_line(
+    data = filter(data, Code_point_Libelle == "Men er Roue"),
+    aes(x = Date, y = CHLOROA, colour = "Raw"), size = 1
+  ) +
+  geom_line(
+    data = datagraph,
+    aes(x = Date, y = CHLOROA, colour = "Regularized"), size = 1, alpha = 0.3
+  ) +
+  geom_line(
+    data = datagraph,
+    aes(x = Date, y = CHLOROA_noseason, colour = "Regularized + Deseasonalized"), size = 1,alpha = 0.3
+  ) +
+  geom_point(
+    data = datagraph,
+    aes(x = Date, y = CHLOROA_noseason, colour = Outlier, size = Outlier)
+  ) +
+  geom_hline(
+    yintercept = min(filter(datagraph, Outlier == "Yes" & CHLOROA_noseason >= 0)$CHLOROA_noseason),
+    aes(colour = "Threshold"), size = 1
+  ) +
+  scale_x_date(breaks = seq(datagraph$Date[1], datagraph$Date[nrow(datagraph)], by = 100)) +
+  scale_colour_manual(
+    values = c(
+      "Raw" = "green",
+      "Regularized" = "blue",
+      "Regularized + Deseasonalized" = "red",
+      "Threshold" = "orange"
+    ),
+    breaks = c("Raw", "Regularized", "Regularized + Deseasonalized", "Threshold", "OUI", "NON"),
+    name = NULL
+  ) +
+  
+  scale_size_manual(
+    values = c("No" = 1, "Yes" = 5),
+    name = "Bloom"
+  ) +
+  
+  guides(
+    colour = guide_legend(order = 1, title = "Time serie"),
+    size   = guide_legend(order = 2)
+  ) +
+  
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1, size = 10)) +
+  labs(
+    title = "Chla time series Men er Roue",
+    x = "Date",
+    y = "Chla concentration (µg/L)"
+  )
+ggsave('MenerRoue_bloom_ts_review.png', path = "output/graphs/bloom", dpi = 600, width = 300, height = 200, units = 'mm')
+
+datagraph <- data_Boulogne
+datagraph$Outlier <- ifelse(datagraph$Outlier == "OUI","Yes","No")
+ggplot() +
+  geom_line(
+    data = filter(data, Code_point_Libelle == "Point 1 Boulogne"),
+    aes(x = Date, y = CHLOROA, colour = "Raw"), size = 1
+  ) +
+  geom_line(
+    data = datagraph,
+    aes(x = Date, y = CHLOROA, colour = "Regularized"), size = 1, alpha = 0.3
+  ) +
+  geom_line(
+    data = datagraph,
+    aes(x = Date, y = CHLOROA_noseason, colour = "Regularized + Deseasonalized"), size = 1,alpha = 0.3
+  ) +
+  geom_point(
+    data = datagraph,
+    aes(x = Date, y = CHLOROA_noseason, colour = Outlier, size = Outlier)
+  ) +
+  geom_hline(
+    yintercept = min(filter(datagraph, Outlier == "Yes" & CHLOROA_noseason >= 0)$CHLOROA_noseason),
+    aes(colour = "Threshold"), size = 1
+  ) +
+  scale_x_date(breaks = seq(datagraph$Date[1], datagraph$Date[nrow(datagraph)], by = 100)) +
+  scale_colour_manual(
+    values = c(
+      "Raw" = "green",
+      "Regularized" = "blue",
+      "Regularized + Deseasonalized" = "red",
+      "Threshold" = "orange"
+    ),
+    breaks = c("Raw", "Regularized", "Regularized + Deseasonalized", "Threshold", "OUI", "NON"),
+    name = NULL
+  ) +
+  
+  scale_size_manual(
+    values = c("No" = 1, "Yes" = 5),
+    name = "Bloom"
+  ) +
+  
+  guides(
+    colour = guide_legend(order = 1, title = "Time serie"),
+    size   = guide_legend(order = 2)
+  ) +
+  
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1, size = 10)) +
+  labs(
+    title = "Chla time series Point 1 Boulogne",
+    x = "Date",
+    y = "Chla concentration (µg/L)"
+  )
+ggsave('Boulogne_bloom_ts_review.png', path = "output/graphs/bloom", dpi = 600, width = 300, height = 200, units = 'mm')
 
 
 # Indicate on the initial data where the outliers are
@@ -411,7 +572,7 @@ data_withoutliers_ok <- data_withoutliers_ok |>
   group_by(Code.Region, Code_point_Libelle, lon, lat, Year, Month, Date, ID.interne.passage, Prelevement.niveau)
 
 # That's ok now, save it
-#write.csv2(data_withoutliers_ok,file="output/data_modif/Table_FLORTOT_Surf_0722_COM_period_Stselect_hydro_phyto_chloro_phylum_period15_chlafilter_cluster5_blooms_final.csv", row.names = FALSE,dec = ".")
+write.csv2(data_withoutliers_ok,file="output/data_modif/Table_FLORTOT_Surf_0722_COM_period_Stselect_hydro_phyto_chloro_phylum_period15_chlafilter_cluster5_blooms_final.csv", row.names = FALSE,dec = ".")
 
 
 ### Associate blooming genus with bloom information ###
@@ -435,5 +596,5 @@ Table_bloom_R <- dplyr::select(Table_bloom_R, Code_point_Libelle, Date,Abdtot:Bl
 
 data_ok <- left_join(data,Table_bloom_R, join_by(Code_point_Libelle, Date))
 # Save it
-#write.csv2(data_ok,file="output/data_modif/Table_FLORTOT_Surf_0722_COM_period_Stselect_hydro_phyto_chloro_phylum_period15_chlafilter_cluster5_blooms_caracterised_final.csv", row.names = FALSE,dec = ".")
+write.csv2(data_ok,file="output/data_modif/Table_FLORTOT_Surf_0722_COM_period_Stselect_hydro_phyto_chloro_phylum_period15_chlafilter_cluster5_blooms_caracterised_final.csv", row.names = FALSE,dec = ".")
 
