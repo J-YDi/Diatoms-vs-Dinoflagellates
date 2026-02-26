@@ -118,7 +118,7 @@ med <- ggplot(filter(datag,region=="1-Mediterranean sea")) +
   geom_text(data = subset(filter(datag,region=="1-Mediterranean sea"), format(Date, "%m") == "07"), 
             aes(x = MonthYear, y = 101, label = format(Date, "%Y")),
             color = "black", size = 3,angle=0, vjust = 0)+
-  theme(axis.text.x = element_blank(),legend.position = "none")+
+  theme(axis.text.y = element_text(size=13),axis.text.x = element_blank(),legend.position = "none")+
   labs(x=NULL,,y="")  +
   scale_fill_manual(values = c(
     "Asterionellopsis"   = "#2B4561",
@@ -146,7 +146,7 @@ manche <- ggplot(filter(datag,region=="2-Eastern Channel - North Sea")) +
   #geom_text(data = subset(filter(datag,region=="2-Eastern Channel - North Sea"), format(Date, "%m") == "07"), 
   #          aes(x = MonthYear, y = 101, label = format(Date, "%Y")),
   #          color = "black", size = 3,angle=0, vjust = 0)+
-  theme(axis.text.x = element_blank(),legend.position = "none")+
+  theme(axis.text.y = element_text(size=13),axis.text.x = element_blank(),legend.position = "none",axis.title.y = element_text(size=15))+
   labs(x=NULL,y="Relative abundance (%)")  +
   scale_fill_manual(values = c(
     "Asterionellopsis"   = "#2B4561",
@@ -174,7 +174,7 @@ atl <- ggplot(filter(datag,region=="3-Atlantic - Western Channel")) +
   #geom_text(data = subset(filter(datag,region=="3-Atlantic - Western Channel"), format(Date, "%m") == "07"), 
   #          aes(x = MonthYear, y = 101, label = format(Date, "%Y")),
   #          color = "black", size = 3,angle=0, vjust = 0)+
-  theme(axis.text.x = element_text(size = 6),legend.position = "left")+
+  theme(axis.text.x = element_text(size = 8),axis.text.y = element_text(size=13),legend.position = "none")+
   labs(x="Date",y="")+
   scale_fill_manual(values = c(
     "Asterionellopsis"   = "#2B4561",
