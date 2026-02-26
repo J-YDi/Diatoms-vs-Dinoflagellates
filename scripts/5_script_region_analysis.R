@@ -4,7 +4,7 @@
 ################################################################################
 
 # Script to investigate the differences between regions #
-# 02/28/2025
+# 02/26/2026
 
 # Load packages
 library(ggplot2)
@@ -119,9 +119,22 @@ med <- ggplot(filter(datag,region=="1-Mediterranean sea")) +
             aes(x = MonthYear, y = 101, label = format(Date, "%Y")),
             color = "black", size = 3,angle=0, vjust = 0)+
   theme(axis.text.x = element_blank(),legend.position = "none")+
-  labs(x=NULL,,y="")+
-  scale_fill_manual(values = c("#FFBCFF", "#B2DF8A","#FF7F00", "#6A3D9A", "#33A02C", "#1F78B4","#A6CEE3",
-                               "#FFFF99","#510051", "#BC00BC", "#FB9A99","#FDBF6F","grey"))
+  labs(x=NULL,,y="")  +
+  scale_fill_manual(values = c(
+    "Asterionellopsis"   = "#2B4561",
+    "Chaetocerotaceae"   = "#76A7E2",
+    "Cylindrotheca"      = "#2E6CD9",
+    "Leptocylindrus"     = "#000E53",
+    "Nitzschia"          = "#377185",
+    "Pseudo-nitzschia"   = "#BBD4F2",
+    "Skeletonema"        = "blue",
+    "Akashiwo"           = "#B2DF8A",
+    "Azadinium"          = "chartreuse4",
+    "Chrysochromulina"   = "#FBB646",
+    "Phaeocystis"        = "gold1",
+    "Cryptophyceae"      = "#FC4D6B",
+    "Others"             = "grey"
+  ))
 
 manche <- ggplot(filter(datag,region=="2-Eastern Channel - North Sea")) +
   geom_col(aes(x = MonthYear, y = value*100, fill = Phylum), position = "stack", na.rm = FALSE, width = 1) +
@@ -134,9 +147,22 @@ manche <- ggplot(filter(datag,region=="2-Eastern Channel - North Sea")) +
   #          aes(x = MonthYear, y = 101, label = format(Date, "%Y")),
   #          color = "black", size = 3,angle=0, vjust = 0)+
   theme(axis.text.x = element_blank(),legend.position = "none")+
-  labs(x=NULL,y="Relative abundance (%)")+
-  scale_fill_manual(values = c("#FFBCFF", "#B2DF8A","#FF7F00", "#6A3D9A", "#33A02C", "#1F78B4","#A6CEE3",
-                               "#FFFF99","#510051", "#BC00BC", "#FB9A99","#FDBF6F","grey"))
+  labs(x=NULL,y="Relative abundance (%)")  +
+  scale_fill_manual(values = c(
+    "Asterionellopsis"   = "#2B4561",
+    "Chaetocerotaceae"   = "#76A7E2",
+    "Cylindrotheca"      = "#2E6CD9",
+    "Leptocylindrus"     = "#000E53",
+    "Nitzschia"          = "#377185",
+    "Pseudo-nitzschia"   = "#BBD4F2",
+    "Skeletonema"        = "blue",
+    "Akashiwo"           = "#B2DF8A",
+    "Azadinium"          = "chartreuse4",
+    "Chrysochromulina"   = "#FBB646",
+    "Phaeocystis"        = "gold1",
+    "Cryptophyceae"      = "#FC4D6B",
+    "Others"             = "grey"
+  ))
 
 atl <- ggplot(filter(datag,region=="3-Atlantic - Western Channel")) +
   geom_col(aes(x = MonthYear, y = value*100, fill = Phylum), position = "stack", na.rm = FALSE, width = 1) +
@@ -148,13 +174,27 @@ atl <- ggplot(filter(datag,region=="3-Atlantic - Western Channel")) +
   #geom_text(data = subset(filter(datag,region=="3-Atlantic - Western Channel"), format(Date, "%m") == "07"), 
   #          aes(x = MonthYear, y = 101, label = format(Date, "%Y")),
   #          color = "black", size = 3,angle=0, vjust = 0)+
-  theme(axis.text.x = element_text(size = 6),legend.position = "none")+
+  theme(axis.text.x = element_text(size = 6),legend.position = "left")+
   labs(x="Date",y="")+
-  scale_fill_manual(values = c("#FFBCFF", "#B2DF8A","#FF7F00", "#6A3D9A", "#33A02C", "#1F78B4","#A6CEE3",
-                               "#FFFF99","#510051", "#BC00BC", "#FB9A99","#FDBF6F","grey"))
+  scale_fill_manual(values = c(
+    "Asterionellopsis"   = "#2B4561",
+    "Chaetocerotaceae"   = "#76A7E2",
+    "Cylindrotheca"      = "#2E6CD9",
+    "Leptocylindrus"     = "#000E53",
+    "Nitzschia"          = "#377185",
+    "Pseudo-nitzschia"   = "#BBD4F2",
+    "Skeletonema"        = "blue",
+    "Akashiwo"           = "#B2DF8A",
+    "Azadinium"          = "chartreuse4",
+    "Chrysochromulina"   = "#FBB646",
+    "Phaeocystis"        = "gold1",
+    "Cryptophyceae"      = "#FC4D6B",
+    "Others"             = "grey"
+  ))
+
 # Final graph:
 plot_grid(med,manche,atl,nrow = 3,greedy = "FALSE" )
-#ggsave('Relativeabundance_genus.png', path = "output/graphs/description_region",dpi = 500, width = 360, height =200, units = 'mm')
+ggsave('Relativeabundance_genus_review2.png', path = "output/graphs/description_region",dpi = 500, width = 360, height =200, units = 'mm')
 
 
 
